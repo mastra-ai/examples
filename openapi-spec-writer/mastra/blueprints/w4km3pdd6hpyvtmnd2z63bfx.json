@@ -1,0 +1,31 @@
+{
+  "title": "New workflow",
+  "status": "PUBLISHED",
+  "createdAt": "2024-11-05T23:24:07.787Z",
+  "id": "w4km3pdd6hpyvtmnd2z63bfx",
+  "updatedAt": "2024-11-05T23:25:57.260Z",
+  "trigger": {
+    "id": "obbpq1y85urbhhhj7xdrx2c2",
+    "type": "WRITE_SPEC",
+    "payload": {}
+  },
+  "actions": [
+    {
+      "id": "h5mm6n40tnhg4f5il4dbnq85",
+      "type": "SITECRAWL",
+      "payload": {
+        "mastraConnectionId": "SYSTEM",
+        "url": "{{url_1730849144008}}"
+      },
+      "variables": {
+        "url": {
+          "url_1730849144008": {
+            "refBlockId": "obbpq1y85urbhhhj7xdrx2c2",
+            "path": "url"
+          }
+        }
+      },
+      "subActions": []
+    }
+  ]
+}

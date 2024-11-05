@@ -20,10 +20,12 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
   const res = await client.crawlUrls({
     body: {
       url: data.url,
+      limit: 100,
+      includePaths: ['/reference/api/*'],
       scrapeOptions: {
         formats: ['markdown'],
         includeTags: ['main'],
-        excludeTags: ['img', 'footer', 'nav', 'header'],
+        excludeTags: ['img', 'footer', 'nav', 'header', '#navbar', '.table-of-contents-content'],
         onlyMainContent: true,
       },
     },
@@ -54,7 +56,9 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
     console.log(crawl.data?.status);
   }
 
-  console.log('CRAWL DATA =============', crawl.data?.data);
+  crawl.data?.data?.forEach(({ markdown }) => {
+    console.log(markdown)
+  })
 
   // const recordsToPersist = crawl?.data?.data?.flatMap(({ markdown, metadata }) => {
   //   const chunks = splitMarkdownIntoChunks(markdown!)
@@ -104,7 +108,14 @@ export const config: Config = {
   },
   workflows: {
     blueprintDirPath: '/mastra/blueprints',
-    systemEvents: {},
+    systemEvents: {
+      'WRITE_SPEC': {
+        label: 'Write Spec',
+        schema: z.object({
+          url: z.string().describe('The URL of the website to crawl'),
+        })
+      }
+    },
     systemApis: [
       {
         label: 'SiteCrawl',
