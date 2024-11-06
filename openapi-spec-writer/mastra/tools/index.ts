@@ -74,6 +74,8 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
 
     console.log(openapiResponses)
 
+    //@TODO: Merge the openapispecs with a JS function
+
 
 
     // const recordsToPersist = crawl?.data?.data?.flatMap(({ markdown, metadata }) => {
