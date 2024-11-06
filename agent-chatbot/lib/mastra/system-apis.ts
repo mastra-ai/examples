@@ -464,3 +464,29 @@ export async function getCoinPrice({ id }: { id: string }) {
 
   return data[0]
 }
+
+export async function getCoinHistoricalPrices({
+  id,
+  days
+}: {
+  id: string
+  days: number
+}) {
+  const coinPrices = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&id=${id}`
+
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      'x-cg-demo-api-key': process.env.COINGECKO_API_KEY!
+    }
+  }
+
+  const response = await fetch(coinPrices, options)
+  const data = await response.json()
+
+  return data.prices.map((price: number[]) => ({
+    timestamp: price[0],
+    price: price[1]
+  }))
+}

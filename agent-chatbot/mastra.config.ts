@@ -7,6 +7,7 @@ import { Config } from '@mastra/core'
 import {
   callAgent,
   getAthletesForTeam,
+  getCoinHistoricalPrices,
   getCoinList,
   getCoinPrice,
   getScores,
@@ -241,6 +242,27 @@ export const config: Config = {
         }),
         executor: async ({ data }: { data: any }) => {
           return await getCoinPrice(data)
+        }
+      },
+      {
+        type: 'get_crypto_historical_prices',
+        label: 'Get historical crypto prices',
+        description:
+          'Get historical crypto prices for use in a chart. Returns an array of price objects with a timestamp and price.',
+        schema: z.object({
+          id: z.string(),
+          days: z.number()
+        }),
+        outputSchema: z.object({
+          prices: z.array(
+            z.object({
+              timestamp: z.number(),
+              price: z.number()
+            })
+          )
+        }),
+        executor: async ({ data }: { data: any }) => {
+          return await getCoinHistoricalPrices(data)
         }
       }
     ]

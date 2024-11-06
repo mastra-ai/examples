@@ -31,35 +31,38 @@ export function ChatPanel({
   isAtBottom,
   scrollToBottom,
   assistant,
-  assistantName,
+  assistantName
 }: ChatPanelProps) {
   const [aiState] = useAIState()
   const [messages, setMessages] = useUIState<typeof AI>()
   const { sendAgentMessage } = useActions()
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
-  const exampleMessages = assistantName === 'NFL Analyst' ? [
-    {
-      heading: 'What are the names of',
-      subheading: 'teams in the NFL?',
-      message: `What are the names of teams in the NFL?`
-    },
-    {
-      heading: 'Who are the running backs',
-      subheading: 'for the Minnesota Vikings?',
-      message: 'Who are the running backs for the Minnesota Vikings?'
-    },
-    {
-      heading: 'What was the score of the Thursday',
-      subheading: 'night game in Week 5 of the NFL',
-      message: `What was the score of the Thursday Night game in Week 5 of the NFL?`
-    },
-    {
-      heading: 'Who is the place kicker for the',
-      subheading: `Los Angeles Rams?`,
-      message: `Who is the place kicker for the Los Angeles Rams?`
-    }
-  ] : []
+  const exampleMessages =
+    assistantName === 'NFL Analyst'
+      ? [
+          {
+            heading: 'What are the names of',
+            subheading: 'teams in the NFL?',
+            message: `What are the names of teams in the NFL?`
+          },
+          {
+            heading: 'Who are the running backs',
+            subheading: 'for the Minnesota Vikings?',
+            message: 'Who are the running backs for the Minnesota Vikings?'
+          },
+          {
+            heading: 'What was the score of the Thursday',
+            subheading: 'night game in Week 5 of the NFL',
+            message: `What was the score of the Thursday Night game in Week 5 of the NFL?`
+          },
+          {
+            heading: 'Who is the place kicker for the',
+            subheading: `Los Angeles Rams?`,
+            message: `Who is the place kicker for the Los Angeles Rams?`
+          }
+        ]
+      : []
 
   return (
     <div className="fixed inset-x-0 bottom-0 w-full bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% duration-300 ease-in-out animate-in dark:from-background/10 dark:from-10% dark:to-background/80 peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]">
@@ -74,8 +77,9 @@ export function ChatPanel({
             exampleMessages.map((example, index) => (
               <div
                 key={example.heading}
-                className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 ${index > 1 && 'hidden md:block'
-                  }`}
+                className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 ${
+                  index > 1 && 'hidden md:block'
+                }`}
                 onClick={async () => {
                   setMessages(currentMessages => [
                     ...currentMessages,
@@ -87,10 +91,10 @@ export function ChatPanel({
 
                   const responseMessage = await sendAgentMessage({
                     message: example.message,
-                    assistant,
+                    assistant
                   })
 
-                  console.log(responseMessage)
+                  console.log('responseMessage', responseMessage)
 
                   setMessages(currentMessages => [
                     ...currentMessages,

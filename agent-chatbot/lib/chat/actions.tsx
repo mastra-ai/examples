@@ -224,6 +224,8 @@ async function sendAgentMessage({
 
     const run = await executor.watchRun({ threadId: thread.id })
 
+    console.log('run', run)
+
     aiState.done({
       ...aiState.get(),
       messages: [
