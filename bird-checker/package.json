@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "mastra:init": "pnpm dlx mastra init",
+    "mastra:dev": "pnpm dlx mastra dev",
+    "mastra:migrate": "pnpm dlx mastra migrate"
   },
   "dependencies": {
     "@mastra/core": "^0.1.20",
