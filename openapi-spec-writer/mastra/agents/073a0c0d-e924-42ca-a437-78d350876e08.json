@@ -10,9 +10,14 @@
   "outputs": {
     "text": true,
     "structured": {
-      "yaml": {
-        "type": "string"
+      "schema": {
+        "yaml": {
+          "type": "string"
+        }
       }
     }
+  },
+  "tools": {
+    "MINTLIFY_SITE_CRAWL": true
   }
 }
