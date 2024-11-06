@@ -1,3 +1,4 @@
+import { GithubIntegration } from '@mastra/github'
 import { SlackIntegration } from '@mastra/slack'
 import { FirecrawlIntegration } from '@mastra/firecrawl';
 import { Config } from '@mastra/core';
@@ -15,6 +16,8 @@ const SLACK_REDIRECT_URI = 'https://redirectmeto.com/http://localhost:3456/api/m
 export const config: Config = {
   name: 'openapi-spec-writer',
   integrations: [
+    new GithubIntegration(),
+
     new SlackIntegration({
     config: {
       CLIENT_ID: process.env.SLACK_CLIENT_ID!,

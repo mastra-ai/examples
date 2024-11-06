@@ -11,6 +11,7 @@
   "dependencies": {
     "@mastra/core": "^0.1.20",
     "@mastra/firecrawl": "^1.0.3",
+    "@mastra/github": "^1.0.2",
     "@mastra/slack": "^1.0.2",
     "@prisma/client": "5.22.0",
     "next": "15.0.2",
