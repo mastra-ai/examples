@@ -14,6 +14,9 @@ importers:
       '@mastra/firecrawl':
         specifier: ^1.0.3
         version: 1.0.3(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.9))(svelte@5.1.9)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))
+      '@mastra/slack':
+        specifier: ^1.0.2
+        version: 1.0.2(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.9))(svelte@5.1.9)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))
       '@prisma/client':
         specifier: 5.22.0
         version: 5.22.0(prisma@5.22.0)
@@ -347,6 +350,10 @@ packages:
 
   '@mastra/firecrawl@1.0.3':
     resolution: {integrity: sha512-QFJ7wWkJ5qEYRcfg4NGsqbbSuWChyf1RAPH/q4FKlUFhDg/JNS0d/G0RMMeluyXtHjZWxTGil97lhH8VZI/ZZQ==}
+    engines: {node: '>=20 <22'}
+
+  '@mastra/slack@1.0.2':
+    resolution: {integrity: sha512-KBxmZ7wsI7msZ/G7Xd0bvAFoP6ywsq34CJvkeGqHxcFiky4fUBH5BtxOYtTtU+DW4iXYvDQhaRJSJVlYTyvaHA==}
     engines: {node: '>=20 <22'}
 
   '@next/env@14.2.16':
@@ -2813,6 +2820,36 @@ snapshots:
       - vue
 
   '@mastra/firecrawl@1.0.3(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.9))(svelte@5.1.9)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))':
+    dependencies:
+      '@hey-api/client-fetch': 0.3.4
+      '@mastra/core': 0.1.20(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.9))(svelte@5.1.9)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
+      ts-to-zod: 3.13.0
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@opentelemetry/api'
+      - '@playwright/test'
+      - '@sveltejs/kit'
+      - '@vercel/node'
+      - aws-lambda
+      - babel-plugin-macros
+      - encoding
+      - express
+      - fastify
+      - h3
+      - hono
+      - koa
+      - react
+      - react-dom
+      - sass
+      - solid-js
+      - sswr
+      - supports-color
+      - svelte
+      - typescript
+      - vue
+
+  '@mastra/slack@1.0.2(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.9))(svelte@5.1.9)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       '@hey-api/client-fetch': 0.3.4
       '@mastra/core': 0.1.20(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.9))(svelte@5.1.9)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)

@@ -1,7 +1,7 @@
 {
   "id": "073a0c0d-e924-42ca-a437-78d350876e08",
   "name": "openapi-spec-gen-agent",
-  "agent_instructions": "You are an expert Open API spec writer. You can take markdown documentation and extract all the information you can to generate an amazing Open API spec.",
+  "agent_instructions": "You are an expert Open API spec writer. You can take markdown documentation and extract all the information you can to generate an amazing Open API spec. You are also able to merge multiple fragmented Open API specs from the same source into a single compliant spec.",
   "model": {
     "provider": "ANTHROPIC_VERCEL",
     "name": "claude-3-5-sonnet-20240620",
