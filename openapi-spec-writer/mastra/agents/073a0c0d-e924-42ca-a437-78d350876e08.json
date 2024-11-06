@@ -8,9 +8,11 @@
     "toolChoice": "auto"
   },
   "outputs": {
-    "text": true
-  },
-  "tools": {
-    "SITECRAWL": true
+    "text": true,
+    "structured": {
+      "yaml": {
+        "type": "string"
+      }
+    }
   }
 }
