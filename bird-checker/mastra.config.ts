@@ -7,6 +7,7 @@ export const config: Config = {
     provider: "postgres",
     uri: process.env.DB_URL!,
   },
+
   runner: {
     provider: "inngest",
     uri: process.env.INNGEST_URL!,
@@ -19,8 +20,8 @@ export const config: Config = {
     systemApis: [],
   },
   logs: {
-    provider: 'FILE',
-    level: LogLevel.DEBUG
+    provider: "FILE",
+    level: LogLevel.DEBUG,
   },
   agents: {
     agentDirPath: "/mastra/agents",
