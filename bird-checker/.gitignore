@@ -42,4 +42,5 @@ yarn-error.log*
 next-env.d.ts
 
 # mastra
-.mastra/
+.mastra/admin/node_modules
+.mastra/admin/.next
