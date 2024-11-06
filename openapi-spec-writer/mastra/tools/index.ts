@@ -42,15 +42,11 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
 
     const crawlId = res.data?.id;
 
-    console.log(crawlId)
-
     let crawl = await client.getCrawlStatus({
         path: {
             id: crawlId!,
         },
     });
-
-    console.log(crawl)
 
     while (crawl.data?.status === 'scraping') {
         await delay(5000);
@@ -69,8 +65,10 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
     for (const d of crawl.data?.data) {
         if (typeof agent === 'function') {
             const data = await agent({ prompt: `I wrote another page of docs, turn this into an Open API spec: ${d.markdown}` })
-            console.log(data)
-            openapiResponses.push(data)
+            if (Array.isArray(data.toolCalls)) {
+                const answer = data.toolCalls?.find(({ toolName }) => toolName === 'answer')
+                openapiResponses.push(answer)
+            }
         }
     }
 
