@@ -1,0 +1,68 @@
+[
+  {
+    "id": "134b42e3-363d-441d-afd8-74310045cf81",
+    "name": "pinecone-github-1729176296956",
+    "metric": "cosine",
+    "dimension": 1536,
+    "status": {
+      "ready": true,
+      "state": "Ready"
+    },
+    "host": "pinecone-github-1729176296956-cz6ijf0.svc.aped-4627-b74a.pinecone.io",
+    "spec": {
+      "serverless": {
+        "region": "us-east-1",
+        "cloud": "aws"
+      }
+    },
+    "deletion_protection": "disabled",
+    "tags": null,
+    "namespaces": [
+      "actionsGetActionsCacheUsage"
+    ]
+  },
+  {
+    "id": "7b4ba410-a072-4189-9f69-b28bdc5566ee",
+    "name": "pinecone-admin-teams-oct-16",
+    "metric": "cosine",
+    "dimension": 1536,
+    "status": {
+      "ready": true,
+      "state": "Ready"
+    },
+    "host": "pinecone-admin-teams-oct-16-cz6ijf0.svc.aped-4627-b74a.pinecone.io",
+    "spec": {
+      "serverless": {
+        "region": "us-east-1",
+        "cloud": "aws"
+      }
+    },
+    "deletion_protection": "disabled",
+    "tags": null,
+    "namespaces": [
+      "teams"
+    ]
+  },
+  {
+    "id": "d88244e3-7e57-4a48-af82-e741c3baf7d2",
+    "name": "pinecone-github-1729172620930",
+    "metric": "cosine",
+    "dimension": 1536,
+    "status": {
+      "ready": true,
+      "state": "Ready"
+    },
+    "host": "pinecone-github-1729172620930-cz6ijf0.svc.aped-4627-b74a.pinecone.io",
+    "spec": {
+      "serverless": {
+        "region": "us-east-1",
+        "cloud": "aws"
+      }
+    },
+    "deletion_protection": "disabled",
+    "tags": null,
+    "namespaces": [
+      "actionsGetActionsCacheList"
+    ]
+  }
+]
