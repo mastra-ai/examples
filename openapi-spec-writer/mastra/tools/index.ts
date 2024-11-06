@@ -61,6 +61,7 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
     }
 
     const openapiResponses = []
+    const mergedSpecAnswers = []
 
     for (const d of crawl.data?.data) {
         if (typeof agent === 'function') {
@@ -72,7 +73,21 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
         }
     }
 
-    console.log(openapiResponses)
+    console.log({ openapiResponses, agent, typeof: typeof agent })
+
+
+    if (typeof agent === 'function') {
+        const mergedSpec = await agent?.({ prompt: `I have generated the following Open API specs: ${openapiResponses.map((r: any) => r?.args?.yaml).join('\n\n')} - merge them into a single spec.` })
+
+        if (Array.isArray(mergedSpec.toolCalls)) {
+            const answer = mergedSpec.toolCalls?.find(
+                ({ toolName }) => toolName === 'answer'
+            );
+            mergedSpecAnswers.push(answer);
+        }
+    }
+    console.log("MERGED SPEC ==================", JSON.stringify(mergedSpecAnswers, null, 2))
+
 
     //@TODO: Merge the openapispecs with a JS function
 
