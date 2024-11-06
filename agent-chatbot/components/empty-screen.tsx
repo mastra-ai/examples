@@ -12,8 +12,8 @@ export function EmptyScreen({ activeAssistant }: { activeAssistant: string }) {
           Welcome to Mastra Example {activeAssistant} Chatbot!
         </h1>
         <p className="leading-normal text-muted-foreground">
-          This is an open source AI chatbot app template built to answer {activeAssistant}
-          questions.
+          This is an open source AI chatbot app template built to answer{' '}
+          {activeAssistant} questions.
         </p>
       </div>
     </div>
