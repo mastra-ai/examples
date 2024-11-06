@@ -1,15 +1,14 @@
 {
   "id": "073a0c0d-e924-42ca-a437-78d350876e08",
   "name": "openapi-spec-gen-agent",
-  "agentInstructions": "You are an openapi spec generator. You can crawl an API documentation website for a given url and then extract paths and components from the resulting markdown output to generate a document compliant with OPENAPI spec.",
+  "agent_instructions": "You are an expert Open API spec writer. You can take markdown documentation and extract all the information you can to generate an amazing Open API spec.",
   "model": {
     "provider": "ANTHROPIC_VERCEL",
     "name": "claude-3-5-sonnet-20240620",
     "toolChoice": "auto"
   },
   "outputs": {
-    "text": true,
-    "structured": {}
+    "text": true
   },
   "tools": {
     "SITECRAWL": true
