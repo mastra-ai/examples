@@ -1,28 +1,31 @@
-// @ts-ignore
-import { Config } from '@mastra/core';
+import { Config, LogLevel } from "@mastra/core";
 
 export const config: Config = {
-  name: 'bird-checker',
+  name: "bird-checker",
   integrations: [],
   db: {
-    provider: 'postgres',
+    provider: "postgres",
     uri: process.env.DB_URL!,
   },
   runner: {
-    provider: 'inngest',
+    provider: "inngest",
     uri: process.env.INNGEST_URL!,
     signingKey: process.env.INNGEST_SIGNING_KEY!,
     eventKey: process.env.INNGEST_EVENT_KEY!,
   },
   workflows: {
-    blueprintDirPath: '/mastra/blueprints',
+    blueprintDirPath: "/mastra/blueprints",
     systemEvents: {},
     systemApis: [],
   },
+  logs: {
+    provider: 'FILE',
+    level: LogLevel.DEBUG
+  },
   agents: {
-    agentDirPath: '/mastra/agents',
+    agentDirPath: "/mastra/agents",
     vectorProvider: [],
   },
   systemHostURL: process.env.APP_URL!,
-  routeRegistrationPath: '/api/mastra',
+  routeRegistrationPath: "/api/mastra",
 };
