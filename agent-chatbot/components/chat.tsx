@@ -149,6 +149,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
           </div>
         </div>
         <br />
+
         {messages.length ? (
           <ChatList messages={messages} isShared={false} session={session} />
         ) : (
