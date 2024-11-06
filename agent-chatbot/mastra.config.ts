@@ -13,9 +13,12 @@ import {
   getScores,
   getSportsNews,
   reportAnswers,
+  searchCoins,
   sendSlackMessage,
+  syncCoins,
   syncTeams
 } from './lib/mastra/system-apis'
+import { sync } from 'framer-motion'
 
 export const config: Config = {
   name: 'agent-chatbot',
@@ -124,6 +127,39 @@ export const config: Config = {
           week: z.string(),
           day: z.enum(['monday', 'thursday', 'sunday'])
         })
+      },
+      SYNC_CRYPTO_COINS: {
+        label: 'Sync Crypto Coins',
+        description: 'Sync all available Cryptocurrencies to the database',
+        schema: z.object({}),
+        handler: syncCoins,
+        entityType: 'coins',
+        fields: [
+          {
+            name: 'id',
+            displayName: 'Coin ID',
+            type: 'SINGLE_LINE_TEXT',
+            order: 0
+          },
+          {
+            name: 'symbol',
+            displayName: 'Symbol',
+            type: 'SINGLE_LINE_TEXT',
+            order: 1
+          },
+          {
+            name: 'name',
+            displayName: 'Name',
+            type: 'SINGLE_LINE_TEXT',
+            order: 2
+          },
+          {
+            name: 'lowerCaseName',
+            displayName: 'Lowercase Name',
+            type: 'SINGLE_LINE_TEXT',
+            order: 3
+          }
+        ]
       }
     },
     systemApis: [
@@ -204,6 +240,22 @@ export const config: Config = {
           name: z.string()
         }),
         executor: getCoinList
+      },
+      {
+        type: 'search_crypto_coins',
+        label: 'Search crypto coins',
+        description: 'Search all available crypto coin by a keyword',
+        schema: z.object({
+          keyword: z.string()
+        }),
+        outputSchema: z.object({
+          id: z.string(),
+          symbol: z.string(),
+          name: z.string()
+        }),
+        executor: async ({ data }: { data: any }) => {
+          return (await searchCoins(data)) as any
+        }
       },
       {
         type: 'get_crypto_price',

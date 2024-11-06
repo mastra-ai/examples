@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash'
+import { lowerCase, orderBy } from 'lodash'
 import { PropertyType } from '@mastra/core'
 
 export async function getTeams() {
@@ -231,6 +231,69 @@ export function syncTeams() {
   }
 }
 
+export function syncCoins() {
+  return {
+    id: 'sync-crypto-coins',
+    event: 'SYNC_CRYPTO_COINS',
+    executor: async ({ event }: any) => {
+      const { mastra } = await import('./framework')
+      const connectionId = event.user.connectionId
+      const coins = await getCoinList()
+
+      console.log('syncCoins', coins, connectionId)
+
+      await mastra.dataLayer?.syncData({
+        name: mastra.config.name,
+        connectionId,
+        data: coins.map((r: any) => {
+          return {
+            externalId: r.id,
+            data: {
+              id: r.id,
+              symbol: r.symbol,
+              name: r.name,
+              lowerCaseName: lowerCase(r.name)
+            },
+            entityType: 'coins'
+          }
+        }),
+        properties: [
+          {
+            name: 'id',
+            displayName: 'Coin ID',
+            type: PropertyType.SINGLE_LINE_TEXT,
+            visible: true,
+            order: 0,
+            modifiable: true
+          },
+          {
+            name: 'symbol',
+            displayName: 'Symbol',
+            type: PropertyType.SINGLE_LINE_TEXT,
+            visible: true,
+            order: 1,
+            modifiable: true
+          },
+          {
+            name: 'name',
+            displayName: 'Name',
+            type: PropertyType.SINGLE_LINE_TEXT,
+            visible: true,
+            order: 2,
+            modifiable: true
+          }
+        ],
+        type: 'coins',
+        lastSyncId: event?.id!
+      })
+
+      console.log('SYNCED COINS')
+
+      return event
+    }
+  }
+}
+
 export async function getCoinList() {
   const coinListUrl = `https://api.coingecko.com/api/v3/coins/list`
 
@@ -244,204 +307,45 @@ export async function getCoinList() {
 
   const response = await fetch(coinListUrl, options)
   const data = await response.json()
-  // return data.map((coin: { id: string; symbol: string; name: string }) => ({
-  //   id: coin.id,
-  //   symbol: coin.symbol,
-  //   name: coin.name
-  // })).slice(0, 100)
+  return data.map((coin: { id: string; symbol: string; name: string }) => ({
+    id: coin.id,
+    symbol: coin.symbol,
+    name: coin.name
+  }))
+}
 
-  return [
-    {
-      id: 'aann-ai',
-      symbol: 'an',
-      name: 'AANN.ai'
-    },
-    {
-      id: 'aardvark-2',
-      symbol: 'vark',
-      name: 'Aardvark'
-    },
-    {
-      id: 'aark-digital',
-      symbol: 'aark',
-      name: 'Aark Digital'
-    },
-    {
-      id: 'aarma',
-      symbol: 'arma',
-      name: 'Aarma [OLD]'
-    },
-    {
-      id: 'aarma-2',
-      symbol: 'arma',
-      name: 'Aarma'
-    },
-    {
-      id: 'aastoken',
-      symbol: 'aast',
-      name: 'AASToken'
-    },
-    {
-      id: 'aave',
-      symbol: 'aave',
-      name: 'Aave'
-    },
-    {
-      id: 'aave-aave',
-      symbol: 'aaave',
-      name: 'Aave AAVE'
-    },
-    {
-      id: 'aave-amm-bptbalweth',
-      symbol: 'aammbptbalweth',
-      name: 'Aave AMM BptBALWETH'
-    },
-    {
-      id: 'aave-amm-bptwbtcweth',
-      symbol: 'aammbptwbtcweth',
-      name: 'Aave AMM BptWBTCWETH'
-    },
-    {
-      id: 'aave-amm-dai',
-      symbol: 'aammdai',
-      name: 'Aave AMM DAI'
-    },
-    {
-      id: 'aave-amm-uniaaveweth',
-      symbol: 'aammuniaaveweth',
-      name: 'Aave AMM UniAAVEWETH'
-    },
-    {
-      id: 'aave-amm-unibatweth',
-      symbol: 'aammunibatweth',
-      name: 'Aave AMM UniBATWETH'
-    },
-    {
-      id: 'aave-amm-unicrvweth',
-      symbol: 'aammunicrvweth',
-      name: 'Aave AMM UniCRVWETH'
-    },
-    {
-      id: 'aave-amm-unidaiusdc',
-      symbol: 'aammunidaiusdc',
-      name: 'Aave AMM UniDAIUSDC'
-    },
-    {
-      id: 'aave-amm-unidaiweth',
-      symbol: 'aammunidaiweth',
-      name: 'Aave AMM UniDAIWETH'
-    },
-    {
-      id: 'aave-amm-unilinkweth',
-      symbol: 'aammunilinkweth',
-      name: 'Aave AMM UniLINKWETH'
-    },
-    {
-      id: 'aave-amm-unimkrweth',
-      symbol: 'aammunimkrweth',
-      name: 'Aave AMM UniMKRWETH'
-    },
-    {
-      id: 'aave-amm-unirenweth',
-      symbol: 'aammunirenweth',
-      name: 'Aave AMM UniRENWETH'
-    },
-    {
-      id: 'aave-amm-unisnxweth',
-      symbol: 'aammunisnxweth',
-      name: 'Aave AMM UniSNXWETH'
-    },
-    {
-      id: 'aave-amm-uniuniweth',
-      symbol: 'aammuniuniweth',
-      name: 'Aave AMM UniUNIWETH'
-    },
-    {
-      id: 'aave-amm-uniusdcweth',
-      symbol: 'aammuniusdcweth',
-      name: 'Aave AMM UniUSDCWETH'
-    },
-    {
-      id: 'aave-amm-uniwbtcusdc',
-      symbol: 'aammuniwbtcusdc',
-      name: 'Aave AMM UniWBTCUSDC'
-    },
-    {
-      id: 'aave-amm-uniwbtcweth',
-      symbol: 'aammuniwbtcweth',
-      name: 'Aave AMM UniWBTCWETH'
-    },
-    {
-      id: 'aave-amm-uniyfiweth',
-      symbol: 'aammuniyfiweth',
-      name: 'Aave AMM UniYFIWETH'
-    },
-    {
-      id: 'aave-amm-usdc',
-      symbol: 'aammusdc',
-      name: 'Aave AMM USDC'
-    },
-    {
-      id: 'aave-amm-usdt',
-      symbol: 'aammusdt',
-      name: 'Aave AMM USDT'
-    },
-    {
-      id: 'aave-amm-wbtc',
-      symbol: 'aammwbtc',
-      name: 'Aave AMM WBTC'
-    },
-    {
-      id: 'aave-amm-weth',
-      symbol: 'aammweth',
-      name: 'Aave AMM WETH'
-    },
-    {
-      id: 'aave-bal',
-      symbol: 'abal',
-      name: 'Aave BAL'
-    },
-    {
-      id: 'aave-balancer-pool-token',
-      symbol: 'abpt',
-      name: 'Aave Balancer Pool Token'
-    },
-    {
-      id: 'aave-bat',
-      symbol: 'abat',
-      name: 'Aave BAT'
-    },
-    {
-      id: 'aave-bat-v1',
-      symbol: 'abat',
-      name: 'Aave BAT v1'
-    },
-    {
-      id: 'aave-busd',
-      symbol: 'abusd',
-      name: 'Aave BUSD'
-    },
-    {
-      id: 'aave-busd-v1',
-      symbol: 'abusd',
-      name: 'Aave BUSD v1'
-    },
-    {
-      id: 'aave-crv',
-      symbol: 'acrv',
-      name: 'Aave CRV'
-    },
-    {
-      id: 'aave-dai',
-      symbol: 'adai',
-      name: 'Aave DAI'
-    },
-    {
-      id: 'aave-dai-v1',
-      symbol: 'adai',
-      name: 'Aave DAI v1'
+export async function searchCoins({ keyword }: { keyword: string }) {
+  const { mastra } = await import('./framework')
+  console.log('searchCoins', keyword)
+
+  const lowercaseKeyword = keyword.toLowerCase()
+  let coins
+
+  // Try to find an exact match first.
+  coins = await mastra.dataLayer.db.record.findFirst({
+    where: {
+      entityType: 'coins',
+      data: {
+        path: ['lowerCaseName'],
+        equals: lowercaseKeyword
+      }
     }
-  ]
+  })
+
+  // Fallback to a partial contains match.
+  if (!coins) {
+    coins = await mastra.dataLayer.db.record.findFirst({
+      where: {
+        entityType: 'coins',
+        data: {
+          path: ['lowerCaseName'],
+          string_contains: lowercaseKeyword
+        }
+      }
+    })
+  }
+
+  return coins
 }
 
 export async function getCoinPrice({ id }: { id: string }) {
