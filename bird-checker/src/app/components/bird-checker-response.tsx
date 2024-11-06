@@ -2,28 +2,66 @@
 
 import { promptClaude } from "@/lib/mastra/actions";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Status } from "./bird-checker";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type Response = {
-  bird: "yes" | "no";
-  species: string;
-  location: string;
-};
-type IsFetching = "idle" | "loading" | "success" | "error";
-export const BirdCheckerResponse = ({ imageUrl }: { imageUrl: string }) => {
-  const [response, setResponse] = useState<Response | null>(null);
-  const [status, setStatus] = useState<IsFetching>("idle");
+function getObjectFromString(text: string) {
+  // First approach: using match()
+  const regex =
+    /(?<=bird: ).*?(?=,)|(?<=location: ).*?(?=,)|(?<=species: ).*(?=\n)/g;
+  const matches = text.match(regex);
+
+  if (!matches) {
+    return {
+      bird: "",
+      location: "",
+      species: "",
+    };
+  }
+
+  const [bird, location, species] = matches;
+  console.log("Bird:", bird);
+  console.log("Location:", location);
+  console.log("Species:", species);
+
+  return {
+    bird,
+    location,
+    species,
+  };
+}
+
+export const BirdCheckerResponse = ({
+  imageUrl,
+  status,
+}: {
+  imageUrl?: string;
+  status: Status;
+}) => {
+  const [metadata, setMedata] = useState<{
+    bird: string;
+    location: string;
+    species: string;
+  } | null>(null);
 
   useEffect(() => {
     const getRandomImage = async () => {
-      setStatus("loading");
+      if (!imageUrl) return;
 
-      console.log({ imageUrl });
+      const res = await promptClaude({ imageUrl });
 
-      await promptClaude({ imageUrl });
-      //handle the response and set to response to display
+      if (!res.ok) {
+        toast.error("Failed to fetch image metadata");
+        return;
+      }
+      console.log("res===", res.data);
+      const object = getObjectFromString(res.data.content[0].text);
 
-      setStatus("success");
+      setMedata(object);
+      toast.success("Image metadata fetched successfully");
     };
+
     getRandomImage();
   }, [imageUrl]);
 
@@ -31,21 +69,35 @@ export const BirdCheckerResponse = ({ imageUrl }: { imageUrl: string }) => {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col rounded border border-blue-100 p-3 gap-4">
         <span className="text-gray-600">Is it a bird?</span>
-        <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">Yes</span>
+        {status === "loading" ? (
+          <Skeleton className="h-4 w-[200px]" />
+        ) : (
+          <>
+            <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
+              {metadata ? (
+                metadata.bird
+              ) : (
+                <Skeleton className="h-4 w-[200px]" />
+              )}
+            </span>
+          </>
+        )}
       </div>
+
       <div className="flex flex-col p-3 rounded border border-blue-100 gap-4">
         <span className="text-gray-600">What species?</span>
         <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-          Wolf species
+          {metadata ? metadata.species : <Skeleton className="h-4 w-[200px]" />}
         </span>
       </div>
       <div className="flex flex-col p-3 rounded border border-blue-100 gap-4">
         <span className="text-gray-600">Where taken?</span>
         <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-          This flamingo photo appears to be taken in a coastal lagoon or salt marsh during
-          winter, given the brown dormant vegetation in the background. Given it&apos;s a
-          Greater Flamingo, this could be in the Mediterranean region, parts of Africa, or
-          South Asia where these birds are commonly found
+          {metadata ? (
+            metadata.location
+          ) : (
+            <Skeleton className="h-4 w-[200px]" />
+          )}
         </span>
       </div>
     </div>
