@@ -13,7 +13,7 @@ const tags = [
   { id: "wildlife", label: "Wildlife", icon: <Camera /> },
   { id: "feathers", label: "Feathers", icon: <Feather /> },
   { id: "flying", label: "Flying", icon: <Plane /> },
-  { id: "birds", label: "Birds", icon: <Bird /> }
+  { id: "birds", label: "Birds", icon: <Bird /> },
 ];
 
 type Image = {
@@ -29,12 +29,13 @@ type Image = {
     };
   };
 };
-type IsFetching = "idle" | "loading" | "success" | "error";
+export type Status = "idle" | "loading" | "success" | "error";
+
 export const BirdChecker = () => {
   const [image, setImage] = useState<Image | null>(null);
-  const [status, setStatus] = useState<IsFetching>("idle");
+  const [status, setStatus] = useState<Status>("idle");
   const [query, setQuery] = useQueryState("query", {
-    defaultValue: "wildlife"
+    defaultValue: "wildlife",
   });
 
   useEffect(() => {
@@ -63,7 +64,9 @@ export const BirdChecker = () => {
     <div>
       <Card className="w-full relative rounded-2xl mt-8 mx-auto max-w-4xl">
         <CardHeader>
-          <CardTitle className="text-2xl text-brown-600">Bird Checker</CardTitle>
+          <CardTitle className="text-2xl text-brown-600">
+            Bird Checker
+          </CardTitle>
         </CardHeader>
         <CardContent className=" grid grid-cols-2 gap-12 space-y-6">
           {/* Image placeholder */}
@@ -87,14 +90,19 @@ export const BirdChecker = () => {
             </div>
             <span className="text-xs">
               Credit:{" "}
-              <a href="unsplash.com" target="_blank" className="text-blue-600 underline">
+              <a
+                href="unsplash.com"
+                target="_blank"
+                className="text-blue-600 underline"
+              >
                 Unsplah
               </a>
               , Photographer{" "}
               <a
                 href={image?.user.links.html}
                 className="text-blue-600 underline font-medium"
-                target="_blank">
+                target="_blank"
+              >
                 {image?.user.first_name}
               </a>
             </span>
@@ -121,7 +129,8 @@ export const BirdChecker = () => {
                   disabled:opacity-50 disabled:cursor-not-allowed
                   group flex items-center justify-center gap-2
                   min-h-[34px]
-                `}>
+                `}
+                  >
                     <span>{tag.icon}</span>
                     <span>{tag.label}</span>
                     <RefreshCw
@@ -137,8 +146,7 @@ export const BirdChecker = () => {
             </div>
           </div>
 
-          {/* Question fields */}
-          {image ? <BirdCheckerResponse imageUrl={image.urls.regular} /> : null}
+          <BirdCheckerResponse status={status} imageUrl={image?.urls.regular} />
         </CardContent>
       </Card>
       <span className="fixed bottom-2 right-2 w-fit mx-auto py-1 bg-[#0057ff] duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
