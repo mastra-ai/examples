@@ -2,7 +2,12 @@
 
 import { config } from "@mastra/config";
 import { Mastra } from "@mastra/core";
-import { ImageResponse } from "./system-apis";
+import {
+  ErrorClaudeResponse,
+  ImageResponse,
+  SuccessClaudeResponse,
+  type Image,
+} from "./system-apis";
 
 const framework = Mastra.init(config);
 
@@ -12,35 +17,30 @@ export const getImage = async ({ query }: { query: string }) => {
     api: "get_random_image",
     payload: {
       data: {
-        query
+        query,
       },
       ctx: {
-        connectionId: "SYSTEM"
-      }
-    }
+        connectionId: "SYSTEM",
+      },
+    },
   });
 
-  return response as ImageResponse;
+  return response as ImageResponse<Image, string>;
 };
 
 export const promptClaude = async ({ imageUrl }: { imageUrl: string }) => {
   const response = await framework.callApi({
     integrationName: "bird-checker",
-    api: "message_agent",
+    api: "get_image_metadata_from_claude",
     payload: {
       data: {
-        agentId: "4e79a2bc-3bf1-45c0-ace7-4abcc540a851",
-        message: `${imageUrl}, view this url and structure your response like this, {bird: yes/no, location: the location of the image, species: the Scientific name of the bird without any explanation}, only give the location and species if it is a bird`
+        imageUrl,
       },
       ctx: {
-        connectionId: "SYSTEM"
-      }
-    }
+        connectionId: "SYSTEM",
+      },
+    },
   });
 
-  console.log("response===", JSON.stringify(response, null, 2));
-
-  const { data } = response || {};
-
-  return data as { message: string };
+  return response as ImageResponse<SuccessClaudeResponse, ErrorClaudeResponse>;
 };
