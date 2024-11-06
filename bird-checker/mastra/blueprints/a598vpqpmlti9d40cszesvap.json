@@ -1,0 +1,13 @@
+{
+  "title": "Is this a bird?",
+  "status": "UNPUBLISHED",
+  "createdAt": "2024-11-06T12:53:48.098Z",
+  "id": "a598vpqpmlti9d40cszesvap",
+  "updatedAt": "2024-11-06T12:55:06.407Z",
+  "description": "A workflow to check if an image is a bird or not.",
+  "trigger": {
+    "id": "",
+    "type": ""
+  },
+  "actions": []
+}

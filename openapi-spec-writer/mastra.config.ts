@@ -1,7 +1,8 @@
+import { SlackIntegration } from '@mastra/slack'
 import { FirecrawlIntegration } from '@mastra/firecrawl';
 import { Config } from '@mastra/core';
 import { z } from 'zod';
-import { mintlifySiteCrawler } from './mastra/tools';
+import { mintlifySiteCrawler, generateMergedSpec } from './mastra/tools';
 
 const globalFirecrawlIntegration = new FirecrawlIntegration({
   config: {
@@ -9,9 +10,23 @@ const globalFirecrawlIntegration = new FirecrawlIntegration({
   },
 });
 
+const SLACK_REDIRECT_URI = 'https://redirectmeto.com/http://localhost:3456/api/mastra/connect/callback';
+
 export const config: Config = {
   name: 'openapi-spec-writer',
   integrations: [
+    new SlackIntegration({
+    config: {
+      CLIENT_ID: process.env.SLACK_CLIENT_ID!,
+      CLIENT_SECRET: process.env.SLACK_CLIENT_SECRET!,
+      SCOPES: [
+  "chat:write",
+  "channels:read"
+      ],
+      REDIRECT_URI: SLACK_REDIRECT_URI,
+    },
+  }),
+
     globalFirecrawlIntegration
   ],
   db: {
@@ -35,6 +50,7 @@ export const config: Config = {
       }
     },
     systemApis: [
+      generateMergedSpec,
       mintlifySiteCrawler,
     ],
   },
