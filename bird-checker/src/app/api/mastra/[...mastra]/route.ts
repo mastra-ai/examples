@@ -1,6 +1,5 @@
-// @ts-ignore
-import { config } from '@mastra/config';
-import { Mastra } from '@mastra/core';
+import { config } from "@mastra/config";
+import { Mastra } from "@mastra/core";
 
 const mastra = Mastra.init(config);
 
