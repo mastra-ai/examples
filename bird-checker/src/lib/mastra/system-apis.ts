@@ -56,33 +56,43 @@ export const getRandomImage = async ({
 }: {
   query: string;
 }): Promise<ImageResponse<Image, string>> => {
-  const res = await fetch(
-    `https://api.unsplash.com/search/photos?query=${query}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`,
-        "Accept-Version": "v1",
+  try {
+    const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`,
+          "Accept-Version": "v1",
+        },
+        cache: "no-store",
       },
-      cache: "no-store",
-    },
-  );
-  if (!res.ok) {
+    );
+    
+    console.log("res in get_random_image api executor===", res);
+
+    if (!res.ok) {
+      return {
+        ok: false,
+        error: "Failed to fetch image",
+      };
+    }
+
+    const data = (await res.json()) as {
+      results: Array<Image>;
+    };
+    const randomNo = Math.floor(Math.random() * data.results.length);
+
+    return {
+      ok: true,
+      data: data.results[randomNo] as Image,
+    };
+  } catch (err) {
+    console.log("Error in get_random_image api executor===", err)
     return {
       ok: false,
-      error: "Failed to fetch image",
+      error: "Error fetching image",
     };
   }
-
-  const data = (await res.json()) as {
-    results: Array<Image>;
-  };
-  const randomNo = Math.floor(Math.random() * data.results.length);
-
-  return {
-    ok: true,
-    data: data.results[randomNo] as Image,
-  };
 };
 
 export const getImageMetadataFromClaude = async ({
@@ -105,6 +115,8 @@ export const getImageMetadataFromClaude = async ({
     };
   }
   const data = resBase64.data;
+
+  console.log("got base64image string")
 
   const message = {
     messages: [
@@ -130,6 +142,8 @@ export const getImageMetadataFromClaude = async ({
     max_tokens: 1024,
   };
 
+  console.log("message===", JSON.stringify(message, null, 2))
+
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -143,7 +157,7 @@ export const getImageMetadataFromClaude = async ({
       }),
     });
 
-    console.log("res===", JSON.stringify(res, null, 2));
+    console.log("res in get_image_metadata_from_claude api executor===", res);
 
     if (!res.ok) {
       return {
@@ -165,6 +179,7 @@ export const getImageMetadataFromClaude = async ({
       data: data as SuccessClaudeResponse,
     };
   } catch (err) {
+    console.log("Error in get_image_metadata_from_claude api executor===", err)
     return {
       ok: false,
       error: err as ErrorClaudeResponse,

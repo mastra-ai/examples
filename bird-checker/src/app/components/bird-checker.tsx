@@ -8,6 +8,7 @@ import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { BirdCheckerResponse } from "./bird-checker-response";
+import { cn } from "@/lib/utils";
 
 const tags = [
   { id: "wildlife", label: "Wildlife", icon: <Camera /> },
@@ -41,13 +42,15 @@ export const BirdChecker = () => {
   useEffect(() => {
     const getRandomImage = async () => {
       setStatus("loading");
-
+      console.log("got here");
       const res = await getImage({ query });
       if (!res.ok) {
         setStatus("error");
         toast.error("Failed to fetch image");
         return;
       }
+
+      console.log("after fetch=====", "got here");
 
       setImage(res.data);
 
@@ -71,13 +74,13 @@ export const BirdChecker = () => {
         <CardContent className=" grid grid-cols-2 gap-12 space-y-6">
           {/* Image placeholder */}
           <div className="">
-            <div className="relative grow-0 bg-gray-100 rounded-2xl  w-full aspect-square  flex items-center justify-center">
-              {status === "loading" ? <span>Fetching Image</span> : null}
-              {status === "loading" && (
-                <div className="absolute top-2 right-4 flex items-center justify-center">
-                  <div className="w-4 h-4 border-4 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
-                </div>
+            <div
+              className={cn(
+                "relative grow-0 bg-gray-100 rounded-2xl  w-full aspect-square  flex items-center justify-center",
+                status === "loading" ? "animate-pulse" : ""
               )}
+            >
+              {status === "loading" ? <span>Fetching Image</span> : null}
               {status === "idle" ? null : status === "success" && image ? (
                 <Image
                   src={`${image.urls.regular}`}
@@ -146,7 +149,11 @@ export const BirdChecker = () => {
             </div>
           </div>
 
-          <BirdCheckerResponse status={status} imageUrl={image?.urls.regular} />
+          <BirdCheckerResponse
+            query={query}
+            status={status}
+            imageUrl={image?.urls.regular}
+          />
         </CardContent>
       </Card>
       <span className="fixed bottom-2 right-2 w-fit mx-auto py-1 bg-[#0057ff] duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
