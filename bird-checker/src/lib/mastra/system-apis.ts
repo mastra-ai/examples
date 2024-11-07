@@ -106,6 +106,8 @@ export const getImageMetadataFromClaude = async ({
   }
   const data = resBase64.data;
 
+  console.log("got base64image string")
+
   const message = {
     messages: [
       {
@@ -130,6 +132,8 @@ export const getImageMetadataFromClaude = async ({
     max_tokens: 1024,
   };
 
+  console.log("message===", JSON.stringify(message, null, 2))
+
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -143,7 +147,7 @@ export const getImageMetadataFromClaude = async ({
       }),
     });
 
-    console.log("res===", JSON.stringify(res, null, 2));
+    console.log("res in api executor===", JSON.stringify(res, null, 2));
 
     if (!res.ok) {
       return {
