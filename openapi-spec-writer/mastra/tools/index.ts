@@ -230,7 +230,7 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
 
       console.log('Main SHA', mainSha);
 
-      const branchName = `open-api-spec-${randomUUID()}`;
+      const branchName = `open-api-spec-writer/${data.integration_name}-${randomUUID()}`;
 
       console.log('Branch name', branchName);
 
