@@ -1,13 +1,13 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getImage } from "@/lib/mastra/actions";
 import { Bird, Camera, Feather, Plane, RefreshCw } from "lucide-react";
 import Image from "next/image";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-const apiKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
+import { BirdCheckerResponse } from "./bird-checker-response";
 
 const tags = [
   { id: "wildlife", label: "Wildlife", icon: <Camera /> },
@@ -29,10 +29,11 @@ type Image = {
     };
   };
 };
-type IsFetching = "idle" | "loading" | "success" | "error";
+export type Status = "idle" | "loading" | "success" | "error";
+
 export const BirdChecker = () => {
   const [image, setImage] = useState<Image | null>(null);
-  const [status, setStatus] = useState<IsFetching>("idle");
+  const [status, setStatus] = useState<Status>("idle");
   const [query, setQuery] = useQueryState("query", {
     defaultValue: "wildlife",
   });
@@ -40,28 +41,15 @@ export const BirdChecker = () => {
   useEffect(() => {
     const getRandomImage = async () => {
       setStatus("loading");
-      const res = await fetch(
-        `https://api.unsplash.com/search/photos?query=${query}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Client-ID ${apiKey}`,
-            "Accept-Version": "v1",
-          },
-          cache: "no-store",
-        }
-      );
+
+      const res = await getImage({ query });
       if (!res.ok) {
         setStatus("error");
         toast.error("Failed to fetch image");
         return;
       }
 
-      const data = (await res.json()) as {
-        results: Array<Image>;
-      };
-      const randomNo = Math.floor(Math.random() * data.results.length);
-      setImage(data.results[randomNo]);
+      setImage(res.data);
 
       setStatus("success");
     };
@@ -158,31 +146,7 @@ export const BirdChecker = () => {
             </div>
           </div>
 
-          {/* Question fields */}
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col rounded border border-blue-100 p-3 gap-4">
-              <span className="text-gray-600">Is it a bird?</span>
-              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-                Yes
-              </span>
-            </div>
-            <div className="flex flex-col p-3 rounded border border-blue-100 gap-4">
-              <span className="text-gray-600">What species?</span>
-              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-                Wolf species
-              </span>
-            </div>
-            <div className="flex flex-col p-3 rounded border border-blue-100 gap-4">
-              <span className="text-gray-600">Where taken?</span>
-              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-                This flamingo photo appears to be taken in a coastal lagoon or
-                salt marsh during winter, given the brown dormant vegetation in
-                the background. Given it&apos;s a Greater Flamingo, this could
-                be in the Mediterranean region, parts of Africa, or South Asia
-                where these birds are commonly found
-              </span>
-            </div>
-          </div>
+          <BirdCheckerResponse status={status} imageUrl={image?.urls.regular} />
         </CardContent>
       </Card>
       <span className="fixed bottom-2 right-2 w-fit mx-auto py-1 bg-[#0057ff] duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
