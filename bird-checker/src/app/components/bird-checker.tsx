@@ -41,13 +41,15 @@ export const BirdChecker = () => {
   useEffect(() => {
     const getRandomImage = async () => {
       setStatus("loading");
-
+      console.log("got here");
       const res = await getImage({ query });
       if (!res.ok) {
         setStatus("error");
         toast.error("Failed to fetch image");
         return;
       }
+
+      console.log("after fetch=====", "got here");
 
       setImage(res.data);
 

@@ -12,6 +12,7 @@ import {
 const framework = Mastra.init(config);
 
 export const getImage = async ({ query }: { query: string }) => {
+  console.log("get image ============", "got here");
   const response = await framework.callApi({
     integrationName: "bird-checker",
     api: "get_random_image",
@@ -21,7 +22,7 @@ export const getImage = async ({ query }: { query: string }) => {
       },
       ctx: {
         connectionId: "SYSTEM",
-      },
+      }, //in prod, how does this work?
     },
   });
 
