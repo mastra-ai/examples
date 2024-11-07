@@ -2,13 +2,12 @@ import {
   getImageMetadataFromClaude,
   getRandomImage,
 } from "@/lib/mastra/system-apis";
-import { ClaudeIntegration } from "@mastra/claude";
 import { Config, LogLevel } from "@mastra/core";
 import { z } from "zod";
 
 export const config: Config = {
   name: "bird-checker",
-  integrations: [new ClaudeIntegration()],
+  integrations: [],
   db: {
     provider: "postgres",
     uri: process.env.DB_URL!,
