@@ -169,6 +169,7 @@ export const getImageMetadataFromClaude = async ({
       data: data as SuccessClaudeResponse,
     };
   } catch (err) {
+    console.log("Error in api executor===", err)
     return {
       ok: false,
       error: err as ErrorClaudeResponse,
