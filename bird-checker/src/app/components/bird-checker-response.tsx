@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Status } from "./bird-checker";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Bird, Check, MapPin } from "lucide-react";
 
 function getObjectFromString(text: string) {
   // First approach: using match()
@@ -70,66 +71,103 @@ export const BirdCheckerResponse = ({
       const object = getObjectFromString(res.data.content[0].text);
 
       setMedata(object);
-      toast.success("Image metadata fetched successfully");
     };
 
     getRandomImage();
   }, [imageUrl]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col rounded border border-blue-100 p-3 gap-4">
-        <span className="text-gray-600">Is it a bird?</span>
-        {status === "loading" ? (
-          <Skeleton className="h-4 w-[200px]" />
-        ) : (
-          <>
-            {metadataStatus === "loading" ? (
-              <Skeleton className="h-4 w-[200px]" />
-            ) : null}
-            {metadata?.bird ? (
-              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-                {metadata.bird}
-              </span>
-            ) : null}
-          </>
-        )}
-      </div>
+    <div className="flex !mt-0 flex-col gap-4">
+      {status === "loading" || metadataStatus === "loading" ? (
+        <p className=" animate-pu">
+          Mastra.ai is thinking{" "}
+          <span className="animate-ellipsis">
+            <span className="inline-block animate-bounce [animation-delay:-0.3s]">
+              .
+            </span>
+            <span className="inline-block animate-bounce [animation-delay:-0.2s]">
+              .
+            </span>
+            <span className="inline-block animate-bounce [animation-delay:-0.1s]">
+              .
+            </span>
+          </span>
+        </p>
+      ) : (
+        ""
+      )}
 
-      <div className="flex flex-col rounded border border-blue-100 p-3 gap-4">
-        <span className="text-gray-600">What species</span>
-        {status === "loading" ? (
-          <Skeleton className="h-4 w-[200px]" />
-        ) : (
-          <>
-            {metadataStatus === "loading" ? (
-              <Skeleton className="h-4 w-[200px]" />
-            ) : null}
-            {metadata?.species ? (
-              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-                {metadata.species}
-              </span>
-            ) : null}
-          </>
-        )}
-      </div>
+      <div className="flex flex-col border">
+        <div className="flex border-b flex-col p-2 gap-4">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Check className="h-4 w-4" />
+            <span className="font-serif text-sm">
+              Identification{" "}
+              <span className="text-gray-600">(Is it a bird?)</span>
+            </span>
+          </div>
 
-      <div className="flex flex-col rounded border border-blue-100 p-3 gap-4">
-        <span className="text-gray-600">Where taken?</span>
-        {status === "loading" ? (
-          <Skeleton className="h-4 w-[200px]" />
-        ) : (
-          <>
-            {metadataStatus === "loading" ? (
-              <Skeleton className="h-4 w-[200px]" />
-            ) : null}
-            {metadata?.location ? (
-              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-                {metadata.location}
-              </span>
-            ) : null}
-          </>
-        )}
+          {status === "loading" ? (
+            <Skeleton className="h-4 w-[200px]" />
+          ) : (
+            <>
+              {metadataStatus === "loading" ? (
+                <Skeleton className="h-4 w-[200px]" />
+              ) : null}
+              {metadata?.bird ? (
+                <span className="py-1 px-5 font-serif font-medium bg-blue-100 w-fit  rounded">
+                  {metadata.bird}
+                </span>
+              ) : null}
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-col  border-b p-3 gap-4">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Bird className="h-4 w-4" />
+            <span className="font-serif text-sm">Species</span>
+          </div>
+
+          {status === "loading" ? (
+            <Skeleton className="h-4 w-[200px]" />
+          ) : (
+            <>
+              {metadataStatus === "loading" ? (
+                <Skeleton className="h-4 w-[200px]" />
+              ) : null}
+              {metadata?.species ? (
+                <span className="p-3 font-serif font-medium bg-blue-100 w-fit  rounded">
+                  {metadata.species}
+                </span>
+              ) : null}
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-col  p-3 gap-4">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <MapPin className="h-4 w-4" />
+            <span className="font-serif text-sm">
+              Location <span className="text-gray-600 ">(Where taken?)</span>
+            </span>
+          </div>
+
+          {status === "loading" ? (
+            <Skeleton className="h-4 w-[200px]" />
+          ) : (
+            <>
+              {metadataStatus === "loading" ? (
+                <Skeleton className="h-4 w-[200px]" />
+              ) : null}
+              {metadata?.location ? (
+                <span className="p-3 font-serif font-medium bg-blue-100 w-fit rounded">
+                  {metadata.location}
+                </span>
+              ) : null}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -2,19 +2,19 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getImage } from "@/lib/mastra/actions";
-import { Bird, Camera, Feather, Plane, RefreshCw } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Bird, Camera, Feather, Plane } from "lucide-react";
 import Image from "next/image";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { BirdCheckerResponse } from "./bird-checker-response";
-import { cn } from "@/lib/utils";
 
 const tags = [
-  { id: "wildlife", label: "Wildlife", icon: <Camera /> },
-  { id: "feathers", label: "Feathers", icon: <Feather /> },
-  { id: "flying", label: "Flying", icon: <Plane /> },
-  { id: "birds", label: "Birds", icon: <Bird /> },
+  { id: "wildlife", label: "Wildlife", icon: <Camera className="w-4 h-4" /> },
+  { id: "feathers", label: "Feathers", icon: <Feather className="w-4 h-4" /> },
+  { id: "flying", label: "Flying", icon: <Plane className="w-4 h-4" /> },
+  { id: "birds", label: "Birds", icon: <Bird className="w-4 h-4" /> },
 ];
 
 type Image = {
@@ -65,68 +65,76 @@ export const BirdChecker = () => {
 
   return (
     <div>
-      <Card className="w-full relative rounded-2xl mt-8 mx-auto max-w-4xl">
+      <Card className="w-full relative border shadow-xl rounded pt-8 md:mt-4  mx-auto max-w-4xl">
         <CardHeader>
-          <CardTitle className="text-2xl text-brown-600">
-            Bird Checker
+          <CardTitle>
+            <h1 className="font-medium mx-auto text-center font-serif text-5xl">
+              Bird Checker
+            </h1>
+            <p className="text-center font-normal text-base font-serif italic text-gray-600">
+              for bird enthusiasts
+            </p>
           </CardTitle>
         </CardHeader>
-        <CardContent className=" grid grid-cols-2 gap-12 space-y-6">
-          {/* Image placeholder */}
-          <div className="">
-            <div
-              className={cn(
-                "relative grow-0 bg-gray-100 rounded-2xl  w-full aspect-square  flex items-center justify-center",
-                status === "loading" ? "animate-pulse" : ""
-              )}
-            >
-              {status === "loading" ? <span>Fetching Image</span> : null}
-              {status === "idle" ? null : status === "success" && image ? (
-                <Image
-                  src={`${image.urls.regular}`}
-                  alt={image.alt_description}
-                  width={600}
-                  height={300}
-                  className="w-full h-full rounded-2xl transition-opacity duration-200"
-                />
-              ) : null}
+        <CardContent className="flex flex-col gap-8 md:grid grid-cols-2 md:gap-12 space-y-6">
+          <div className="flex md:flex-col flex-col-reverse gap-4">
+            <div>
+              <div
+                className={cn(
+                  "relative grow-0 bg-gray-100/50 rounded p-2 border  w-full aspect-square  flex items-center justify-center",
+                  status === "loading" ? "animate-pulse" : ""
+                )}
+              >
+                {status === "loading" ? (
+                  <span>I am trying to get an image...</span>
+                ) : null}
+                {status === "idle" ? null : status === "success" && image ? (
+                  <Image
+                    src={`${image.urls.regular}`}
+                    alt={image.alt_description}
+                    width={600}
+                    height={300}
+                    className="w-full h-full rounded transition-opacity duration-200"
+                  />
+                ) : null}
+              </div>
+              <span className="text-xs font-serif italic">
+                Credit:{" "}
+                <a
+                  href="unsplash.com"
+                  target="_blank"
+                  className="text-blue-600 underline"
+                >
+                  Unsplah
+                </a>
+                , Photographer{" "}
+                <a
+                  href={image?.user.links.html}
+                  className="text-blue-600 underline font-medium"
+                  target="_blank"
+                >
+                  {image?.user.first_name}
+                </a>
+              </span>
             </div>
-            <span className="text-xs">
-              Credit:{" "}
-              <a
-                href="unsplash.com"
-                target="_blank"
-                className="text-blue-600 underline"
-              >
-                Unsplah
-              </a>
-              , Photographer{" "}
-              <a
-                href={image?.user.links.html}
-                className="text-blue-600 underline font-medium"
-                target="_blank"
-              >
-                {image?.user.first_name}
-              </a>
-            </span>
 
-            <div className="mt-4">
-              <p className="text-gray-600">
-                Click a category below to generate a new image:
+            <div className="rounded">
+              <p className="text-gray-600 hidden md:block text-xs md:text-base">
+                Click to regenerate:
               </p>
-              <div className="grid mt-2 grid-cols-2 gap-4">
+              <div className=" mt-2 flex gap-2">
                 {tags.map((tag) => (
                   <button
                     key={tag.id}
                     onClick={() => handleTagClick(tag.id)}
                     disabled={status === "loading"}
                     className={`
-                  relative p-4 rounded-lg font-medium
+                  relative p-2 text-xs md:text-base md:rounded-lg font-medium
                   transition-all duration-200
                   ${
                     query === tag.id
-                      ? "bg-blue-500 text-white shadow-lg scale-95"
-                      : "bg-white scale-95 hover:bg-gray-50 text-gray-700 hover:shadow-md hover:scale-100"
+                      ? "bg-[#0057ff] text-white md:shadow-lg scale-95"
+                      : "bg-white scale-95 hover:bg-gray-50 text-gray-700  md:hover:shadow-md hover:scale-100"
                   }
                   border-2 border-gray-200
                   disabled:opacity-50 disabled:cursor-not-allowed
@@ -136,13 +144,6 @@ export const BirdChecker = () => {
                   >
                     <span>{tag.icon}</span>
                     <span>{tag.label}</span>
-                    <RefreshCw
-                      className={`
-                  w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity
-                  absolute top-2 right-2
-                  ${query === tag.id ? "text-white" : "text-gray-400"}
-                `}
-                    />
                   </button>
                 ))}
               </div>
@@ -154,9 +155,19 @@ export const BirdChecker = () => {
             status={status}
             imageUrl={image?.urls.regular}
           />
+          <span className="sm:hidden bottom-2 right-2 w-fit mx-auto py-1 bg-[#0057ff] duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
+            <div className="animate-mask flex gap-2">
+              <span className="uppercase inline-flex items-center h-4 rounded-full text-white px-1.5 leading-tight tracking-widest text-[9px] bg-[hsla(256,2%,99%,.15)] font-semibold">
+                Source
+              </span>
+              <span className="text-xs text-white font-semibold">
+                Developed with Mastra.ai
+              </span>
+            </div>
+          </span>
         </CardContent>
       </Card>
-      <span className="fixed bottom-2 right-2 w-fit mx-auto py-1 bg-[#0057ff] duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
+      <span className="hidden md:block md:fixed bottom-2 right-2 w-fit mx-auto py-1 bg-[#0057ff] duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
         <div className="animate-mask flex gap-2">
           <span className="uppercase inline-flex items-center h-4 rounded-full text-white px-1.5 leading-tight tracking-widest text-[9px] bg-[hsla(256,2%,99%,.15)] font-semibold">
             Source

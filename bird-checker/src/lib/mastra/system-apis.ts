@@ -56,8 +56,11 @@ export const getRandomImage = async ({
 }: {
   query: string;
 }): Promise<ImageResponse<Image, string>> => {
+  const page = Math.floor(Math.random() * 20);
+  const order_by = Math.random() < 0.5 ? "relevant" : "latest";
   try {
-    const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}`,
+    const res = await fetch(
+      `https://api.unsplash.com/search/photos?query=${query}&page=${page}&order_by=${order_by}`,
       {
         method: "GET",
         headers: {
@@ -65,9 +68,9 @@ export const getRandomImage = async ({
           "Accept-Version": "v1",
         },
         cache: "no-store",
-      },
+      }
     );
-    
+
     console.log("res in get_random_image api executor===", res);
 
     if (!res.ok) {
@@ -87,7 +90,7 @@ export const getRandomImage = async ({
       data: data.results[randomNo] as Image,
     };
   } catch (err) {
-    console.log("Error in get_random_image api executor===", err)
+    console.log("Error in get_random_image api executor===", err);
     return {
       ok: false,
       error: "Error fetching image",
@@ -116,7 +119,7 @@ export const getImageMetadataFromClaude = async ({
   }
   const data = resBase64.data;
 
-  console.log("got base64image string")
+  console.log("got base64image string");
 
   const message = {
     messages: [
@@ -142,7 +145,7 @@ export const getImageMetadataFromClaude = async ({
     max_tokens: 1024,
   };
 
-  console.log("message===", JSON.stringify(message, null, 2))
+  console.log("message===", JSON.stringify(message, null, 2));
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -179,7 +182,7 @@ export const getImageMetadataFromClaude = async ({
       data: data as SuccessClaudeResponse,
     };
   } catch (err) {
-    console.log("Error in get_image_metadata_from_claude api executor===", err)
+    console.log("Error in get_image_metadata_from_claude api executor===", err);
     return {
       ok: false,
       error: err as ErrorClaudeResponse,
@@ -188,7 +191,7 @@ export const getImageMetadataFromClaude = async ({
 };
 
 async function getImageAsBase64String(
-  imageUrl: string,
+  imageUrl: string
 ): Promise<ImageResponse<string, string>> {
   try {
     const response = await fetch(imageUrl);
