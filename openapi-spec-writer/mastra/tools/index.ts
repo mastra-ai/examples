@@ -1,4 +1,6 @@
 import { delay, IntegrationApiExcutorParams, PropertyType, splitMarkdownIntoChunks } from '@mastra/core';
+import { GithubIntegration } from '@mastra/github';
+import { randomUUID } from 'crypto';
 import { z } from 'zod';
 
 async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
@@ -62,7 +64,7 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
     return chunks.map((c, i) => {
       return {
         externalId: `${metadata?.sourceURL}_chunk_${i}`,
-        data: { markdown: c},
+        data: { markdown: c },
         entityType: "CRAWL"
       }
     })
@@ -91,7 +93,7 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
 async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
   const { mastra } = await import('../');
   let agent;
-  const integration = await mastra.dataLayer.getConnection({name: "FIRECRAWL", connectionId: ctx.connectionId})
+  const integration = await mastra.dataLayer.getConnection({ name: "FIRECRAWL", connectionId: ctx.connectionId })
 
   if (!integration) {
     throw new Error('Integration not found');
@@ -154,6 +156,86 @@ async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
 
   return { success: true, mergedSpec: mergedSpecAnswer };
 }
+
+async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
+
+  const { mastra } = await import('../');
+
+  const githubIntegration = mastra.getIntegration('GITHUB') as GithubIntegration;
+
+  const apiClient = await githubIntegration.getApiClient({ connectionId: ctx.connectionId });
+
+  const content = data.yaml;
+
+  const base64Content = Buffer.from(content).toString('base64');
+
+
+  const mainRef = await apiClient.gitGetRef({
+    path: {
+      ref: 'heads/main',
+      owner: data.owner,
+      repo: data.repo,
+    }
+  })
+
+  const mainSha = mainRef.data?.object?.sha
+
+  const branchName = `open-api-spec-${randomUUID()}`;
+
+  if (mainSha) {
+    await apiClient.gitCreateRef({
+      body: {
+        ref: `refs/heads/${branchName}`,
+        sha: mainSha
+      },
+      path: {
+        owner: data.owner,
+        repo: data.repo,
+      }
+    })
+
+    await apiClient.reposCreateOrUpdateFileContents({
+      body: {
+        message: `Add open api spec from ${data.site_url}`,
+        content: base64Content,
+        branch: branchName,
+      },
+      path: {
+        owner: data.owner,
+        repo: data.repo,
+        path: `/packages/${data.integration_name}/openapi.yaml`,
+      }
+    });
+
+    await apiClient.pullsCreate({
+      body: {
+        title: `Add open api spec from ${data.site_url} for ${data.integration_name}`,
+        head: branchName,
+        base: 'main',
+      },
+      path: {
+        owner: data.owner,
+        repo: data.repo,
+      }
+    })
+  }
+
+  return { success: true };
+}
+
+export const addToGit = {
+  label: 'Add to Git',
+  description: 'Commit the spec to GitHub',
+  type: 'ADD_TO_GIT',
+  executor: addToGitHub,
+  schema: z.object({
+    yaml: z.string().describe('The Open API spec in YAML format'),
+    integration_name: z.string().describe('The name of the integration to use'),
+    site_url: z.string().describe('The URL of the website to crawl'),
+    owner: z.string().describe('Owner of the repo'),
+    repo: z.string().describe('Name of the repo'),
+  }),
+};
 
 export const generateMergedSpec = {
   label: 'Generate Merged Spec',
