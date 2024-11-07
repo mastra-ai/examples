@@ -1,3 +1,4 @@
+import yaml from 'js-yaml'
 import { delay, IntegrationApiExcutorParams, PropertyType, splitMarkdownIntoChunks } from '@mastra/core';
 import { GithubIntegration } from '@mastra/github';
 import { randomUUID } from 'crypto';
@@ -157,6 +158,7 @@ async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
   return { success: true, mergedSpec: mergedSpecAnswer };
 }
 
+
 async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
 
   const { mastra } = await import('../');
@@ -167,60 +169,89 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
 
   const content = data.yaml;
 
-  const base64Content = Buffer.from(content).toString('base64');
+  console.log('Writing to Github for', data.integration_name)
+  let agent;
 
-
-  const mainRef = await apiClient.gitGetRef({
-    path: {
-      ref: 'heads/main',
-      owner: data.owner,
-      repo: data.repo,
-    }
-  })
-
-  const mainSha = mainRef.data?.object?.sha
-
-  const branchName = `open-api-spec-${randomUUID()}`;
-
-  if (mainSha) {
-    await apiClient.gitCreateRef({
-      body: {
-        ref: `refs/heads/${branchName}`,
-        sha: mainSha
-      },
-      path: {
-        owner: data.owner,
-        repo: data.repo,
-      }
-    })
-
-    await apiClient.reposCreateOrUpdateFileContents({
-      body: {
-        message: `Add open api spec from ${data.site_url}`,
-        content: base64Content,
-        branch: branchName,
-      },
-      path: {
-        owner: data.owner,
-        repo: data.repo,
-        path: `/packages/${data.integration_name}/openapi.yaml`,
-      }
+  try {
+    agent = await mastra.getAgent({
+      connectionId: 'SYSTEM',
+      agentId: '073a0c0d-e924-42ca-a437-78d350876e08',
     });
-
-    await apiClient.pullsCreate({
-      body: {
-        title: `Add open api spec from ${data.site_url} for ${data.integration_name}`,
-        head: branchName,
-        base: 'main',
-      },
-      path: {
-        owner: data.owner,
-        repo: data.repo,
-      }
-    })
+  } catch (e) {
+    console.error(e);
+    return { success: false };
   }
 
-  return { success: true };
+  if (typeof agent === 'function') {
+    const d = await agent({ prompt: `Can you take this text blob and format it into proper YAML? ${content}` });
+
+    if (Array.isArray(d.toolCalls)) {
+      const answer = d.toolCalls?.find(
+        ({ toolName }) => toolName === 'answer'
+      );
+
+      const base64Content = Buffer.from(answer?.args?.yaml).toString('base64');
+
+      const mainRef = await apiClient.gitGetRef({
+        path: {
+          ref: 'heads/main',
+          owner: data.owner,
+          repo: data.repo,
+        }
+      })
+
+      const mainSha = mainRef.data?.object?.sha
+
+
+      console.log('Main SHA', mainSha);
+
+      const branchName = `open-api-spec-${randomUUID()}`;
+
+      if (mainSha) {
+        await apiClient.gitCreateRef({
+          body: {
+            ref: `refs/heads/${branchName}`,
+            sha: mainSha
+          },
+          path: {
+            owner: data.owner,
+            repo: data.repo,
+          }
+        })
+
+        const d = await apiClient.reposCreateOrUpdateFileContents({
+          body: {
+            message: `Add open api spec from ${data.site_url}`,
+            content: base64Content,
+            branch: branchName,
+          },
+          path: {
+            owner: data.owner,
+            repo: data.repo,
+            path: `packages/${data.integration_name}/openapi.yaml`,
+          }
+        });
+
+        console.log({ d })
+
+        await apiClient.pullsCreate({
+          body: {
+            title: `Add open api spec from ${data.site_url} for ${data.integration_name}`,
+            head: branchName,
+            base: 'main',
+          },
+          path: {
+            owner: data.owner,
+            repo: data.repo,
+          }
+        })
+      }
+    }
+
+    return { success: true };
+  }
+
+  return { success: false };
 }
 
 export const addToGit = {

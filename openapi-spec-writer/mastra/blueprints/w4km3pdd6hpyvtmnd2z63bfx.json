@@ -1,9 +1,9 @@
 {
   "title": "New workflow",
-  "status": "PUBLISHED",
+  "status": "UNPUBLISHED",
   "createdAt": "2024-11-05T23:24:07.787Z",
   "id": "w4km3pdd6hpyvtmnd2z63bfx",
-  "updatedAt": "2024-11-06T14:47:49.129Z",
+  "updatedAt": "2024-11-07T02:06:45.739Z",
   "trigger": {
     "id": "obbpq1y85urbhhhj7xdrx2c2",
     "type": "WRITE_SPEC",
@@ -32,25 +32,60 @@
           "parentActionId": "rzfazww0iy7jt1u1tfo8v1e6",
           "subActions": [
             {
-              "id": "zzdi3hezpzfwe9zveqea76ho",
-              "type": "chatPostMessage",
+              "id": "mcn9d04vzf70i1zxwfork8fi",
+              "type": "ADD_TO_GIT",
               "parentActionId": "yuyo3xep2ay5pj3gtqmqrect",
-              "subActions": [],
-              "payload": {
-                "body": {
-                  "as_user": "kepler",
-                  "channel": "z-random",
-                  "text": "merged spec: {{spec}}"
-                },
-                "headers": {
-                  "token": "1"
+              "subActions": [
+                {
+                  "id": "zzdi3hezpzfwe9zveqea76ho",
+                  "type": "chatPostMessage",
+                  "parentActionId": "mcn9d04vzf70i1zxwfork8fi",
+                  "subActions": [],
+                  "payload": {
+                    "body": {
+                      "as_user": "kepler",
+                      "channel": "z-random",
+                      "text": "merged spec: {{spec}}"
+                    },
+                    "headers": {
+                      "token": "1"
+                    }
+                  },
+                  "variables": {
+                    "body.text": {
+                      "spec": {
+                        "refBlockId": "yuyo3xep2ay5pj3gtqmqrect",
+                        "path": "mergedSpec"
+                      }
+                    }
+                  }
                 }
+              ],
+              "payload": {
+                "mastraConnectionId": "SYSTEM",
+                "yaml": "{{yaml_1730945084328}}",
+                "integration_name": "{{integration_name_1730945139086}}",
+                "site_url": "{{site_url_1730945190700}}",
+                "owner": "mastra-ai",
+                "repo": "mastra"
               },
               "variables": {
-                "body.text": {
-                  "spec": {
+                "yaml": {
+                  "yaml_1730945084328": {
                     "refBlockId": "yuyo3xep2ay5pj3gtqmqrect",
                     "path": "mergedSpec"
+                  }
+                },
+                "integration_name": {
+                  "integration_name_1730945139086": {
+                    "refBlockId": "obbpq1y85urbhhhj7xdrx2c2",
+                    "path": "integration_name"
+                  }
+                },
+                "site_url": {
+                  "site_url_1730945190700": {
+                    "refBlockId": "obbpq1y85urbhhhj7xdrx2c2",
+                    "path": "url"
                   }
                 }
               }
