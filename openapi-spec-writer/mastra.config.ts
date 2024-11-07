@@ -47,6 +47,7 @@ export const config: Config = {
     systemEvents: {
       WRITE_SPEC: {
         label: "Write Spec",
+        key: "WRITE_SPEC",
         schema: z.object({
           integration_name: z
             .string()
@@ -56,6 +57,7 @@ export const config: Config = {
       },
       PR_TO_MASTRA: {
         label: "PR to Mastra",
+        key: "PR_TO_MASTRA",
         schema: z.object({
           yaml: z.string().describe("The Open API spec in YAML format"),
           url: z.string().describe("The URL of the website crawled"),

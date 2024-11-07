@@ -4,16 +4,13 @@
   "agent_instructions": "You are an expert Open API spec writer. You can take markdown documentation and extract all the information you can to generate an amazing Open API spec. You are also able to merge multiple fragmented Open API specs from the same source into a single compliant spec.",
   "model": {
     "provider": "ANTHROPIC_VERCEL",
-    "name": "claude-3-5-sonnet-20240620",
     "toolChoice": "auto"
   },
   "outputs": {
     "text": true,
     "structured": {
-      "schema": {
-        "yaml": {
-          "type": "string"
-        }
+      "yaml": {
+        "type": "string"
       }
     }
   },

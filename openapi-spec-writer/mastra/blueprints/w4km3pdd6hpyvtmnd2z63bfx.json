@@ -3,7 +3,7 @@
   "status": "PUBLISHED",
   "createdAt": "2024-11-05T23:24:07.787Z",
   "id": "w4km3pdd6hpyvtmnd2z63bfx",
-  "updatedAt": "2024-11-07T17:11:28.492Z",
+  "updatedAt": "2024-11-07T21:15:53.747Z",
   "trigger": {
     "id": "obbpq1y85urbhhhj7xdrx2c2",
     "type": "WRITE_SPEC",
@@ -11,15 +11,15 @@
   },
   "actions": [
     {
-      "id": "rzfazww0iy7jt1u1tfo8v1e6",
+      "id": "ah6n1mlana6r9j2bni6wjq2f",
       "type": "MINTLIFY_SITE_CRAWL",
       "payload": {
-        "url": "{{url_1730900388463}}",
+        "url": "{{url_1731014133434}}",
         "mastraConnectionId": "SYSTEM"
       },
       "variables": {
         "url": {
-          "url_1730900388463": {
+          "url_1731014133434": {
             "refBlockId": "obbpq1y85urbhhhj7xdrx2c2",
             "path": "url"
           }
@@ -27,12 +27,11 @@
       },
       "subActions": [
         {
-          "id": "yuyo3xep2ay5pj3gtqmqrect",
+          "id": "kgwyeluf5zbocv3gkcb1u34c",
           "type": "GENERATE_MERGED_SPEC",
-          "parentActionId": "rzfazww0iy7jt1u1tfo8v1e6",
+          "parentActionId": "ah6n1mlana6r9j2bni6wjq2f",
           "subActions": [],
           "payload": {
-            "mastraConnectionId": "SYSTEM",
             "entityType": "CRAWL"
           },
           "variables": {}
