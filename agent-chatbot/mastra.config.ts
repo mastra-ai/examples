@@ -7,12 +7,42 @@ import { Config } from '@mastra/core'
 import {
   callAgent,
   getAthletesForTeam,
+  getCoinHistoricalPrices,
+  getCoinList,
+  getCoinPrice,
   getScores,
   getSportsNews,
+  getStockPrice,
   reportAnswers,
+  searchCoins,
+  searchStocks,
   sendSlackMessage,
+  syncCoins,
+  syncStocks,
   syncTeams
 } from './lib/mastra/system-apis'
+
+const TimeSeriesDataPoint = z.object({
+  '1. open': z.string(),
+  '2. high': z.string(),
+  '3. low': z.string(),
+  '4. close': z.string(),
+  '5. volume': z.string()
+})
+
+const AlphaVantageMetaData = z.object({
+  '1. Information': z.string(),
+  '2. Symbol': z.string(),
+  '3. Last Refreshed': z.string(),
+  '4. Interval': z.string(),
+  '5. Output Size': z.string(),
+  '6. Time Zone': z.string()
+})
+
+const AlphaVantageIntradaySchema = z.object({
+  'Meta Data': AlphaVantageMetaData,
+  'Time Series (5min)': z.record(TimeSeriesDataPoint)
+})
 
 export const config: Config = {
   name: 'agent-chatbot',
@@ -121,6 +151,90 @@ export const config: Config = {
           week: z.string(),
           day: z.enum(['monday', 'thursday', 'sunday'])
         })
+      },
+      SYNC_CRYPTO_COINS: {
+        label: 'Sync Crypto Coins',
+        description: 'Sync all available Cryptocurrencies to the database',
+        schema: z.object({}),
+        handler: syncCoins,
+        entityType: 'coins',
+        fields: [
+          {
+            name: 'id',
+            displayName: 'Coin ID',
+            type: 'SINGLE_LINE_TEXT',
+            order: 0
+          },
+          {
+            name: 'symbol',
+            displayName: 'Symbol',
+            type: 'SINGLE_LINE_TEXT',
+            order: 1
+          },
+          {
+            name: 'name',
+            displayName: 'Name',
+            type: 'SINGLE_LINE_TEXT',
+            order: 2
+          },
+          {
+            name: 'lowerCaseName',
+            displayName: 'Lowercase Name',
+            type: 'SINGLE_LINE_TEXT',
+            order: 3
+          }
+        ]
+      },
+      SYNC_STOCK_LIST: {
+        label: 'Sync stock list',
+        description: 'Sync all available stocks to the database',
+        schema: z.object({}),
+        handler: syncStocks,
+        entityType: 'stocks',
+        fields: [
+          {
+            name: 'id',
+            displayName: 'Stock ID',
+            type: 'SINGLE_LINE_TEXT',
+            order: 0
+          },
+          {
+            name: 'symbol',
+            displayName: 'Symbol',
+            type: 'SINGLE_LINE_TEXT',
+            order: 1
+          },
+          {
+            name: 'name',
+            displayName: 'Name',
+            type: 'SINGLE_LINE_TEXT',
+            order: 2
+          },
+          {
+            name: 'assetType',
+            displayName: 'Asset Type',
+            type: 'SINGLE_LINE_TEXT',
+            order: 3
+          },
+          {
+            name: 'exchange',
+            displayName: 'Exchange',
+            type: 'SINGLE_LINE_TEXT',
+            order: 4
+          },
+          {
+            name: 'ipoDate',
+            displayName: 'Ipo Date',
+            type: 'SINGLE_LINE_TEXT',
+            order: 5
+          },
+          {
+            name: 'status',
+            displayName: 'Status',
+            type: 'SINGLE_LINE_TEXT',
+            order: 6
+          }
+        ]
       }
     },
     systemApis: [
@@ -189,6 +303,128 @@ export const config: Config = {
           message: z.string()
         }),
         executor: callAgent
+      },
+      {
+        type: 'get_crypto_coins',
+        label: 'Get crypto coins',
+        description: 'Get all available crypto coin ids',
+        schema: z.object({}),
+        outputSchema: z.object({
+          id: z.string(),
+          symbol: z.string(),
+          name: z.string()
+        }),
+        executor: getCoinList
+      },
+      {
+        type: 'search_crypto_coins',
+        label: 'Search crypto coins',
+        description: 'Search all available crypto coin by a keyword',
+        schema: z.object({
+          keyword: z.string()
+        }),
+        outputSchema: z.object({
+          id: z.string(),
+          symbol: z.string(),
+          name: z.string()
+        }),
+        executor: async ({ data }: { data: any }) => {
+          return (await searchCoins(data)) as any
+        }
+      },
+      {
+        type: 'get_crypto_price',
+        label: 'Get crypto price',
+        description: 'Get crypto price by id',
+        schema: z.object({
+          id: z.string()
+        }),
+        outputSchema: z.object({
+          id: z.string(),
+          symbol: z.string(),
+          name: z.string(),
+          image: z.string(),
+          current_price: z.number(),
+          market_cap: z.number(),
+          market_cap_rank: z.number(),
+          fully_diluted_valuation: z.number(),
+          total_volume: z.number(),
+          high_24h: z.number(),
+          low_24h: z.number(),
+          price_change_24h: z.number(),
+          price_change_percentage_24h: z.number(),
+          market_cap_change_24h: z.number(),
+          market_cap_change_percentage_24h: z.number(),
+          circulating_supply: z.number(),
+          total_supply: z.number(),
+          max_supply: z.number(),
+          ath: z.number(),
+          ath_change_percentage: z.number(),
+          ath_date: z.string(),
+          atl: z.number(),
+          atl_change_percentage: z.number(),
+          atl_date: z.string(),
+          roi: z.any(),
+          last_updated: z.string()
+        }),
+        executor: async ({ data }: { data: any }) => {
+          return await getCoinPrice(data)
+        }
+      },
+      {
+        type: 'get_crypto_historical_prices',
+        label: 'Get historical crypto prices',
+        description:
+          'Get historical crypto prices for use in a chart. Returns an array of price objects with a timestamp and price.',
+        schema: z.object({
+          id: z.string(),
+          days: z.number()
+        }),
+        outputSchema: z.object({
+          prices: z.array(
+            z.object({
+              timestamp: z.number(),
+              price: z.number()
+            })
+          )
+        }),
+        executor: async ({ data }: { data: any }) => {
+          return await getCoinHistoricalPrices(data)
+        }
+      },
+      {
+        type: 'search_stock',
+        label: 'Search stock',
+        description: 'Search all available stock by a keyword',
+        schema: z.object({
+          keyword: z.string()
+        }),
+        outputSchema: z.object({
+          id: z.string(),
+          symbol: z.string(),
+          name: z.string()
+        }),
+        executor: async ({ data }: { data: any }) => {
+          return (await searchStocks(data)) as any
+        }
+      },
+      {
+        type: 'get_stock_price',
+        label: 'Get stock price',
+        description:
+          'Get stock price. Returns open, high, low, close, and volume.',
+        schema: z.object({
+          symbol: z.string()
+        }),
+        outputSchema: z.array(
+          z.object({
+            timestamp: z.string(),
+            price: z.string()
+          })
+        ),
+        executor: async ({ data }: { data: any }) => {
+          return await getStockPrice(data)
+        }
       }
     ]
   },

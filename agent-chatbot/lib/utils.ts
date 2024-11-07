@@ -132,3 +132,30 @@ export function subMonths(date: Date, amount: number) {
   newDate.setMonth(newDate.getMonth() - amount)
   return newDate
 }
+
+export function parseCryptoStructuredOutput({ message }: { message: string }) {
+  let display = ''
+  let data: Array<number[]> = []
+
+  try {
+    const response = JSON.parse(message)
+
+    if (typeof response === 'string') {
+      display = response
+    } else {
+      if (response) {
+        display = response.message
+        data = response.prices
+      }
+    }
+  } catch (error) {
+    display = message
+  }
+
+  const transformedData = data.map(price => ({
+    timestamp: price[0],
+    price: price[1]
+  }))
+
+  return { transformedData, display }
+}
