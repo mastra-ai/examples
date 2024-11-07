@@ -67,6 +67,7 @@ export const getRandomImage = async ({
         cache: "no-store",
       },
     );
+    console.log("res in get_random_image api executor===", JSON.stringify(res, null, 2));
     if (!res.ok) {
       return {
         ok: false,
@@ -154,7 +155,7 @@ export const getImageMetadataFromClaude = async ({
       }),
     });
 
-    console.log("res in api executor===", JSON.stringify(res, null, 2));
+    console.log("res in get_image_metadata_from_claude api executor===", JSON.stringify(res, null, 2));
 
     if (!res.ok) {
       return {
