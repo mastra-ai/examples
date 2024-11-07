@@ -65,15 +65,12 @@ export const BirdChecker = () => {
 
   return (
     <div>
-      <Card className="w-full relative border shadow-xl rounded pt-8 md:mt-4  mx-auto max-w-4xl">
+      <Card className="w-full relative border shadow rounded pt-8 md:mt-4  mx-auto max-w-4xl">
         <CardHeader>
           <CardTitle>
             <h1 className="font-medium mx-auto text-center font-serif text-5xl">
               Bird Checker
             </h1>
-            <p className="text-center font-normal text-base font-serif italic text-gray-600">
-              for bird enthusiasts
-            </p>
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-8 md:grid grid-cols-2 md:gap-12 space-y-6">
@@ -85,9 +82,7 @@ export const BirdChecker = () => {
                   status === "loading" ? "animate-pulse" : ""
                 )}
               >
-                {status === "loading" ? (
-                  <span>I am trying to get an image...</span>
-                ) : null}
+                {status === "loading" ? <span>Fetching image...</span> : null}
                 {status === "idle" ? null : status === "success" && image ? (
                   <Image
                     src={`${image.urls.regular}`}
@@ -122,18 +117,18 @@ export const BirdChecker = () => {
               <p className="text-gray-600 hidden md:block text-xs md:text-base">
                 Click to regenerate:
               </p>
-              <div className=" mt-2 flex gap-2">
+              <div className=" mt-2 flex md:grid md:grid-cols-2 md:gap-4 gap-2">
                 {tags.map((tag) => (
                   <button
                     key={tag.id}
                     onClick={() => handleTagClick(tag.id)}
                     disabled={status === "loading"}
                     className={`
-                  relative p-2 text-xs md:text-base md:rounded-lg font-medium
+                  relative md:p-4 p-2 text-xs md:text-base md:rounded-lg font-medium
                   transition-all duration-200
                   ${
                     query === tag.id
-                      ? "bg-[#0057ff] text-white md:shadow-lg scale-95"
+                      ? "bg-[#0057ff]  text-white md:shadow-lg scale-95"
                       : "bg-white scale-95 hover:bg-gray-50 text-gray-700  md:hover:shadow-md hover:scale-100"
                   }
                   border-2 border-gray-200
@@ -165,15 +160,32 @@ export const BirdChecker = () => {
               </span>
             </div>
           </span>
+          <p className="absolute right-2 bottom-2 italic font-serif">
+            Inspired by{" "}
+            <a
+              href="https://xkcd.com/1425/"
+              target="_blank"
+              className="text-[#0057ff] font-medium"
+            >
+              Randall Munroe
+            </a>
+          </p>
         </CardContent>
       </Card>
-      <span className="hidden md:block md:fixed bottom-2 right-2 w-fit mx-auto py-1 bg-[#0057ff] duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
-        <div className="animate-mask flex gap-2">
-          <span className="uppercase inline-flex items-center h-4 rounded-full text-white px-1.5 leading-tight tracking-widest text-[9px] bg-[hsla(256,2%,99%,.15)] font-semibold">
-            Source
-          </span>
-          <span className="text-xs text-white font-semibold">
-            Developed with Mastra.ai
+      <span className="hidden md:block md:fixed bottom-2 right-2 w-fit mx-auto py-1 bg-gray-100 duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
+        <div className="flex gap-2">
+          <a
+            href="https://github.com/mastra-ai/examples/tree/main/bird-checker"
+            target="_blank"
+            className="uppercase inline-flex items-center h-4 rounded-full text-black px-1.5 leading-tight tracking-widest text-[9px] bg-gray-50 font-semibold"
+          >
+            see the code
+          </a>
+          <span className="text-xs text-black font-semibold">
+            Built with{" "}
+            <a href="https://mastra.ai/" className="underline" target="_blank">
+              Mastra.ai
+            </a>
           </span>
         </div>
       </span>

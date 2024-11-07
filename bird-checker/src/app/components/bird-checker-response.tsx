@@ -80,7 +80,7 @@ export const BirdCheckerResponse = ({
     <div className="flex !mt-0 flex-col gap-4">
       {status === "loading" || metadataStatus === "loading" ? (
         <p className=" animate-pu">
-          Mastra.ai is thinking{" "}
+          thinking{" "}
           <span className="animate-ellipsis">
             <span className="inline-block animate-bounce [animation-delay:-0.3s]">
               .
@@ -101,10 +101,7 @@ export const BirdCheckerResponse = ({
         <div className="flex border-b flex-col p-2 gap-4">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Check className="h-4 w-4" />
-            <span className="font-serif text-sm">
-              Identification{" "}
-              <span className="text-gray-600">(Is it a bird?)</span>
-            </span>
+            <span className="font-serif text-sm">Is it a bird?</span>
           </div>
 
           {status === "loading" ? (
@@ -148,9 +145,7 @@ export const BirdCheckerResponse = ({
         <div className="flex flex-col  p-3 gap-4">
           <div className="flex items-center gap-2 text-muted-foreground">
             <MapPin className="h-4 w-4" />
-            <span className="font-serif text-sm">
-              Location <span className="text-gray-600 ">(Where taken?)</span>
-            </span>
+            <span className="font-serif text-sm">Location</span>
           </div>
 
           {status === "loading" ? (
