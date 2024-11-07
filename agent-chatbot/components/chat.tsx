@@ -150,7 +150,12 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         </div>
         <br />
         {messages.length ? (
-          <ChatList messages={messages} isShared={false} session={session} />
+          <ChatList
+            assistantName={assistantName}
+            messages={messages}
+            isShared={false}
+            session={session}
+          />
         ) : (
           <EmptyScreen activeAssistant={assistantName} />
         )}

@@ -4,18 +4,25 @@ import { Session } from '@/lib/types'
 import Link from 'next/link'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import Chart from './chart'
+import { parseCryptoStructuredOutput } from '@/lib/utils'
 
 export interface ChatList {
+  assistantName: string
   messages: UIState
   session?: Session
   isShared: boolean
 }
 
-export function ChatList({ messages, session, isShared }: ChatList) {
+export function ChatList({
+  assistantName,
+  messages,
+  session,
+  isShared
+}: ChatList) {
   if (!messages.length) {
     return null
   }
-
+  const isStockAssistant = assistantName === 'Stock/Crypto Analyst'
   return (
     <div className="relative mx-auto max-w-2xl px-4">
       {!isShared && !session ? (
@@ -42,12 +49,28 @@ export function ChatList({ messages, session, isShared }: ChatList) {
         </>
       ) : null}
 
-      {messages.map((message, index) => (
-        <div key={message.id}>
-          {message.display}
-          {index < messages.length - 1 && <Separator className="my-4" />}
-        </div>
-      ))}
+      {messages.map((message, index) => {
+        let display = message.display as string
+        let data: { timestamp: number; price: number }[] = []
+
+        if (isStockAssistant) {
+          const { display: displayMessage, transformedData } =
+            parseCryptoStructuredOutput({
+              message: message.display as string
+            })
+
+          display = displayMessage
+          data = transformedData
+        }
+
+        return (
+          <div key={message.id}>
+            {display}
+            {data.length > 0 && <Chart data={data} />}
+            {index < messages.length - 1 && <Separator className="my-4" />}
+          </div>
+        )
+      })}
     </div>
   )
 }
