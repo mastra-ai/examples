@@ -1,14 +1,19 @@
-import { GithubIntegration } from '@mastra/github'
-import { SlackIntegration } from '@mastra/slack'
-import { FirecrawlIntegration } from '@mastra/firecrawl';
-import { Config } from '@mastra/core';
-import { z } from 'zod';
-import { mintlifySiteCrawler, generateMergedSpec, addToGit } from './mastra/tools';
+import { GithubIntegration } from "@mastra/github"
+import { SlackIntegration } from "@mastra/slack"
+import { FirecrawlIntegration } from "@mastra/firecrawl"
+import { Config } from "@mastra/core"
+import { z } from "zod"
+import {
+  mintlifySiteCrawler,
+  generateMergedSpec,
+  addToGit,
+} from "./mastra/tools"
 
-const SLACK_REDIRECT_URI = 'https://redirectmeto.com/http://localhost:3456/api/mastra/connect/callback';
+const SLACK_REDIRECT_URI =
+  "https://redirectmeto.com/http://localhost:3456/api/mastra/connect/callback"
 
 export const config: Config = {
-  name: 'openapi-spec-writer',
+  name: "openapi-spec-writer",
   integrations: [
     new GithubIntegration(),
 
@@ -16,10 +21,7 @@ export const config: Config = {
       config: {
         CLIENT_ID: process.env.SLACK_CLIENT_ID!,
         CLIENT_SECRET: process.env.SLACK_CLIENT_SECRET!,
-        SCOPES: [
-          "chat:write",
-          "channels:read"
-        ],
+        SCOPES: ["chat:write", "channels:read"],
         REDIRECT_URI: SLACK_REDIRECT_URI,
       },
     }),
@@ -28,39 +30,45 @@ export const config: Config = {
       config: {
         API_KEY: process.env.FIRECRAWL_API_KEY!,
       },
-    })
+    }),
   ],
   db: {
-    provider: 'postgres',
+    provider: "postgres",
     uri: process.env.DB_URL!,
   },
   runner: {
-    provider: 'inngest',
+    provider: "inngest",
     uri: process.env.INNGEST_URL!,
     // signingKey: process.env.INNGEST_SIGNING_KEY!,
     // eventKey: process.env.INNGEST_EVENT_KEY!,
   },
   workflows: {
-    blueprintDirPath: '/mastra/blueprints',
+    blueprintDirPath: "/mastra/blueprints",
     systemEvents: {
-      'WRITE_SPEC': {
-        label: 'Write Spec',
+      WRITE_SPEC: {
+        label: "Write Spec",
         schema: z.object({
-          integration_name: z.string().describe('The name of the integration to use'),
-          url: z.string().describe('The URL of the website to crawl'),
-        })
-      }
+          integration_name: z
+            .string()
+            .describe("The name of the integration to use"),
+          url: z.string().describe("The URL of the website to crawl"),
+        }),
+      },
+      PR_TO_MASTRA: {
+        label: "PR to Mastra",
+        schema: z.object({
+          yaml: z.string().describe("The Open API spec in YAML format"),
+          url: z.string().describe("The URL of the website crawled"),
+          integrationName: z.string().describe("The name of the integration"),
+        }),
+      },
     },
-    systemApis: [
-      addToGit,
-      generateMergedSpec,
-      mintlifySiteCrawler,
-    ],
+    systemApis: [addToGit, generateMergedSpec, mintlifySiteCrawler],
   },
   agents: {
-    agentDirPath: '/mastra/agents',
+    agentDirPath: "/mastra/agents",
     vectorProvider: [],
   },
   systemHostURL: process.env.APP_URL!,
-  routeRegistrationPath: '/api/mastra',
-};
+  routeRegistrationPath: "/api/mastra",
+}

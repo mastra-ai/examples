@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@mastra/core':
         specifier: ^0.1.20
-        version: 0.1.20(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.22.5)
+        version: 0.1.20(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       '@prisma/client':
         specifier: 5.22.0
         version: 5.22.0(prisma@5.22.0)
@@ -47,7 +47,13 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.14)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
+      '@prisma/nextjs-monorepo-workaround-plugin':
+        specifier: ^5.22.0
+        version: 5.22.0
       '@types/node':
         specifier: ^20
         version: 20.17.6
@@ -522,6 +528,9 @@ packages:
 
   '@prisma/get-platform@5.22.0':
     resolution: {integrity: sha512-pHhpQdr1UPFpt+zFfnPazhulaZYCUqeIcPpJViYoq9R+D/yw4fjE+CtnsnKzPYm0ddUbeXUzjGVGIRVgPDCk4Q==}
+
+  '@prisma/nextjs-monorepo-workaround-plugin@5.22.0':
+    resolution: {integrity: sha512-wuKp7FqhETHP2MJJu5y//ac83/EpDpoupcjlmp/Ijv3fnG576EIxY4SU4j24xXPIBOTuApkCk4RkgonkeAOXuQ==}
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -2312,37 +2321,40 @@ packages:
   zod@3.22.5:
     resolution: {integrity: sha512-HqnGsCdVZ2xc0qWPLdO25WnseXThh0kEYKIdV5F/hTHO75hNZFp8thxSeHhiPrHZKrFTo1SOgkAj9po5bexZlw==}
 
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+
 snapshots:
 
-  '@ai-sdk/anthropic@0.0.51(zod@3.22.5)':
+  '@ai-sdk/anthropic@0.0.51(zod@3.23.8)':
     dependencies:
       '@ai-sdk/provider': 0.0.24
-      '@ai-sdk/provider-utils': 1.0.20(zod@3.22.5)
-      zod: 3.22.5
+      '@ai-sdk/provider-utils': 1.0.20(zod@3.23.8)
+      zod: 3.23.8
 
-  '@ai-sdk/openai@0.0.66(zod@3.22.5)':
+  '@ai-sdk/openai@0.0.66(zod@3.23.8)':
     dependencies:
       '@ai-sdk/provider': 0.0.24
-      '@ai-sdk/provider-utils': 1.0.20(zod@3.22.5)
-      zod: 3.22.5
+      '@ai-sdk/provider-utils': 1.0.20(zod@3.23.8)
+      zod: 3.23.8
 
-  '@ai-sdk/provider-utils@1.0.20(zod@3.22.5)':
+  '@ai-sdk/provider-utils@1.0.20(zod@3.23.8)':
     dependencies:
       '@ai-sdk/provider': 0.0.24
       eventsource-parser: 1.1.2
       nanoid: 3.3.6
       secure-json-parse: 2.7.0
     optionalDependencies:
-      zod: 3.22.5
+      zod: 3.23.8
 
-  '@ai-sdk/provider-utils@1.0.22(zod@3.22.5)':
+  '@ai-sdk/provider-utils@1.0.22(zod@3.23.8)':
     dependencies:
       '@ai-sdk/provider': 0.0.26
       eventsource-parser: 1.1.2
       nanoid: 3.3.7
       secure-json-parse: 2.7.0
     optionalDependencies:
-      zod: 3.22.5
+      zod: 3.23.8
 
   '@ai-sdk/provider@0.0.24':
     dependencies:
@@ -2352,47 +2364,47 @@ snapshots:
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@0.0.70(react@19.0.0-rc-02c0e824-20241028)(zod@3.22.5)':
+  '@ai-sdk/react@0.0.70(react@19.0.0-rc-02c0e824-20241028)(zod@3.23.8)':
     dependencies:
-      '@ai-sdk/provider-utils': 1.0.22(zod@3.22.5)
-      '@ai-sdk/ui-utils': 0.0.50(zod@3.22.5)
+      '@ai-sdk/provider-utils': 1.0.22(zod@3.23.8)
+      '@ai-sdk/ui-utils': 0.0.50(zod@3.23.8)
       swr: 2.2.5(react@19.0.0-rc-02c0e824-20241028)
       throttleit: 2.1.0
     optionalDependencies:
       react: 19.0.0-rc-02c0e824-20241028
-      zod: 3.22.5
+      zod: 3.23.8
 
-  '@ai-sdk/solid@0.0.54(zod@3.22.5)':
+  '@ai-sdk/solid@0.0.54(zod@3.23.8)':
     dependencies:
-      '@ai-sdk/provider-utils': 1.0.22(zod@3.22.5)
-      '@ai-sdk/ui-utils': 0.0.50(zod@3.22.5)
+      '@ai-sdk/provider-utils': 1.0.22(zod@3.23.8)
+      '@ai-sdk/ui-utils': 0.0.50(zod@3.23.8)
     transitivePeerDependencies:
       - zod
 
-  '@ai-sdk/svelte@0.0.57(svelte@5.1.10)(zod@3.22.5)':
+  '@ai-sdk/svelte@0.0.57(svelte@5.1.10)(zod@3.23.8)':
     dependencies:
-      '@ai-sdk/provider-utils': 1.0.22(zod@3.22.5)
-      '@ai-sdk/ui-utils': 0.0.50(zod@3.22.5)
+      '@ai-sdk/provider-utils': 1.0.22(zod@3.23.8)
+      '@ai-sdk/ui-utils': 0.0.50(zod@3.23.8)
       sswr: 2.1.0(svelte@5.1.10)
     optionalDependencies:
       svelte: 5.1.10
     transitivePeerDependencies:
       - zod
 
-  '@ai-sdk/ui-utils@0.0.50(zod@3.22.5)':
+  '@ai-sdk/ui-utils@0.0.50(zod@3.23.8)':
     dependencies:
       '@ai-sdk/provider': 0.0.26
-      '@ai-sdk/provider-utils': 1.0.22(zod@3.22.5)
+      '@ai-sdk/provider-utils': 1.0.22(zod@3.23.8)
       json-schema: 0.4.0
       secure-json-parse: 2.7.0
-      zod-to-json-schema: 3.23.5(zod@3.22.5)
+      zod-to-json-schema: 3.23.5(zod@3.23.8)
     optionalDependencies:
-      zod: 3.22.5
+      zod: 3.23.8
 
-  '@ai-sdk/vue@0.0.59(vue@3.5.12(typescript@5.6.3))(zod@3.22.5)':
+  '@ai-sdk/vue@0.0.59(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)':
     dependencies:
-      '@ai-sdk/provider-utils': 1.0.22(zod@3.22.5)
-      '@ai-sdk/ui-utils': 0.0.50(zod@3.22.5)
+      '@ai-sdk/provider-utils': 1.0.22(zod@3.23.8)
+      '@ai-sdk/ui-utils': 0.0.50(zod@3.23.8)
       swrv: 1.0.4(vue@3.5.12(typescript@5.6.3))
     optionalDependencies:
       vue: 3.5.12(typescript@5.6.3)
@@ -2564,24 +2576,24 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@mastra/core@0.1.20(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.22.5)':
+  '@mastra/core@0.1.20(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)':
     dependencies:
-      '@ai-sdk/anthropic': 0.0.51(zod@3.22.5)
-      '@ai-sdk/openai': 0.0.66(zod@3.22.5)
+      '@ai-sdk/anthropic': 0.0.51(zod@3.23.8)
+      '@ai-sdk/openai': 0.0.66(zod@3.23.8)
       '@badgateway/oauth2-client': 2.4.2
       '@date-fns/utc': 1.2.0
       '@pinecone-database/pinecone': 3.0.3
       '@prisma/client': 5.22.0(prisma@5.22.0)
       '@upstash/redis': 1.34.3
-      ai: 3.4.33(openai@4.71.0(encoding@0.1.13)(zod@3.22.5))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(vue@3.5.12(typescript@5.6.3))(zod@3.22.5)
+      ai: 3.4.33(openai@4.71.0(encoding@0.1.13)(zod@3.23.8))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       date-fns: 3.6.0
       inngest: 3.22.3(encoding@0.1.13)(next@14.2.17(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(typescript@5.6.3)
       lodash: 4.17.21
       next: 14.2.17(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)
-      openai: 4.71.0(encoding@0.1.13)(zod@3.22.5)
+      openai: 4.71.0(encoding@0.1.13)(zod@3.23.8)
       prisma: 5.22.0
       qs: 6.13.0
-      zod: 3.22.5
+      zod: 3.23.8
     transitivePeerDependencies:
       - '@babel/core'
       - '@opentelemetry/api'
@@ -2712,6 +2724,8 @@ snapshots:
   '@prisma/get-platform@5.22.0':
     dependencies:
       '@prisma/debug': 5.22.0
+
+  '@prisma/nextjs-monorepo-workaround-plugin@5.22.0': {}
 
   '@rtsao/scc@1.1.0': {}
 
@@ -2923,27 +2937,27 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@3.4.33(openai@4.71.0(encoding@0.1.13)(zod@3.22.5))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(vue@3.5.12(typescript@5.6.3))(zod@3.22.5):
+  ai@3.4.33(openai@4.71.0(encoding@0.1.13)(zod@3.23.8))(react@19.0.0-rc-02c0e824-20241028)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8):
     dependencies:
       '@ai-sdk/provider': 0.0.26
-      '@ai-sdk/provider-utils': 1.0.22(zod@3.22.5)
-      '@ai-sdk/react': 0.0.70(react@19.0.0-rc-02c0e824-20241028)(zod@3.22.5)
-      '@ai-sdk/solid': 0.0.54(zod@3.22.5)
-      '@ai-sdk/svelte': 0.0.57(svelte@5.1.10)(zod@3.22.5)
-      '@ai-sdk/ui-utils': 0.0.50(zod@3.22.5)
-      '@ai-sdk/vue': 0.0.59(vue@3.5.12(typescript@5.6.3))(zod@3.22.5)
+      '@ai-sdk/provider-utils': 1.0.22(zod@3.23.8)
+      '@ai-sdk/react': 0.0.70(react@19.0.0-rc-02c0e824-20241028)(zod@3.23.8)
+      '@ai-sdk/solid': 0.0.54(zod@3.23.8)
+      '@ai-sdk/svelte': 0.0.57(svelte@5.1.10)(zod@3.23.8)
+      '@ai-sdk/ui-utils': 0.0.50(zod@3.23.8)
+      '@ai-sdk/vue': 0.0.59(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       '@opentelemetry/api': 1.9.0
       eventsource-parser: 1.1.2
       json-schema: 0.4.0
       jsondiffpatch: 0.6.0
       secure-json-parse: 2.7.0
-      zod-to-json-schema: 3.23.5(zod@3.22.5)
+      zod-to-json-schema: 3.23.5(zod@3.23.8)
     optionalDependencies:
-      openai: 4.71.0(encoding@0.1.13)(zod@3.22.5)
+      openai: 4.71.0(encoding@0.1.13)(zod@3.23.8)
       react: 19.0.0-rc-02c0e824-20241028
       sswr: 2.1.0(svelte@5.1.10)
       svelte: 5.1.10
-      zod: 3.22.5
+      zod: 3.23.8
     transitivePeerDependencies:
       - solid-js
       - vue
@@ -4144,7 +4158,7 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openai@4.71.0(encoding@0.1.13)(zod@3.22.5):
+  openai@4.71.0(encoding@0.1.13)(zod@3.23.8):
     dependencies:
       '@types/node': 18.19.64
       '@types/node-fetch': 2.6.11
@@ -4154,7 +4168,7 @@ snapshots:
       formdata-node: 4.4.1
       node-fetch: 2.7.0(encoding@0.1.13)
     optionalDependencies:
-      zod: 3.22.5
+      zod: 3.23.8
     transitivePeerDependencies:
       - encoding
 
@@ -4770,8 +4784,10 @@ snapshots:
 
   zimmerframe@1.1.2: {}
 
-  zod-to-json-schema@3.23.5(zod@3.22.5):
+  zod-to-json-schema@3.23.5(zod@3.23.8):
     dependencies:
-      zod: 3.22.5
+      zod: 3.23.8
 
   zod@3.22.5: {}
+
+  zod@3.23.8: {}
