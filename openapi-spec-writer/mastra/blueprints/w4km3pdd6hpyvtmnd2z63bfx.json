@@ -1,9 +1,9 @@
 {
-  "title": "New workflow",
+  "title": "Open API Spec Gen",
   "status": "PUBLISHED",
   "createdAt": "2024-11-05T23:24:07.787Z",
   "id": "w4km3pdd6hpyvtmnd2z63bfx",
-  "updatedAt": "2024-11-07T12:50:31.813Z",
+  "updatedAt": "2024-11-07T17:11:28.492Z",
   "trigger": {
     "id": "obbpq1y85urbhhhj7xdrx2c2",
     "type": "WRITE_SPEC",
@@ -30,61 +30,7 @@
           "id": "yuyo3xep2ay5pj3gtqmqrect",
           "type": "GENERATE_MERGED_SPEC",
           "parentActionId": "rzfazww0iy7jt1u1tfo8v1e6",
-          "subActions": [
-            {
-              "id": "zzdi3hezpzfwe9zveqea76ho",
-              "type": "chatPostMessage",
-              "parentActionId": "yuyo3xep2ay5pj3gtqmqrect",
-              "subActions": [
-                {
-                  "id": "en2ran1vz3oayfxhui0tgiq6",
-                  "type": "ADD_TO_GIT",
-                  "parentActionId": "zzdi3hezpzfwe9zveqea76ho",
-                  "subActions": [],
-                  "payload": {
-                    "yaml": "{{yaml_1730983492388}}",
-                    "integration_name": "day0-spec-test",
-                    "site_url": "{{site_url_1730983654578}}",
-                    "owner": "TheIsrael1",
-                    "repo": "https://github.com/mastra-ai/mastra",
-                    "mastraConnectionId": "SYSTEM"
-                  },
-                  "variables": {
-                    "yaml": {
-                      "yaml_1730983492388": {
-                        "refBlockId": "yuyo3xep2ay5pj3gtqmqrect",
-                        "path": "mergedSpec"
-                      }
-                    },
-                    "site_url": {
-                      "site_url_1730983654578": {
-                        "refBlockId": "obbpq1y85urbhhhj7xdrx2c2",
-                        "path": "url"
-                      }
-                    }
-                  }
-                }
-              ],
-              "payload": {
-                "body": {
-                  "as_user": "kepler",
-                  "channel": "z-random",
-                  "text": "merged spec: {{spec}}"
-                },
-                "headers": {
-                  "token": "1"
-                }
-              },
-              "variables": {
-                "body.text": {
-                  "spec": {
-                    "refBlockId": "yuyo3xep2ay5pj3gtqmqrect",
-                    "path": "mergedSpec"
-                  }
-                }
-              }
-            }
-          ],
+          "subActions": [],
           "payload": {
             "mastraConnectionId": "SYSTEM",
             "entityType": "CRAWL"
