@@ -1,5 +1,11 @@
-import yaml from 'js-yaml'
-import { delay, IntegrationApiExcutorParams, PropertyType, splitMarkdownIntoChunks } from '@mastra/core';
+// import yaml from 'js-yaml';
+// import { fs, vol } from 'memfs';
+import {
+  delay,
+  IntegrationApiExcutorParams,
+  PropertyType,
+  splitMarkdownIntoChunks,
+} from '@mastra/core';
 import { GithubIntegration } from '@mastra/github';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
@@ -60,16 +66,18 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
     console.log(crawl.data?.status);
   }
 
-  const recordsToPersist = crawl?.data?.data?.flatMap(({ markdown, metadata }) => {
-    const chunks = splitMarkdownIntoChunks(markdown!)
-    return chunks.map((c, i) => {
-      return {
-        externalId: `${metadata?.sourceURL}_chunk_${i}`,
-        data: { markdown: c },
-        entityType: "CRAWL"
-      }
-    })
-  })
+  const recordsToPersist = crawl?.data?.data?.flatMap(
+    ({ markdown, metadata }) => {
+      const chunks = splitMarkdownIntoChunks(markdown!);
+      return chunks.map((c, i) => {
+        return {
+          externalId: `${metadata?.sourceURL}_chunk_${i}`,
+          data: { markdown: c },
+          entityType: 'CRAWL',
+        };
+      });
+    }
+  );
 
   await mastra.dataLayer?.syncData({
     name: 'FIRECRAWL',
@@ -82,19 +90,22 @@ async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
         type: PropertyType.LONG_TEXT,
         visible: true,
         order: 1,
-        modifiable: true
-      }
+        modifiable: true,
+      },
     ],
-    type: "CRAWL"
-  })
+    type: 'CRAWL',
+  });
 
-  return { success: true, crawlData: crawl.data?.data, entityType: "CRAWL" };
+  return { success: true, crawlData: crawl.data?.data, entityType: 'CRAWL' };
 }
 
 async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
   const { mastra } = await import('../');
   let agent;
-  const integration = await mastra.dataLayer.getConnection({ name: "FIRECRAWL", connectionId: ctx.connectionId })
+  const integration = await mastra.dataLayer.getConnection({
+    name: 'FIRECRAWL',
+    connectionId: ctx.connectionId,
+  });
 
   if (!integration) {
     throw new Error('Integration not found');
@@ -102,10 +113,14 @@ async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
 
   const crawledData = await mastra.dataLayer.getRecords({
     entityType: data.entityType,
-    k_id: integration?.id
+    k_id: integration?.id,
   });
 
-  console.log({ crawledData, entityType: data.entityType, integrationId: integration?.id });
+  console.log({
+    crawledData,
+    entityType: data.entityType,
+    integrationId: integration?.id,
+  });
 
   try {
     agent = await mastra.getAgent({
@@ -118,7 +133,7 @@ async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
   }
 
   const openapiResponses = [];
-  let mergedSpecAnswer = "";
+  let mergedSpecAnswer = '';
 
   for (const d of crawledData) {
     if (typeof agent === 'function') {
@@ -158,18 +173,20 @@ async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
   return { success: true, mergedSpec: mergedSpecAnswer };
 }
 
-
 async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
-
   const { mastra } = await import('../');
 
-  const githubIntegration = mastra.getIntegration('GITHUB') as GithubIntegration;
+  const githubIntegration = mastra.getIntegration(
+    'GITHUB'
+  ) as GithubIntegration;
 
-  const apiClient = await githubIntegration.getApiClient({ connectionId: ctx.connectionId });
+  const apiClient = await githubIntegration.getApiClient({
+    connectionId: ctx.connectionId,
+  });
 
   const content = data.yaml;
 
-  console.log('Writing to Github for', data.integration_name)
+  console.log('Writing to Github for', data.integration_name);
   let agent;
 
   try {
@@ -183,56 +200,69 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
   }
 
   if (typeof agent === 'function') {
-    const d = await agent({ prompt: `Can you take this text blob and format it into proper YAML? ${content}` });
+    const d = await agent({
+      prompt: `Can you take this text blob and format it into proper YAML? ${content}`,
+    });
 
     if (Array.isArray(d.toolCalls)) {
-      const answer = d.toolCalls?.find(
-        ({ toolName }) => toolName === 'answer'
-      );
+      const answer = d.toolCalls?.find(({ toolName }) => toolName === 'answer');
 
       const base64Content = Buffer.from(answer?.args?.yaml).toString('base64');
+
+      const reposPathMap = {
+        [`packages/${data.integration_name}/openapi.yaml`]: base64Content,
+        [`packages/${data.integration_name}/README.md`]: Buffer.from(
+          `# ${data.integration_name}\n\nThis repo contains the Open API spec for the ${data.integration_name} integration`
+        ).toString('base64'),
+      };
 
       const mainRef = await apiClient.gitGetRef({
         path: {
           ref: 'heads/main',
           owner: data.owner,
           repo: data.repo,
-        }
-      })
+        },
+      });
 
-      const mainSha = mainRef.data?.object?.sha
+      console.log({ data, mainRef });
 
+      const mainSha = mainRef.data?.object?.sha;
 
       console.log('Main SHA', mainSha);
 
       const branchName = `open-api-spec-${randomUUID()}`;
 
+      console.log('Branch name', branchName);
+
       if (mainSha) {
         await apiClient.gitCreateRef({
           body: {
             ref: `refs/heads/${branchName}`,
-            sha: mainSha
+            sha: mainSha,
           },
           path: {
             owner: data.owner,
             repo: data.repo,
-          }
-        })
-
-        const d = await apiClient.reposCreateOrUpdateFileContents({
-          body: {
-            message: `Add open api spec from ${data.site_url}`,
-            content: base64Content,
-            branch: branchName,
           },
-          path: {
-            owner: data.owner,
-            repo: data.repo,
-            path: `packages/${data.integration_name}/openapi.yaml`,
-          }
         });
 
-        console.log({ d })
+        for (const [path, content] of Object.entries(reposPathMap)) {
+          console.log({ path, content });
+          await apiClient.reposCreateOrUpdateFileContents({
+            body: {
+              message: `Add open api spec from ${data.site_url}`,
+              content,
+              branch: branchName,
+            },
+            path: {
+              owner: data.owner,
+              repo: data.repo,
+              path,
+            },
+          });
+        }
+
+        // console.log({ d, d2 });
 
         await apiClient.pullsCreate({
           body: {
@@ -243,8 +273,8 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
           path: {
             owner: data.owner,
             repo: data.repo,
-          }
-        })
+          },
+        });
       }
     }
 
