@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  outputFileTracingIncludes: {
+    "**/*": ["./mastra/**/*"],
+  },
 };
 
 export default nextConfig;
