@@ -9,13 +9,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 function getObjectFromString(text: string) {
   // First approach: using match()
   const regex =
-    /(?<=bird: ).*?(?=,)|(?<=location: ).*?(?=,)|(?<=species: ).*(?=\n)/g;
+    /(?<=bird:).*?(?=,|\n)|(?<=location:).*?(?=,|\n)|(?<=species:).*(?=\n|})/g;
   const matches = text.match(regex);
 
   if (!matches) {
     return {
-      bird: "",
-      location: "",
+      bird: "no",
+      location: text,
       species: "",
     };
   }
@@ -26,9 +26,9 @@ function getObjectFromString(text: string) {
   console.log("Species:", species);
 
   return {
-    bird,
-    location,
-    species,
+    bird: bird?.trim(),
+    location: location?.trim(),
+    species: species?.split("}")?.join("")?.trim(),
   };
 }
 
