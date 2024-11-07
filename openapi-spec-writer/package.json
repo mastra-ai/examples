@@ -14,12 +14,14 @@
     "@mastra/github": "^1.0.2",
     "@mastra/slack": "^1.0.2",
     "@prisma/client": "5.22.0",
+    "js-yaml": "^4.1.0",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -37,8 +37,8 @@ export const config: Config = {
   runner: {
     provider: 'inngest',
     uri: process.env.INNGEST_URL!,
-    signingKey: process.env.INNGEST_SIGNING_KEY!,
-    eventKey: process.env.INNGEST_EVENT_KEY!,
+    // signingKey: process.env.INNGEST_SIGNING_KEY!,
+    // eventKey: process.env.INNGEST_EVENT_KEY!,
   },
   workflows: {
     blueprintDirPath: '/mastra/blueprints',
@@ -46,6 +46,7 @@ export const config: Config = {
       'WRITE_SPEC': {
         label: 'Write Spec',
         schema: z.object({
+          integration_name: z.string().describe('The name of the integration to use'),
           url: z.string().describe('The URL of the website to crawl'),
         })
       }

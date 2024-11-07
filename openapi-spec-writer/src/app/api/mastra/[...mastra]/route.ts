@@ -1,7 +1,4 @@
-import { config } from '@mastra/config';
-import { Mastra } from '@mastra/core';
-
-const mastra = Mastra.init(config);
+import { mastra } from "../../../../../mastra";
 
 const router = mastra.createRouter();
 
