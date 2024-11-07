@@ -35,27 +35,38 @@ function getObjectFromString(text: string) {
 export const BirdCheckerResponse = ({
   imageUrl,
   status,
+  query,
 }: {
   imageUrl?: string;
   status: Status;
+  query: string;
 }) => {
   const [metadata, setMedata] = useState<{
     bird: string;
     location: string;
     species: string;
   } | null>(null);
+  const [metadataStatus, setMetadataStatus] = useState<Status>("idle");
+
+  useEffect(() => {
+    setMedata(null);
+    setMetadataStatus("loading");
+  }, [query]);
 
   useEffect(() => {
     const getRandomImage = async () => {
       if (!imageUrl) return;
 
+      setMetadataStatus("loading");
       const res = await promptClaude({ imageUrl });
 
       if (!res.ok) {
         toast.error("Failed to fetch image metadata");
+        setMetadataStatus("error");
         return;
       }
       console.log("res===", res.data);
+      setMetadataStatus("success");
       const object = getObjectFromString(res.data.content[0].text);
 
       setMedata(object);
@@ -73,32 +84,52 @@ export const BirdCheckerResponse = ({
           <Skeleton className="h-4 w-[200px]" />
         ) : (
           <>
-            <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-              {metadata ? (
-                metadata.bird
-              ) : (
-                <Skeleton className="h-4 w-[200px]" />
-              )}
-            </span>
+            {metadataStatus === "loading" ? (
+              <Skeleton className="h-4 w-[200px]" />
+            ) : null}
+            {metadata?.bird ? (
+              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
+                {metadata.bird}
+              </span>
+            ) : null}
           </>
         )}
       </div>
 
-      <div className="flex flex-col p-3 rounded border border-blue-100 gap-4">
-        <span className="text-gray-600">What species?</span>
-        <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-          {metadata ? metadata.species : <Skeleton className="h-4 w-[200px]" />}
-        </span>
+      <div className="flex flex-col rounded border border-blue-100 p-3 gap-4">
+        <span className="text-gray-600">What species</span>
+        {status === "loading" ? (
+          <Skeleton className="h-4 w-[200px]" />
+        ) : (
+          <>
+            {metadataStatus === "loading" ? (
+              <Skeleton className="h-4 w-[200px]" />
+            ) : null}
+            {metadata?.species ? (
+              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
+                {metadata.species}
+              </span>
+            ) : null}
+          </>
+        )}
       </div>
-      <div className="flex flex-col p-3 rounded border border-blue-100 gap-4">
+
+      <div className="flex flex-col rounded border border-blue-100 p-3 gap-4">
         <span className="text-gray-600">Where taken?</span>
-        <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
-          {metadata ? (
-            metadata.location
-          ) : (
-            <Skeleton className="h-4 w-[200px]" />
-          )}
-        </span>
+        {status === "loading" ? (
+          <Skeleton className="h-4 w-[200px]" />
+        ) : (
+          <>
+            {metadataStatus === "loading" ? (
+              <Skeleton className="h-4 w-[200px]" />
+            ) : null}
+            {metadata?.location ? (
+              <span className="p-3 bg-blue-100 w-fit font-medium rounded-2xl">
+                {metadata.location}
+              </span>
+            ) : null}
+          </>
+        )}
       </div>
     </div>
   );
