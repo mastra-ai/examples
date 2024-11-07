@@ -12,13 +12,37 @@ import {
   getCoinPrice,
   getScores,
   getSportsNews,
+  getStockPrice,
   reportAnswers,
   searchCoins,
+  searchStocks,
   sendSlackMessage,
   syncCoins,
+  syncStocks,
   syncTeams
 } from './lib/mastra/system-apis'
-import { sync } from 'framer-motion'
+
+const TimeSeriesDataPoint = z.object({
+  '1. open': z.string(),
+  '2. high': z.string(),
+  '3. low': z.string(),
+  '4. close': z.string(),
+  '5. volume': z.string()
+})
+
+const AlphaVantageMetaData = z.object({
+  '1. Information': z.string(),
+  '2. Symbol': z.string(),
+  '3. Last Refreshed': z.string(),
+  '4. Interval': z.string(),
+  '5. Output Size': z.string(),
+  '6. Time Zone': z.string()
+})
+
+const AlphaVantageIntradaySchema = z.object({
+  'Meta Data': AlphaVantageMetaData,
+  'Time Series (5min)': z.record(TimeSeriesDataPoint)
+})
 
 export const config: Config = {
   name: 'agent-chatbot',
@@ -158,6 +182,57 @@ export const config: Config = {
             displayName: 'Lowercase Name',
             type: 'SINGLE_LINE_TEXT',
             order: 3
+          }
+        ]
+      },
+      SYNC_STOCK_LIST: {
+        label: 'Sync stock list',
+        description: 'Sync all available stocks to the database',
+        schema: z.object({}),
+        handler: syncStocks,
+        entityType: 'stocks',
+        fields: [
+          {
+            name: 'id',
+            displayName: 'Stock ID',
+            type: 'SINGLE_LINE_TEXT',
+            order: 0
+          },
+          {
+            name: 'symbol',
+            displayName: 'Symbol',
+            type: 'SINGLE_LINE_TEXT',
+            order: 1
+          },
+          {
+            name: 'name',
+            displayName: 'Name',
+            type: 'SINGLE_LINE_TEXT',
+            order: 2
+          },
+          {
+            name: 'assetType',
+            displayName: 'Asset Type',
+            type: 'SINGLE_LINE_TEXT',
+            order: 3
+          },
+          {
+            name: 'exchange',
+            displayName: 'Exchange',
+            type: 'SINGLE_LINE_TEXT',
+            order: 4
+          },
+          {
+            name: 'ipoDate',
+            displayName: 'Ipo Date',
+            type: 'SINGLE_LINE_TEXT',
+            order: 5
+          },
+          {
+            name: 'status',
+            displayName: 'Status',
+            type: 'SINGLE_LINE_TEXT',
+            order: 6
           }
         ]
       }
@@ -315,6 +390,35 @@ export const config: Config = {
         }),
         executor: async ({ data }: { data: any }) => {
           return await getCoinHistoricalPrices(data)
+        }
+      },
+      {
+        type: 'search_stock',
+        label: 'Search stock',
+        description: 'Search all available stock by a keyword',
+        schema: z.object({
+          keyword: z.string()
+        }),
+        outputSchema: z.object({
+          id: z.string(),
+          symbol: z.string(),
+          name: z.string()
+        }),
+        executor: async ({ data }: { data: any }) => {
+          return (await searchStocks(data)) as any
+        }
+      },
+      {
+        type: 'get_stock_price',
+        label: 'Get stock price',
+        description:
+          'Get stock price. Returns open, high, low, close, and volume.',
+        schema: z.object({
+          symbol: z.string()
+        }),
+        outputSchema: AlphaVantageIntradaySchema,
+        executor: async ({ data }: { data: any }) => {
+          return await getStockPrice(data)
         }
       }
     ]
