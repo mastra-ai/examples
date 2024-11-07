@@ -56,33 +56,40 @@ export const getRandomImage = async ({
 }: {
   query: string;
 }): Promise<ImageResponse<Image, string>> => {
-  const res = await fetch(
-    `https://api.unsplash.com/search/photos?query=${query}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`,
-        "Accept-Version": "v1",
+  try {
+    const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`,
+          "Accept-Version": "v1",
+        },
+        cache: "no-store",
       },
-      cache: "no-store",
-    },
-  );
-  if (!res.ok) {
+    );
+    if (!res.ok) {
+      return {
+        ok: false,
+        error: "Failed to fetch image",
+      };
+    }
+
+    const data = (await res.json()) as {
+      results: Array<Image>;
+    };
+    const randomNo = Math.floor(Math.random() * data.results.length);
+
+    return {
+      ok: true,
+      data: data.results[randomNo] as Image,
+    };
+  } catch (err) {
+    console.log("Error in get_random_image api executor===", err)
     return {
       ok: false,
-      error: "Failed to fetch image",
+      error: "Error fetching image",
     };
   }
-
-  const data = (await res.json()) as {
-    results: Array<Image>;
-  };
-  const randomNo = Math.floor(Math.random() * data.results.length);
-
-  return {
-    ok: true,
-    data: data.results[randomNo] as Image,
-  };
 };
 
 export const getImageMetadataFromClaude = async ({
@@ -169,7 +176,7 @@ export const getImageMetadataFromClaude = async ({
       data: data as SuccessClaudeResponse,
     };
   } catch (err) {
-    console.log("Error in api executor===", err)
+    console.log("Error in get_image_metadata_from_claude api executor===", err)
     return {
       ok: false,
       error: err as ErrorClaudeResponse,
