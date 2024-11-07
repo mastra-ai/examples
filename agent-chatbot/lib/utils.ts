@@ -135,7 +135,7 @@ export function subMonths(date: Date, amount: number) {
 
 export function parseCryptoStructuredOutput({ message }: { message: string }) {
   let display = ''
-  let data: string[] = []
+  let data: Array<number[]> = []
 
   try {
     const response = JSON.parse(message)
@@ -153,8 +153,8 @@ export function parseCryptoStructuredOutput({ message }: { message: string }) {
   }
 
   const transformedData = data.map(price => ({
-    timestamp: Date.now(),
-    price: parseInt(price)
+    timestamp: price[0],
+    price: price[1]
   }))
 
   return { transformedData, display }

@@ -22,7 +22,7 @@ export function ChatList({
   if (!messages.length) {
     return null
   }
-  const isStockAssistant = assistantName === 'Stock/Crypto Analyst'
+  const isStockOrCryptoAssistant = assistantName === 'Crypto Analyst' || assistantName === 'Stock Analyst'
   return (
     <div className="relative mx-auto max-w-2xl px-4">
       {!isShared && !session ? (
@@ -52,8 +52,7 @@ export function ChatList({
       {messages.map((message, index) => {
         let display = message.display as string
         let data: { timestamp: number; price: number }[] = []
-
-        if (isStockAssistant) {
+        if (isStockOrCryptoAssistant) {
           const { display: displayMessage, transformedData } =
             parseCryptoStructuredOutput({
               message: message.display as string

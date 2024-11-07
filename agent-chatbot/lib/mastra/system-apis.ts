@@ -444,7 +444,7 @@ export async function searchCoins({ keyword }: { keyword: string }) {
     })
   }
 
-  return coins
+  return coins?.data
 }
 
 export async function getCoinPrice({ id }: { id: string }) {
@@ -475,7 +475,7 @@ export async function getCoinHistoricalPrices({
   id: string
   days: number
 }) {
-  const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&id=${id}`
+  const url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}`
 
   const options = {
     method: 'GET',
@@ -496,7 +496,7 @@ export async function getCoinHistoricalPrices({
 
 export async function searchStocks({ keyword }: { keyword: string }) {
   const { mastra } = await import('./framework')
-  console.log('searchCoins', keyword)
+  console.log('searchStocks', keyword)
 
   const lowercaseKeyword = keyword.toLowerCase()
   let stocks
@@ -525,7 +525,7 @@ export async function searchStocks({ keyword }: { keyword: string }) {
     })
   }
 
-  return stocks
+  return stocks?.data
 }
 
 export async function getStockPrice({ symbol }: { symbol: string }) {
@@ -533,8 +533,17 @@ export async function getStockPrice({ symbol }: { symbol: string }) {
 
   const response = await fetch(url)
   const data = await response.json()
+  const result: { timestamp: number; price: number }[] = []
 
-  return data
+  const info = Object.entries(data)[1][1] as any
+
+  Object.entries(info).forEach(([timestamp, structure]: any) => {
+    result.push({
+      timestamp: new Date(timestamp).getTime(),
+      price: parseFloat(structure['4. close'])
+    })
+  })
+  return result
 }
 
 export async function getStockList() {

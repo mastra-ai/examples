@@ -416,7 +416,12 @@ export const config: Config = {
         schema: z.object({
           symbol: z.string()
         }),
-        outputSchema: AlphaVantageIntradaySchema,
+        outputSchema: z.array(
+          z.object({
+            timestamp: z.string(),
+            price: z.string()
+          })
+        ),
         executor: async ({ data }: { data: any }) => {
           return await getStockPrice(data)
         }
