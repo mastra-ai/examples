@@ -12,7 +12,6 @@
     "mastra:migrate": "pnpm dlx mastra migrate"
   },
   "dependencies": {
-    "@mastra/claude": "^1.0.2",
     "@mastra/core": "^0.1.20",
     "@prisma/client": "5.22.0",
     "class-variance-authority": "^0.7.0",
