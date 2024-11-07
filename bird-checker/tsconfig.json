@@ -24,6 +24,6 @@
       "@mastra/config": ["mastra.config.ts"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "mastra"],
   "exclude": ["node_modules", ".mastra"]
 }
