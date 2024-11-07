@@ -12,8 +12,8 @@ importers:
         specifier: ^0.0.53
         version: 0.0.53(zod@3.23.8)
       '@mastra/core':
-        specifier: ^0.1.21
-        version: 0.1.21(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
+        specifier: ^0.1.23
+        version: 0.1.23(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       '@mastra/firecrawl':
         specifier: ^1.0.2
         version: 1.0.3(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))
@@ -373,8 +373,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@mastra/core@0.1.21':
-    resolution: {integrity: sha512-rDUjWHTEzfodrfINkjpSSVeL72SNo/VY+b9UJFxaU1XpHvJt7hWXTv9RjRCH/NRT+HvuDAfAkiAHBw110cbI1Q==}
+  '@mastra/core@0.1.23':
+    resolution: {integrity: sha512-g5AAgaAbn9txdy7/FWb2kiV+Gka9QjqnM6nlhpGI7yKEKTKmp5Q5pTk7H1WoCT6Uc/CIBtxFgflPTDWKkIS5cA==}
     engines: {node: '>=20 <22'}
     peerDependencies:
       zod: ^3.23.8
@@ -3199,7 +3199,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@mastra/core@0.1.21(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)':
+  '@mastra/core@0.1.23(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)':
     dependencies:
       '@ai-sdk/anthropic': 0.0.51(zod@3.23.8)
       '@ai-sdk/openai': 0.0.66(zod@3.23.8)
@@ -3244,7 +3244,7 @@ snapshots:
   '@mastra/firecrawl@1.0.3(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       '@hey-api/client-fetch': 0.3.4
-      '@mastra/core': 0.1.21(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
+      '@mastra/core': 0.1.23(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       ts-to-zod: 3.13.0
       zod: 3.23.8
     transitivePeerDependencies:
@@ -3274,7 +3274,7 @@ snapshots:
   '@mastra/github@1.0.2(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       '@hey-api/client-fetch': 0.3.4
-      '@mastra/core': 0.1.21(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
+      '@mastra/core': 0.1.23(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       ts-to-zod: 3.13.0
       zod: 3.23.8
     transitivePeerDependencies:
@@ -3304,7 +3304,7 @@ snapshots:
   '@mastra/google_mail@1.0.2(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       '@hey-api/client-fetch': 0.3.4
-      '@mastra/core': 0.1.21(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
+      '@mastra/core': 0.1.23(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       ts-to-zod: 3.13.0
       zod: 3.23.8
     transitivePeerDependencies:
@@ -3334,7 +3334,7 @@ snapshots:
   '@mastra/slack@1.0.2(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       '@hey-api/client-fetch': 0.3.4
-      '@mastra/core': 0.1.21(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
+      '@mastra/core': 0.1.23(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sswr@2.1.0(svelte@5.1.10))(svelte@5.1.10)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       ts-to-zod: 3.13.0
       zod: 3.23.8
     transitivePeerDependencies:
