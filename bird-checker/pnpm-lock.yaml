@@ -14,9 +14,6 @@ importers:
       '@prisma/client':
         specifier: 5.22.0
         version: 5.22.0(prisma@5.22.0)
-      '@prisma/nextjs-monorepo-workaround-plugin':
-        specifier: ^5.22.0
-        version: 5.22.0
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -54,6 +51,9 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
+      '@prisma/nextjs-monorepo-workaround-plugin':
+        specifier: ^5.22.0
+        version: 5.22.0
       '@types/node':
         specifier: ^20
         version: 20.17.6
