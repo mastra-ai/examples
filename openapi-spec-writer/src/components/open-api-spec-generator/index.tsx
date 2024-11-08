@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, GitPullRequest } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { generateOpenApiSpec } from "@/actions";
 import { CodeBlock } from "../ui/codeblock";
+import { Button } from "../ui/button";
 
 interface PredefinedUrl {
   label: string;
@@ -141,6 +142,7 @@ const OpenApiGenerator: React.FC = () => {
   const [error, setError] = useState("");
   const [openApiSpec, setOpenApiSpec] = useState("");
   const comboboxRef = useRef<HTMLDivElement>(null);
+  const [status, setStatus] = useState("");
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -191,7 +193,11 @@ const OpenApiGenerator: React.FC = () => {
     try {
       const res = await generateOpenApiSpec({ url: urlToSubmit });
 
-      setOpenApiSpec(res.data);
+      if (res.message === "failed") {
+        setError(res.data);
+      }
+      if (typeof res.data === "string") setOpenApiSpec(res.data);
+      setStatus(res.message);
     } catch (err) {
       setError(
         err instanceof Error
@@ -201,6 +207,10 @@ const OpenApiGenerator: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const triggerPR = () => {
+    console.log("pr triggered");
   };
 
   return (
@@ -281,7 +291,7 @@ const OpenApiGenerator: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={loading || !inputValue}
-            className="px-4 py-2 bg-black/90 rounded-lg text-white hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 border bg-black/90 rounded-lg text-white hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
             type="button"
           >
             {loading ? (
@@ -303,6 +313,35 @@ const OpenApiGenerator: React.FC = () => {
               "Generate"
             )}
           </button>
+          {status === "successful" ? (
+            <Button
+              variant="secondary"
+              onClick={triggerPR}
+              className="border"
+              // className="px-4 py-2 bg-black/90 rounded-lg text-white hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
+              type="button"
+            >
+              <GitPullRequest />
+              {loading ? (
+                <span>
+                  Creating{" "}
+                  <span className="animate-ellipsis">
+                    <span className="inline-block animate-bounce [animation-delay:-0.3s]">
+                      .
+                    </span>
+                    <span className="inline-block animate-bounce [animation-delay:-0.2s]">
+                      .
+                    </span>
+                    <span className="inline-block animate-bounce [animation-delay:-0.1s]">
+                      .
+                    </span>
+                  </span>
+                </span>
+              ) : (
+                "Create PR"
+              )}
+            </Button>
+          ) : null}
         </div>
 
         {error && (
@@ -311,7 +350,9 @@ const OpenApiGenerator: React.FC = () => {
           </Alert>
         )}
 
-        {openApiSpec && <CodeBlock value={openApiSpec} language="yaml" />}
+        {status === "successful" && openApiSpec && (
+          <CodeBlock value={openApiSpec} language="yaml" />
+        )}
       </div>
     </section>
   );
