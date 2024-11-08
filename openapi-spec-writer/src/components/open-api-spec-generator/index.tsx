@@ -1,109 +1,103 @@
-"use client"
+"use client";
 
-import React, { useState, useRef, useEffect } from "react"
-import { ChevronDown } from "lucide-react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { generateOpenApiSpec } from "@/actions"
-import { CodeBlock } from "../ui/codeblock"
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { generateOpenApiSpec } from "@/actions";
+import { CodeBlock } from "../ui/codeblock";
 
 interface PredefinedUrl {
-  label: string
-  value: string
+  label: string;
+  value: string;
 }
 
-interface OpenApiInfo {
-  title: string
-  version: string
-  description: string
+export interface OpenApiParameter {
+  name: string;
+  in: string;
+  description: string;
+  required: boolean;
 }
 
-interface OpenApiParameter {
-  name: string
-  in: string
-  description: string
-  required: boolean
+export interface OpenApiPath {
+  summary: string;
+  description?: string;
+  parameters?: OpenApiParameter[];
+  responses?: Record<string, { description: string }>;
 }
 
-interface OpenApiPath {
-  summary: string
-  description?: string
-  parameters?: OpenApiParameter[]
-  responses?: Record<string, { description: string }>
-}
-
-interface OpenApiSpec {
-  openapi: string
-  info: OpenApiInfo
-  paths: Record<
-    string,
-    {
-      get?: OpenApiPath
-      post?: OpenApiPath
-      put?: OpenApiPath
-      delete?: OpenApiPath
-    }
-  >
-}
+// interface OpenApiSpec {
+//   openapi: string
+//   info: OpenApiInfo
+//   paths: Record<
+//     string,
+//     {
+//       get?: OpenApiPath
+//       post?: OpenApiPath
+//       put?: OpenApiPath
+//       delete?: OpenApiPath
+//     }
+//   >
+// }
 
 interface CodeLineProps {
-  line: string
+  line: string;
 }
 
 interface CodeEditorProps {
-  code: string
+  code: string;
 }
 
-const CodeLine: React.FC<CodeLineProps> = ({ line }) => {
+export const CodeLine: React.FC<CodeLineProps> = ({ line }) => {
   const tokens = line
     .split(/([{}[\],]|"(?:\\.|[^"\\])*"|\b(?:true|false|null|\d+)\b|\s+)/g)
-    .filter(Boolean)
+    .filter(Boolean);
 
   return (
     <div className="leading-6 text-sm">
       {tokens.map((token, i) => {
         if (/^\s+$/.test(token)) {
-          return <span key={i}>{token}</span>
+          return <span key={i}>{token}</span>;
         } else if (/^".*":$/.test(token)) {
           return (
             <span key={i} className="text-yellow-300">
               {token}
             </span>
-          )
+          );
         } else if (/^".*"$/.test(token)) {
           return (
             <span key={i} className="text-green-300">
               {token}
             </span>
-          )
+          );
         } else if (/^-?\d+\.?\d*$/.test(token)) {
           return (
             <span key={i} className="text-blue-300">
               {token}
             </span>
-          )
+          );
         } else if (/^(true|false|null)$/.test(token)) {
           return (
             <span key={i} className="text-blue-300">
               {token}
             </span>
-          )
+          );
         } else if (/^[{}[\],]$/.test(token)) {
           return (
             <span key={i} className="text-gray-500">
               {token}
             </span>
-          )
+          );
         } else {
-          return <span key={i}>{token}</span>
+          return <span key={i}>{token}</span>;
         }
       })}
     </div>
-  )
-}
+  );
+};
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ code }) => {
-  const lines = code.split("\n")
-  const lineNumbers = Array.from({ length: lines.length }, (_, i) => i + 1)
+export const CodeEditor: React.FC<CodeEditorProps> = ({ code }) => {
+  const lines = code.split("\n");
+  const lineNumbers = Array.from({ length: lines.length }, (_, i) => i + 1);
 
   return (
     <div className="bg-gray-900 rounded-lg overflow-hidden">
@@ -136,30 +130,39 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const OpenApiGenerator: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [inputValue, setInputValue] = useState("")
-  const [selectedUrl, setSelectedUrl] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [openApiSpec, setOpenApiSpec] = useState("")
-  const comboboxRef = useRef<HTMLDivElement>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [selectedUrl, setSelectedUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [openApiSpec, setOpenApiSpec] = useState("");
+  const comboboxRef = useRef<HTMLDivElement>(null);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const inputEl = inputRef.current;
+    if (inputEl) {
+      inputEl.focus();
+    }
+  }, []);
 
   const predefinedUrls: PredefinedUrl[] = [
     {
       label: "Browserbase",
       value: "https://docs.browserbase.com/reference/api",
     },
-  ]
+  ];
 
   const filteredOptions = predefinedUrls.filter(
     (option) =>
       option.label.toLowerCase().includes(inputValue.toLowerCase()) ||
       option.value.toLowerCase().includes(inputValue.toLowerCase())
-  )
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -167,56 +170,75 @@ const OpenApiGenerator: React.FC = () => {
         comboboxRef.current &&
         !comboboxRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSubmit = async (): Promise<void> => {
-    const urlToSubmit = selectedUrl || inputValue
+    const urlToSubmit = selectedUrl || inputValue;
     if (!urlToSubmit) {
-      setError("Please enter a valid URL")
-      return
+      setError("Please enter a valid URL");
+      return;
     }
 
-    setLoading(true)
-    setError("")
+    setLoading(true);
+    setError("");
 
     try {
-      const res = await generateOpenApiSpec({ url: urlToSubmit })
+      const res = await generateOpenApiSpec({ url: urlToSubmit });
 
-      setOpenApiSpec(res.data)
+      setOpenApiSpec(res.data);
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : "An error occurred while generating the specification"
-      )
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 space-y-4">
-      <div className="space-y-4">
+    <section className="w-full max-w-4xl mx-auto p-4 flex flex-col gap-8">
+      <div className="flex flex-col">
+        <svg
+          width="29"
+          height="17"
+          viewBox="0 0 29 17"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="mx-auto w-16 h-16"
+        >
+          <path
+            d="M6.13281 17C5.07812 17 4.16406 16.8008 3.39062 16.4023C2.61719 15.9961 2.01562 15.4531 1.58594 14.7734C1.16406 14.0938 0.953125 13.3477 0.953125 12.5352V5.41016C0.953125 4.58984 1.16406 3.84375 1.58594 3.17188C2.01562 2.49219 2.61719 1.95312 3.39062 1.55469C4.16406 1.14844 5.07812 0.945312 6.13281 0.945312H9.74219C10.7969 0.945312 11.7109 1.14844 12.4844 1.55469C13.2656 1.95312 13.8672 2.49219 14.2891 3.17188C14.7109 3.84375 14.9219 4.58984 14.9219 5.41016V12.5352C14.9219 13.3477 14.7109 14.0938 14.2891 14.7734C13.8672 15.4531 13.2656 15.9961 12.4844 16.4023C11.7109 16.8008 10.7969 17 9.74219 17H6.13281ZM6.90625 11.6914H10.0469L11.2539 11.5508L11.9922 10.8125L12.1562 9.80469V3.89844L11.9922 2.91406L11.2539 2.16406L10.0469 2H6.90625L5.71094 2.16406L4.96094 2.91406L4.82031 3.89844V9.80469L4.96094 10.8125L5.73438 11.5508L6.90625 11.6914ZM6.97656 10.4492L6.21484 10.332L6.03906 9.62891V4.01562L6.15625 3.37109L6.97656 3.24219H9.97656L10.7969 3.37109L10.9141 4.0625V9.67578L10.75 10.332L9.97656 10.4492H6.97656ZM20.0078 17C18.9531 17 18.0391 16.8008 17.2656 16.4023C16.4922 15.9961 15.8906 15.4531 15.4609 14.7734C15.0391 14.0938 14.8281 13.3477 14.8281 12.5352V5.41016C14.8281 4.58984 15.0391 3.84375 15.4609 3.17188C15.8906 2.49219 16.4922 1.95312 17.2656 1.55469C18.0391 1.14844 18.9531 0.945312 20.0078 0.945312H23.6172C24.6719 0.945312 25.5859 1.14844 26.3594 1.55469C27.1406 1.95312 27.7422 2.49219 28.1641 3.17188C28.5859 3.84375 28.7969 4.58984 28.7969 5.41016V12.5352C28.7969 13.3477 28.5859 14.0938 28.1641 14.7734C27.7422 15.4531 27.1406 15.9961 26.3594 16.4023C25.5859 16.8008 24.6719 17 23.6172 17H20.0078ZM20.9922 11.6914H23.9219L25.1055 11.5508L25.8672 10.8125L26.0312 9.80469V6.72266H22.6328V7.97656H24.7891V9.62891C24.75 9.75391 24.7227 9.87109 24.707 9.98047C24.6914 10.0898 24.6641 10.207 24.625 10.332L23.8516 10.4492H21.0156L20.3008 10.332L20.1367 9.58203V4.03906L20.2539 3.39453L21.0156 3.21875H24.0625L25.2695 3.41797L25.5039 2.16406L24.1445 2H20.9922L19.7969 2.1875L19.0469 2.9375L18.8828 3.92188V9.80469L19.0469 10.8125L19.8203 11.5508L20.9922 11.6914Z"
+            fill="black"
+          />
+        </svg>
+        <span className="font-medium -mt-1 text-center">
+          Generate an open api spec from your documentation url.
+        </span>
+      </div>
+      <div className="space-y-4 p-4 md:bg-white/50 md:p-2 md:backdrop:blur md:rounded-xl">
         <div className="flex gap-2 items-start">
           <div className="relative flex-1" ref={comboboxRef}>
             <div className="relative">
               <input
                 type="text"
+                ref={inputRef}
                 value={inputValue}
                 onChange={(e) => {
-                  setInputValue(e.target.value)
-                  setSelectedUrl("")
-                  if (!isOpen) setIsOpen(true)
+                  setInputValue(e.target.value);
+                  setSelectedUrl("");
+                  if (!isOpen) setIsOpen(true);
                 }}
                 onClick={() => setIsOpen(true)}
                 placeholder="Search or enter API documentation URL..."
-                className="w-full px-4 py-2 pr-8 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-2 font-mono pr-8 rounded-md shadow-sm focus:outline-none focus-visible:ring-1 focus-visible:ring-offset-2 focus-visible:ring-[hsl(240,5%,64.9%,0.5)] border"
               />
               <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -233,11 +255,11 @@ const OpenApiGenerator: React.FC = () => {
                   filteredOptions.map((option) => (
                     <button
                       key={option.value}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center space-x-2"
+                      className="w-full px-4 py-2 font-mono text-left hover:bg-gray-100 flex items-center space-x-2"
                       onClick={() => {
-                        setInputValue(option.value)
-                        setSelectedUrl(option.value)
-                        setIsOpen(false)
+                        setInputValue(option.value);
+                        setSelectedUrl(option.value);
+                        setIsOpen(false);
                       }}
                       type="button"
                     >
@@ -259,23 +281,40 @@ const OpenApiGenerator: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={loading || !inputValue}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-black/90 rounded-lg text-white hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
             type="button"
           >
-            {loading ? "Generating..." : "Generate"}
+            {loading ? (
+              <span>
+                Generating{" "}
+                <span className="animate-ellipsis">
+                  <span className="inline-block animate-bounce [animation-delay:-0.3s]">
+                    .
+                  </span>
+                  <span className="inline-block animate-bounce [animation-delay:-0.2s]">
+                    .
+                  </span>
+                  <span className="inline-block animate-bounce [animation-delay:-0.1s]">
+                    .
+                  </span>
+                </span>
+              </span>
+            ) : (
+              "Generate"
+            )}
           </button>
         </div>
 
         {error && (
           <Alert className="bg-red-50 border-red-200 text-red-800 p-4 rounded-md">
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription className="font-mono">{error}</AlertDescription>
           </Alert>
         )}
 
         {openApiSpec && <CodeBlock value={openApiSpec} language="yaml" />}
       </div>
-    </div>
-  )
-}
+    </section>
+  );
+};
 
-export default OpenApiGenerator
+export default OpenApiGenerator;
