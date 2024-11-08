@@ -1,16 +1,16 @@
-import { GithubIntegration } from "@mastra/github"
-import { SlackIntegration } from "@mastra/slack"
-import { FirecrawlIntegration } from "@mastra/firecrawl"
-import { Config } from "@mastra/core"
-import { z } from "zod"
+import { GithubIntegration } from "@mastra/github";
+import { SlackIntegration } from "@mastra/slack";
+import { FirecrawlIntegration } from "@mastra/firecrawl";
+import { Config } from "@mastra/core";
+import { z } from "zod";
 import {
   mintlifySiteCrawler,
   generateMergedSpec,
   addToGit,
-} from "./mastra/tools"
+} from "./mastra/tools";
 
 const SLACK_REDIRECT_URI =
-  "https://redirectmeto.com/http://localhost:3456/api/mastra/connect/callback"
+  "https://redirectmeto.com/http://localhost:3456/api/mastra/connect/callback";
 
 export const config: Config = {
   name: "openapi-spec-writer",
@@ -53,6 +53,7 @@ export const config: Config = {
             .string()
             .describe("The name of the integration to use"),
           url: z.string().describe("The URL of the website to crawl"),
+          pathRegex: z.string().describe("The regex to match the path"),
         }),
       },
       PR_TO_MASTRA: {
@@ -73,4 +74,4 @@ export const config: Config = {
   },
   systemHostURL: process.env.APP_URL!,
   routeRegistrationPath: "/api/mastra",
-}
+};

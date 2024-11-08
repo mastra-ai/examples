@@ -3,7 +3,7 @@
   "status": "PUBLISHED",
   "createdAt": "2024-11-05T23:24:07.787Z",
   "id": "w4km3pdd6hpyvtmnd2z63bfx",
-  "updatedAt": "2024-11-07T21:15:53.747Z",
+  "updatedAt": "2024-11-08T14:58:37.032Z",
   "trigger": {
     "id": "obbpq1y85urbhhhj7xdrx2c2",
     "type": "WRITE_SPEC",
@@ -15,13 +15,21 @@
       "type": "MINTLIFY_SITE_CRAWL",
       "payload": {
         "url": "{{url_1731014133434}}",
-        "mastraConnectionId": "SYSTEM"
+        "mastraConnectionId": "SYSTEM",
+        "pathRegex": "{{pathRegex_1731077713204}}",
+        "limit": 3
       },
       "variables": {
         "url": {
           "url_1731014133434": {
             "refBlockId": "obbpq1y85urbhhhj7xdrx2c2",
             "path": "url"
+          }
+        },
+        "pathRegex": {
+          "pathRegex_1731077713204": {
+            "refBlockId": "obbpq1y85urbhhhj7xdrx2c2",
+            "path": "pathRegex"
           }
         }
       },
@@ -32,9 +40,18 @@
           "parentActionId": "ah6n1mlana6r9j2bni6wjq2f",
           "subActions": [],
           "payload": {
-            "entityType": "CRAWL"
+            "entityType": "CRAWL",
+            "mastra_entity_type": "{{mastra_entity_type_1731077515266}}",
+            "mastraConnectionId": "SYSTEM"
           },
-          "variables": {}
+          "variables": {
+            "mastra_entity_type": {
+              "mastra_entity_type_1731077515266": {
+                "refBlockId": "ah6n1mlana6r9j2bni6wjq2f",
+                "path": "entityType"
+              }
+            }
+          }
         }
       ]
     }
