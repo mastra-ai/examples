@@ -1,8 +1,17 @@
-"use server"
+"use server";
 
-import { mastra } from "../../mastra"
+import { mastra } from "../../mastra";
 
-export async function generateOpenApiSpec({ url }: { url: string }) {
+export async function generateOpenApiSpec({ url }: { url: string }): Promise<
+  | {
+      message: "failed";
+      data: string;
+    }
+  | {
+      message: "successful";
+      data: unknown;
+    }
+> {
   const { workflowEvent } = await mastra.triggerEvent({
     key: "WRITE_SPEC",
     data: {
@@ -13,38 +22,38 @@ export async function generateOpenApiSpec({ url }: { url: string }) {
     user: {
       connectionId: "SYSTEM",
     },
-  })
+  });
 
-  const eventResponse = await workflowEvent.subscribe()
+  const eventResponse = await workflowEvent.subscribe();
 
-  const ctx = eventResponse.output?.data?.[0]?.fullCtx
+  const ctx = eventResponse.output?.data?.[0]?.fullCtx;
 
-  console.log("er", JSON.stringify(eventResponse, null, 2))
-  console.log("ctx", ctx)
+  console.log("er", JSON.stringify(eventResponse, null, 2));
+  console.log("ctx", ctx);
 
   const run: any = Object.values(ctx ?? {})?.find(
     (run: any) => run?.workflowStepOrder! === 1
-  )
+  );
 
-  const openApiSpec = run?.mergedSpec
+  const openApiSpec = run?.mergedSpec;
 
   if (!openApiSpec) {
-    return { message: "failed", data: "No Open API Spec generated" }
+    return { message: "failed", data: "No Open API Spec generated" };
   }
 
   console.log({
     run,
-  })
+  });
 
-  return { message: "successful", data: openApiSpec }
+  return { message: "successful", data: openApiSpec };
 }
 
 export async function makeMastraPR({
   crawledUrl,
   yaml,
 }: {
-  yaml: string
-  crawledUrl: string
+  yaml: string;
+  crawledUrl: string;
 }) {
   const { workflowEvent } = await mastra.triggerEvent({
     key: "WRITE_SPEC",
@@ -57,7 +66,7 @@ export async function makeMastraPR({
     user: {
       connectionId: "SYSTEM",
     },
-  })
+  });
 
-  const eventResponse = await workflowEvent.subscribe()
+  const eventResponse = await workflowEvent.subscribe();
 }
