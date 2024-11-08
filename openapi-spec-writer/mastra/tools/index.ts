@@ -178,6 +178,8 @@ async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
 async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
   const { mastra } = await import("../");
 
+  const integrationName = data.integration_name.toLowerCase();
+
   const githubIntegration = mastra.getIntegration(
     "GITHUB"
   ) as GithubIntegration;
@@ -214,9 +216,9 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
       );
 
       const reposPathMap = {
-        [`packages/${data.integration_name}/openapi.yaml`]: base64Content,
-        [`packages/${data.integration_name}/README.md`]: Buffer.from(
-          `# ${data.integration_name}\n\nThis repo contains the Open API spec for the ${data.integration_name} integration`
+        [`packages/${integrationName}/openapi.yaml`]: base64Content,
+        [`packages/${integrationName}/README.md`]: Buffer.from(
+          `# ${integrationName}\n\nThis repo contains the Open API spec for the ${integrationName} integration`
         ).toString("base64"),
       };
 
@@ -234,9 +236,7 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
 
       console.log("Main SHA", mainSha);
 
-      const branchName = `open-api-spec-writer/${
-        data.integration_name
-      }-${randomUUID()}`;
+      const branchName = `open-api-spec-writer/${integrationName}-${randomUUID()}`;
 
       console.log("Branch name", branchName);
 
@@ -268,11 +268,9 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
           });
         }
 
-        // console.log({ d, d2 });
-
-        await apiClient.pullsCreate({
+        const pullData = await apiClient.pullsCreate({
           body: {
-            title: `Add open api spec from ${data.site_url} for ${data.integration_name}`,
+            title: `Add open api spec from ${data.site_url} for ${integrationName}`,
             head: branchName,
             base: "main",
           },
@@ -282,7 +280,7 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
           },
         });
 
-        return { success: true, pr_url: data.site_url };
+        return { success: true, pr_url: pullData.data?.url };
       }
     }
   }
