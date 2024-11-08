@@ -280,7 +280,7 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
           },
         });
 
-        return { success: true, pr_url: pullData.data?.url };
+        return { success: true, pr_url: pullData.data?.html_url };
       }
     }
   }
