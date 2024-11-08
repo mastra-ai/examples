@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react"
 import { ChevronDown } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { generateOpenApiSpec } from "@/actions"
+import { CodeBlock } from "../ui/codeblock"
 
 interface PredefinedUrl {
   label: string
@@ -187,12 +188,7 @@ const OpenApiGenerator: React.FC = () => {
     try {
       const res = await generateOpenApiSpec({ url: urlToSubmit })
 
-      setOpenApiSpec(JSON.stringify(res?.data, null, 2))
-      window.alert(`Open API Spec generated successfully 
-        
-        ${JSON.stringify(res?.data, null, 2)}
-        
-        `)
+      setOpenApiSpec(res.data)
     } catch (err) {
       setError(
         err instanceof Error
@@ -276,7 +272,7 @@ const OpenApiGenerator: React.FC = () => {
           </Alert>
         )}
 
-        {openApiSpec && <CodeEditor code={openApiSpec} />}
+        {openApiSpec && <CodeBlock value={openApiSpec} language="yaml" />}
       </div>
     </div>
   )
