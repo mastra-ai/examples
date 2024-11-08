@@ -65,12 +65,22 @@ export const BirdChecker = () => {
 
   return (
     <div>
-      <Card className="w-full relative border shadow rounded pt-8 md:mt-4  mx-auto max-w-4xl">
+      <Card className="w-full relative border-none bg-transparent shadow-2xl rounded pt-8 md:mt-4  mx-auto max-w-4xl">
         <CardHeader>
           <CardTitle>
             <h1 className="font-medium mx-auto text-center font-serif text-5xl">
               Bird Checker
             </h1>
+            <p className="md:hidden text-sm text-center font-base font-normal italic font-serif">
+              Inspired by{" "}
+              <a
+                href="https://xkcd.com/1425/"
+                target="_blank"
+                className="text-[#0057ff] font-medium"
+              >
+                Randall Munroe
+              </a>
+            </p>
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-8 md:grid grid-cols-2 md:gap-12 space-y-6">
@@ -150,17 +160,28 @@ export const BirdChecker = () => {
             status={status}
             imageUrl={image?.urls.regular}
           />
-          <span className="sm:hidden bottom-2 right-2 w-fit mx-auto py-1 bg-[#0057ff] duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
-            <div className="animate-mask flex gap-2">
-              <span className="uppercase inline-flex items-center h-4 rounded-full text-white px-1.5 leading-tight tracking-widest text-[9px] bg-[hsla(256,2%,99%,.15)] font-semibold">
-                Source
-              </span>
-              <span className="text-xs text-white font-semibold">
-                Developed with Mastra.ai
+          <span className="sm:hidden bottom-2 right-2 w-fit mx-auto py-1 bg-gray-100 duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
+            <div className="flex gap-2">
+              <a
+                href="https://github.com/mastra-ai/examples/tree/main/bird-checker"
+                target="_blank"
+                className="uppercase inline-flex items-center h-4 rounded-full text-black px-1.5 leading-tight tracking-widest text-[9px] bg-gray-50 font-semibold"
+              >
+                see the code
+              </a>
+              <span className="text-xs text-black font-semibold">
+                Built with{" "}
+                <a
+                  href="https://mastra.ai/"
+                  className="underline"
+                  target="_blank"
+                >
+                  Mastra.ai
+                </a>
               </span>
             </div>
           </span>
-          <p className="absolute right-2 bottom-2 italic font-serif">
+          <p className="absolute hidden md:block right-2 bottom-2 italic font-serif">
             Inspired by{" "}
             <a
               href="https://xkcd.com/1425/"
