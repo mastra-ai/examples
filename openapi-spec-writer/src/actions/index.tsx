@@ -2,7 +2,15 @@
 
 import { mastra } from "../../mastra";
 
-export async function generateOpenApiSpec({ url }: { url: string }): Promise<
+export async function generateOpenApiSpec({
+  url,
+  crawlOptions,
+}: {
+  url: string;
+  crawlOptions: {
+    pathRegex: string;
+  };
+}): Promise<
   | {
       message: "failed";
       data: string;
@@ -17,6 +25,7 @@ export async function generateOpenApiSpec({ url }: { url: string }): Promise<
     data: {
       integration_name: "BrowserBase",
       url,
+      pathRegex: crawlOptions.pathRegex,
     },
     integrationName: mastra.config.name,
     user: {
@@ -27,9 +36,6 @@ export async function generateOpenApiSpec({ url }: { url: string }): Promise<
   const eventResponse = await workflowEvent.subscribe();
 
   const ctx = eventResponse.output?.data?.[0]?.fullCtx;
-
-  console.log("er", JSON.stringify(eventResponse, null, 2));
-  console.log("ctx", ctx);
 
   const run: any = Object.values(ctx ?? {})?.find(
     (run: any) => run?.workflowStepOrder! === 1
@@ -51,14 +57,16 @@ export async function generateOpenApiSpec({ url }: { url: string }): Promise<
 export async function makeMastraPR({
   crawledUrl,
   yaml,
+  integrationName,
 }: {
   yaml: string;
   crawledUrl: string;
+  integrationName: string;
 }) {
   const { workflowEvent } = await mastra.triggerEvent({
-    key: "WRITE_SPEC",
+    key: "PR_TO_MASTRA",
     data: {
-      integrationName: "BrowserBase",
+      integrationName,
       url: crawledUrl,
       yaml,
     },
@@ -69,4 +77,18 @@ export async function makeMastraPR({
   });
 
   const eventResponse = await workflowEvent.subscribe();
+
+  const ctx = eventResponse.output?.data?.[0]?.fullCtx;
+
+  const run: any = Object.values(ctx ?? {})?.find(
+    (run: any) => run?.workflowStepOrder! === 0
+  );
+
+  const pr_url = run?.pr_url;
+
+  if (!pr_url) {
+    return { message: "failed", data: "We could not make a PR" };
+  }
+
+  return { message: "successful", data: pr_url };
 }

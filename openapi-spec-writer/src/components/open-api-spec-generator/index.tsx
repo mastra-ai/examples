@@ -3,9 +3,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, GitPullRequest } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { generateOpenApiSpec } from "@/actions";
+import { generateOpenApiSpec, makeMastraPR } from "@/actions";
 import { CodeBlock } from "../ui/codeblock";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 interface PredefinedUrl {
   label: string;
@@ -139,6 +140,8 @@ const OpenApiGenerator: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [selectedUrl, setSelectedUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [prLoading, setPrLoading] = useState(false);
+  const [prUrl, setPrUrl] = useState("");
   const [error, setError] = useState("");
   const [openApiSpec, setOpenApiSpec] = useState("");
   const comboboxRef = useRef<HTMLDivElement>(null);
@@ -191,7 +194,10 @@ const OpenApiGenerator: React.FC = () => {
     setError("");
 
     try {
-      const res = await generateOpenApiSpec({ url: urlToSubmit });
+      const res = await generateOpenApiSpec({
+        url: urlToSubmit,
+        crawlOptions: { pathRegex: "" },
+      });
 
       if (res.message === "failed") {
         setError(res.data);
@@ -209,8 +215,37 @@ const OpenApiGenerator: React.FC = () => {
     }
   };
 
-  const triggerPR = () => {
-    console.log("pr triggered");
+  const triggerPR = async () => {
+    if (!openApiSpec) {
+      setError("No Open API Spec generated");
+      return;
+    }
+
+    setPrLoading(true);
+    setError("");
+
+    try {
+      const res = await makeMastraPR({
+        crawledUrl: selectedUrl || inputValue,
+        yaml: openApiSpec,
+        integrationName: "BrowserBase",
+      });
+
+      if (res.message === "failed") {
+        setError(res.data);
+        return;
+      }
+
+      setPrUrl(res.data);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while generating the specification"
+      );
+    } finally {
+      setPrLoading(false);
+    }
   };
 
   return (
@@ -322,7 +357,7 @@ const OpenApiGenerator: React.FC = () => {
               type="button"
             >
               <GitPullRequest />
-              {loading ? (
+              {prLoading ? (
                 <span>
                   Creating{" "}
                   <span className="animate-ellipsis">
@@ -347,6 +382,17 @@ const OpenApiGenerator: React.FC = () => {
         {error && (
           <Alert className="bg-red-50 border-red-200 text-red-800 p-4 rounded-md">
             <AlertDescription className="font-mono">{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {prUrl && (
+          <Alert className="bg-green-50 border-green-200 text-green-800 p-4 rounded-md">
+            <AlertDescription className="font-mono">
+              PR created successfully.{" "}
+              <Link className="cursor-pointer" href={prUrl} target="_blank">
+                {prUrl}
+              </Link>
+            </AlertDescription>
           </Alert>
         )}
 
