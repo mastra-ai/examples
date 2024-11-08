@@ -73,7 +73,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
     const fileExtension = programmingLanguages[language] || ".file";
     const suggestedFileName = `file-${generateRandomString(
       3,
-      true,
+      true
     )}${fileExtension}`;
     return suggestedFileName;
   });
@@ -105,9 +105,17 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
   return (
     <div className="relative w-full font-sans codeblock bg-zinc-950 rounded-lg">
       <div className="flex items-center justify-between w-full px-6 py-2 pr-4 bg-zinc-800 rounded-t-lg text-zinc-100">
-        <span className="text-xs font-mono bg-gray-400/30 text-white px-2 rounded lowercase">
-          {language}
-        </span>
+        <div className="flex items-center w-full justify-between  pl-0 px-4 py-2 ">
+          <div className="flex gap-2 space-between">
+            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+          </div>
+          <div className="ml-4 bg-gray-100/10 font-mono px-3 py-1 rounded-md text-sm">
+            {language}
+          </div>
+        </div>
+
         <div className="flex items-center space-x-1">
           <Button
             variant="ghost"
