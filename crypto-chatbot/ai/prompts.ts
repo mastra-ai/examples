@@ -21,7 +21,25 @@ export const blocksPrompt = `
   Do not update document right after creating it. Wait for user feedback or request to update it.
   `;
 
-export const regularPrompt =
-  'You are a friendly assistant! Keep your responses concise and helpful.';
+export const cryptoPrompt = `
+  This is a guide for using the available crypto tools: \`searchCryptoCoins\`, \`getCryptoPrice\`, and \`getHistoricalCryptoPrices\`.
 
-export const systemPrompt = `${regularPrompt}\n\n${blocksPrompt}`;
+  **When to use \`searchCryptoCoins\`:**
+  - When you need to get the correct Coin ID in order to call \`getCryptoPrice\` or \`getHistoricalCryptoPrices\`
+  - Always call this one before calling the other tools.
+
+  **When to use \`getCryptoPrice\`:**
+  - When you need the current price of a specific cryptocurrency
+  - Always pass in the Crypto Coin ID from \`searchCryptoCoins\`
+
+  **When to use \`getHistoricalCryptoPrices\`:**
+  - When you need historical price data for a specific cryptocurrency
+  - Always pass in the Crypto Coin ID from \`searchCryptoCoins\`
+  - The number of days can be between 1 and 30
+  - If the user does not ask for a specific number of days, default to the last 7 days.
+  `;
+
+export const regularPrompt =
+  'You are a cryptocurrency analyst and assistant! Your goal is to provide current crypto investing information. Keep your responses concise and helpful.';
+
+export const systemPrompt = `${regularPrompt}\n\n${cryptoPrompt}`;

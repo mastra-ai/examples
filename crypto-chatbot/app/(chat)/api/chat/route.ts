@@ -1,26 +1,16 @@
-import {
-  convertToCoreMessages,
-  Message,
-  StreamData,
-  streamObject,
-  streamText,
-} from 'ai';
+import { convertToCoreMessages, Message, StreamData, streamText } from 'ai';
 import { z } from 'zod';
 
 import { customModel } from '@/ai';
 import { models } from '@/ai/models';
-import { blocksPrompt, regularPrompt, systemPrompt } from '@/ai/prompts';
+import { systemPrompt } from '@/ai/prompts';
 import { auth } from '@/app/(auth)/auth';
 import {
   deleteChatById,
   getChatById,
-  getDocumentById,
   saveChat,
-  saveDocument,
   saveMessages,
-  saveSuggestions,
 } from '@/db/queries';
-import { Suggestion } from '@/db/schema';
 import {
   generateUUID,
   getMostRecentUserMessage,
@@ -32,20 +22,19 @@ import { generateTitleFromUserMessage } from '../../actions';
 export const maxDuration = 60;
 
 type AllowedTools =
-  | 'createDocument'
-  | 'updateDocument'
-  | 'requestSuggestions'
-  | 'getWeather';
-
-const blocksTools: AllowedTools[] = [
-  'createDocument',
-  'updateDocument',
-  'requestSuggestions',
-];
+  | 'getWeather'
+  | 'searchCryptoCoins'
+  | 'getCryptoPrice'
+  | 'getHistoricalCryptoPrices';
 
 const weatherTools: AllowedTools[] = ['getWeather'];
+const cryptoTools: AllowedTools[] = [
+  'searchCryptoCoins',
+  'getCryptoPrice',
+  'getHistoricalCryptoPrices',
+];
 
-const allTools: AllowedTools[] = [...blocksTools, ...weatherTools];
+const allTools: AllowedTools[] = [...weatherTools, ...cryptoTools];
 
 export async function POST(request: Request) {
   const {
@@ -111,218 +100,99 @@ export async function POST(request: Request) {
           return weatherData;
         },
       },
-      createDocument: {
-        description: 'Create a document for a writing activity',
+      searchCryptoCoins: {
+        description: 'Search all available crypto coins by a keyword',
         parameters: z.object({
-          title: z.string(),
+          keyword: z.string(),
         }),
-        execute: async ({ title }) => {
-          const id = generateUUID();
-          let draftText: string = '';
+        execute: async ({ keyword }) => {
+          const coinListUrl = `https://api.coingecko.com/api/v3/coins/list`;
 
-          streamingData.append({
-            type: 'id',
-            content: id,
-          });
-
-          streamingData.append({
-            type: 'title',
-            content: title,
-          });
-
-          streamingData.append({
-            type: 'clear',
-            content: '',
-          });
-
-          const { fullStream } = await streamText({
-            model: customModel(model.apiIdentifier),
-            system:
-              'Write about the given topic. Markdown is supported. Use headings wherever appropriate.',
-            prompt: title,
-          });
-
-          for await (const delta of fullStream) {
-            const { type } = delta;
-
-            if (type === 'text-delta') {
-              const { textDelta } = delta;
-
-              draftText += textDelta;
-              streamingData.append({
-                type: 'text-delta',
-                content: textDelta,
-              });
-            }
-          }
-
-          streamingData.append({ type: 'finish', content: '' });
-
-          if (session.user && session.user.id) {
-            await saveDocument({
-              id,
-              title,
-              content: draftText,
-              userId: session.user.id,
-            });
-          }
-
-          return {
-            id,
-            title,
-            content: `A document was created and is now visible to the user.`,
-          };
-        },
-      },
-      updateDocument: {
-        description: 'Update a document with the given description',
-        parameters: z.object({
-          id: z.string().describe('The ID of the document to update'),
-          description: z
-            .string()
-            .describe('The description of changes that need to be made'),
-        }),
-        execute: async ({ id, description }) => {
-          const document = await getDocumentById({ id });
-
-          if (!document) {
-            return {
-              error: 'Document not found',
-            };
-          }
-
-          const { content: currentContent } = document;
-          let draftText: string = '';
-
-          streamingData.append({
-            type: 'clear',
-            content: document.title,
-          });
-
-          const { fullStream } = await streamText({
-            model: customModel(model.apiIdentifier),
-            system:
-              'You are a helpful writing assistant. Based on the description, please update the piece of writing.',
-            experimental_providerMetadata: {
-              openai: {
-                prediction: {
-                  type: 'content',
-                  content: currentContent,
-                },
-              },
+          const options = {
+            method: 'GET',
+            headers: {
+              accept: 'application/json',
+              'x-cg-demo-api-key': process.env.COINGECKO_API_KEY!,
             },
-            messages: [
-              {
-                role: 'user',
-                content: description,
-              },
-              { role: 'user', content: currentContent },
-            ],
-          });
-
-          for await (const delta of fullStream) {
-            const { type } = delta;
-
-            if (type === 'text-delta') {
-              const { textDelta } = delta;
-
-              draftText += textDelta;
-              streamingData.append({
-                type: 'text-delta',
-                content: textDelta,
-              });
-            }
-          }
-
-          streamingData.append({ type: 'finish', content: '' });
-
-          if (session.user && session.user.id) {
-            await saveDocument({
-              id,
-              title: document.title,
-              content: draftText,
-              userId: session.user.id,
-            });
-          }
-
-          return {
-            id,
-            title: document.title,
-            content: 'The document has been updated successfully.',
           };
+
+          const response = await fetch(coinListUrl, options);
+          const data = await response.json();
+
+          // First try to find an exact match.
+          const exactMatch = data.find(
+            (coin: any) => coin.name.toLowerCase() === keyword.toLowerCase()
+          );
+
+          if (exactMatch) {
+            console.log('searchCryptoCoins exactMatch', exactMatch);
+            return exactMatch;
+          }
+
+          // If no exact match is found, return first coin that contains the keyword.
+          const coin = data.filter((coin: any) =>
+            coin.name.toLowerCase().includes(keyword.toLowerCase())
+          );
+
+          if (coin.length >= 0) {
+            console.log('searchCryptoCoins containsMatch', coin[0]);
+            return coin[0];
+          }
+
+          return null;
         },
       },
-      requestSuggestions: {
-        description: 'Request suggestions for a document',
+      getCryptoPrice: {
+        description: 'Get crypto price by id',
         parameters: z.object({
-          documentId: z
-            .string()
-            .describe('The ID of the document to request edits'),
+          id: z.string(),
         }),
-        execute: async ({ documentId }) => {
-          const document = await getDocumentById({ id: documentId });
+        execute: async ({ id }) => {
+          const coinListUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${id}`;
 
-          if (!document || !document.content) {
-            return {
-              error: 'Document not found',
-            };
-          }
-
-          let suggestions: Array<
-            Omit<Suggestion, 'userId' | 'createdAt' | 'documentCreatedAt'>
-          > = [];
-
-          const { elementStream } = await streamObject({
-            model: customModel(model.apiIdentifier),
-            system:
-              'You are a help writing assistant. Given a piece of writing, please offer suggestions to improve the piece of writing and describe the change. It is very important for the edits to contain full sentences instead of just words. Max 5 suggestions.',
-            prompt: document.content,
-            output: 'array',
-            schema: z.object({
-              originalSentence: z.string().describe('The original sentence'),
-              suggestedSentence: z.string().describe('The suggested sentence'),
-              description: z
-                .string()
-                .describe('The description of the suggestion'),
-            }),
-          });
-
-          for await (const element of elementStream) {
-            const suggestion = {
-              originalText: element.originalSentence,
-              suggestedText: element.suggestedSentence,
-              description: element.description,
-              id: generateUUID(),
-              documentId: documentId,
-              isResolved: false,
-            };
-
-            streamingData.append({
-              type: 'suggestion',
-              content: suggestion,
-            });
-
-            suggestions.push(suggestion);
-          }
-
-          if (session.user && session.user.id) {
-            const userId = session.user.id;
-
-            await saveSuggestions({
-              suggestions: suggestions.map((suggestion) => ({
-                ...suggestion,
-                userId,
-                createdAt: new Date(),
-                documentCreatedAt: document.createdAt,
-              })),
-            });
-          }
-
-          return {
-            id: documentId,
-            title: document.title,
-            message: 'Suggestions have been added to the document',
+          const options = {
+            method: 'GET',
+            headers: {
+              accept: 'application/json',
+              'x-cg-demo-api-key': process.env.COINGECKO_API_KEY!,
+            },
           };
+
+          const response = await fetch(coinListUrl, options);
+          const data = await response.json();
+          console.log('getCryptoPrice', data);
+
+          if (data.length === 0) {
+            return null;
+          }
+
+          return data[0];
+        },
+      },
+      getHistoricalCryptoPrices: {
+        description: 'Get historical crypto prices for use in a chart',
+        parameters: z.object({
+          id: z.string(),
+          days: z.number(),
+        }),
+        execute: async ({ id, days }) => {
+          const url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}`;
+
+          const options = {
+            method: 'GET',
+            headers: {
+              accept: 'application/json',
+              'x-cg-demo-api-key': process.env.COINGECKO_API_KEY!,
+            },
+          };
+
+          const response = await fetch(url, options);
+          const data = await response.json();
+
+          return data.prices.map((price: number[]) => ({
+            timestamp: price[0],
+            price: price[1],
+          }));
         },
       },
     },
