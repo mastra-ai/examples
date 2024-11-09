@@ -30,6 +30,22 @@ export const PreviewMessage = ({
   vote: Vote | undefined;
   isLoading: boolean;
 }) => {
+  // Don't display some tools if they are finished and we don't have a display for them.
+  if (
+    message.toolInvocations &&
+    message.toolInvocations.some(
+      (toolInvocation) =>
+        toolInvocation.state === 'result' &&
+        [
+          'searchCryptoCoins',
+          'getCryptoPrice',
+          'getHistoricalCryptoPrices',
+        ].includes(toolInvocation.toolName)
+    )
+  ) {
+    return null;
+  }
+
   return (
     <motion.div
       className="w-full mx-auto max-w-3xl px-4 group/message"
@@ -62,7 +78,6 @@ export const PreviewMessage = ({
 
                 if (state === 'result') {
                   const { result } = toolInvocation;
-
                   return (
                     <div key={toolCallId}>
                       {toolName === 'getWeather' ? (
@@ -112,6 +127,18 @@ export const PreviewMessage = ({
                           type="request-suggestions"
                           args={args}
                         />
+                      ) : toolName === 'searchCryptoCoins' ? (
+                        <div className="text-gray-500">
+                          Searching for {args?.keyword}...
+                        </div>
+                      ) : toolName === 'getCryptoPrice' ? (
+                        <div className="text-gray-500">
+                          Getting Current Price for {args?.id}
+                        </div>
+                      ) : toolName === 'getHistoricalCryptoPrices' ? (
+                        <div className="text-gray-500">
+                          Getting Historical Prices for {args?.id}
+                        </div>
                       ) : null}
                     </div>
                   );
