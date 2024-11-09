@@ -24,14 +24,14 @@ import { Textarea } from '../ui/textarea';
 
 const suggestedActions = [
   {
-    title: 'What is the weather',
-    label: 'in San Francisco?',
-    action: 'What is the weather in San Francisco?',
+    title: 'What is the current',
+    label: 'price of Bitcoin?',
+    action: 'What is the current price of Bitcoin?',
   },
   {
-    title: 'Help me draft an essay',
-    label: 'about Silicon Valley',
-    action: 'Help me draft a short essay about Silicon Valley',
+    title: 'What is the performance of',
+    label: 'Solana over the last 7 days?',
+    action: 'What is the performance of Solana over the last 7 days?',
   },
 ];
 
