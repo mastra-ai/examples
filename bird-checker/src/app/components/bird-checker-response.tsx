@@ -1,11 +1,15 @@
 "use client";
 
-import { promptClaude } from "@/lib/mastra/actions";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Status } from "./bird-checker";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bird, Check, MapPin } from "lucide-react";
+import {
+  ErrorClaudeResponse,
+  ImageResponse,
+  SuccessClaudeResponse
+} from "@/lib/mastra/system-apis";
 
 function getObjectFromString(text: string) {
   // First approach: using match()
@@ -17,7 +21,7 @@ function getObjectFromString(text: string) {
     return {
       bird: "no",
       location: text,
-      species: "",
+      species: ""
     };
   }
 
@@ -29,18 +33,18 @@ function getObjectFromString(text: string) {
   return {
     bird: bird?.trim(),
     location: location?.trim(),
-    species: species?.split("}")?.join("")?.trim(),
+    species: species?.split("}")?.join("")?.trim()
   };
 }
 
 export const BirdCheckerResponse = ({
-  imageUrl,
   status,
   query,
+  metadataResponse
 }: {
-  imageUrl?: string;
   status: Status;
   query: string;
+  metadataResponse: ImageResponse<SuccessClaudeResponse, ErrorClaudeResponse> | null;
 }) => {
   const [metadata, setMedata] = useState<{
     bird: string;
@@ -55,26 +59,25 @@ export const BirdCheckerResponse = ({
   }, [query]);
 
   useEffect(() => {
-    const getRandomImage = async () => {
-      if (!imageUrl) return;
+    const getMetadataFromResponse = async () => {
+      if (!metadataResponse) return;
 
       setMetadataStatus("loading");
-      const res = await promptClaude({ imageUrl });
 
-      if (!res.ok) {
+      if (!metadataResponse?.ok) {
         toast.error("Failed to fetch image metadata");
         setMetadataStatus("error");
         return;
       }
-      console.log("res===", res.data);
+      console.log("res===", metadataResponse);
       setMetadataStatus("success");
-      const object = getObjectFromString(res.data.content[0].text);
+      const object = getObjectFromString(metadataResponse?.data?.content?.[0]?.text);
 
       setMedata(object);
     };
 
-    getRandomImage();
-  }, [imageUrl]);
+    getMetadataFromResponse();
+  }, [metadataResponse]);
 
   return (
     <div className="flex !mt-0 flex-col gap-4">
@@ -82,15 +85,9 @@ export const BirdCheckerResponse = ({
         <p className=" animate-pu">
           thinking{" "}
           <span className="animate-ellipsis">
-            <span className="inline-block animate-bounce [animation-delay:-0.3s]">
-              .
-            </span>
-            <span className="inline-block animate-bounce [animation-delay:-0.2s]">
-              .
-            </span>
-            <span className="inline-block animate-bounce [animation-delay:-0.1s]">
-              .
-            </span>
+            <span className="inline-block animate-bounce [animation-delay:-0.3s]">.</span>
+            <span className="inline-block animate-bounce [animation-delay:-0.2s]">.</span>
+            <span className="inline-block animate-bounce [animation-delay:-0.1s]">.</span>
           </span>
         </p>
       ) : (

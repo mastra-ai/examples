@@ -23,15 +23,15 @@ export const config: Config = {
         schema: z.object({
           query: z.enum(["wildlife", "feathers", "flying", "birds"])
         }),
-        label: "Get image from upstash",
-        description: "Get image from upstash that matches the query"
+        label: "Get image from unsplash",
+        description: "Get image from unsplash that matches the query"
       }
     },
     systemApis: [
       {
         type: "get_random_image",
-        label: "Get a random image from upstash",
-        description: "Gets a random image from upstash based on the selected option",
+        label: "Get a random image from unsplash",
+        description: "Gets a random image from unsplash based on the selected option",
         schema: z.object({
           query: z.enum(["wildlife", "feathers", "flying", "birds"])
         }),

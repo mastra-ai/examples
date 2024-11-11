@@ -52,7 +52,7 @@ export type ImageResponse<T, K> =
 
 // Executor functions
 export const getRandomImage = async ({
-  query,
+  query
 }: {
   query: string;
 }): Promise<ImageResponse<Image, string>> => {
@@ -65,9 +65,9 @@ export const getRandomImage = async ({
         method: "GET",
         headers: {
           Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`,
-          "Accept-Version": "v1",
+          "Accept-Version": "v1"
         },
-        cache: "no-store",
+        cache: "no-store"
       }
     );
 
@@ -76,7 +76,7 @@ export const getRandomImage = async ({
     if (!res.ok) {
       return {
         ok: false,
-        error: "Failed to fetch image",
+        error: "Failed to fetch image"
       };
     }
 
@@ -87,19 +87,19 @@ export const getRandomImage = async ({
 
     return {
       ok: true,
-      data: data.results[randomNo] as Image,
+      data: data.results[randomNo] as Image
     };
   } catch (err) {
     console.log("Error in get_random_image api executor===", err);
     return {
       ok: false,
-      error: "Error fetching image",
+      error: "Error fetching image"
     };
   }
 };
 
 export const getImageMetadataFromClaude = async ({
-  imageUrl,
+  imageUrl
 }: {
   imageUrl: string;
 }): Promise<ImageResponse<SuccessClaudeResponse, ErrorClaudeResponse>> => {
@@ -112,9 +112,9 @@ export const getImageMetadataFromClaude = async ({
         type: "error",
         error: {
           type: "error",
-          message: "Failed to fetch image",
-        },
-      },
+          message: "Failed to fetch image"
+        }
+      }
     };
   }
   const data = resBase64.data;
@@ -131,21 +131,19 @@ export const getImageMetadataFromClaude = async ({
             source: {
               type: "base64",
               media_type: "image/jpeg",
-              data,
-            },
+              data
+            }
           },
           {
             type: "text",
-            text: "view this image and structure your response like this, {bird: yes/no, location: the location of the image, species: the Scientific name of the bird without any explanation}",
-          },
-        ],
-      },
+            text: "view this image and structure your response like this, {bird: yes/no, location: the location of the image, species: the Scientific name of the bird without any explanation}"
+          }
+        ]
+      }
     ],
     model: "claude-3-5-sonnet-20241022",
-    max_tokens: 1024,
+    max_tokens: 1024
   };
-
-  console.log("message===", JSON.stringify(message, null, 2));
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -153,11 +151,11 @@ export const getImageMetadataFromClaude = async ({
       headers: {
         "Content-Type": "application/json",
         "x-api-key": `${process.env.ANTHROPIC_API_KEY}`,
-        "anthropic-version": "2023-06-01",
+        "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        ...message,
-      }),
+        ...message
+      })
     });
 
     console.log("res in get_image_metadata_from_claude api executor===", res);
@@ -169,9 +167,9 @@ export const getImageMetadataFromClaude = async ({
           type: "error",
           error: {
             type: "error",
-            message: "Failed to fetch image metadata",
-          },
-        },
+            message: "Failed to fetch image metadata"
+          }
+        }
       };
     }
 
@@ -179,13 +177,13 @@ export const getImageMetadataFromClaude = async ({
 
     return {
       ok: true,
-      data: data as SuccessClaudeResponse,
+      data: data as SuccessClaudeResponse
     };
   } catch (err) {
     console.log("Error in get_image_metadata_from_claude api executor===", err);
     return {
       ok: false,
-      error: err as ErrorClaudeResponse,
+      error: err as ErrorClaudeResponse
     };
   }
 };
@@ -199,20 +197,20 @@ async function getImageAsBase64String(
     if (!response.ok) {
       return {
         ok: false,
-        error: "could not fetch image",
+        error: "could not fetch image"
       };
     }
     const arrayBufer = await response.arrayBuffer();
     const base64String = Buffer.from(arrayBufer).toString("base64");
     return {
       ok: true,
-      data: base64String as string,
+      data: base64String as string
     };
   } catch (error) {
     console.error("Error fetching image:", error);
     return {
       ok: false,
-      error: error instanceof Error ? error.message : "Could not fetch image",
+      error: error instanceof Error ? error.message : "Could not fetch image"
     };
   }
 }

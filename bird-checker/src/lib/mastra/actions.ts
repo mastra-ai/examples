@@ -6,42 +6,37 @@ import {
   ErrorClaudeResponse,
   ImageResponse,
   SuccessClaudeResponse,
-  type Image,
+  type Image
 } from "./system-apis";
 
 const framework = Mastra.init(config);
 
-export const getImage = async ({ query }: { query: string }) => {
-  console.log("get image ============", "got here");
-  const response = await framework.callApi({
+export const getImageWithMetada = async ({ query }: { query: string }) => {
+  const response = await framework.triggerEvent({
     integrationName: "bird-checker",
-    api: "get_random_image",
-    payload: {
-      data: {
-        query,
-      },
-      ctx: {
-        connectionId: "SYSTEM",
-      }, //in prod, how does this work?
+    key: "QUERY_IMAGE",
+    data: {
+      query
     },
+    user: {
+      connectionId: "SYSTEM"
+    }
   });
 
-  return response as ImageResponse<Image, string>;
-};
+  const { workflowEvent } = response;
 
-export const promptClaude = async ({ imageUrl }: { imageUrl: string }) => {
-  const response = await framework.callApi({
-    integrationName: "bird-checker",
-    api: "get_image_metadata_from_claude",
-    payload: {
-      data: {
-        imageUrl,
-      },
-      ctx: {
-        connectionId: "SYSTEM",
-      },
-    },
-  });
+  const resp = await workflowEvent.subscribe();
 
-  return response as ImageResponse<SuccessClaudeResponse, ErrorClaudeResponse>;
+  const ctx = resp?.output?.data?.[0]?.fullCtx;
+
+  const imageResponse = ctx?.["ujcib5bjdic2ehdpeer4q8qo"] as ImageResponse<Image, string>;
+  const metadataResponse = ctx?.["j6utaiqadvm35tui0r4hyrl0"] as ImageResponse<
+    SuccessClaudeResponse,
+    ErrorClaudeResponse
+  >;
+
+  console.log("imageResponse===", JSON.stringify(imageResponse, null, 2));
+  console.log("metadataResponse===", JSON.stringify(metadataResponse, null, 2));
+
+  return { imageResponse, metadataResponse };
 };
