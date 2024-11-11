@@ -8,7 +8,8 @@
     "toolChoice": "auto"
   },
   "outputs": {
-    "text": true
+    "text": true,
+    "structured": {}
   },
   "tools": {}
 }

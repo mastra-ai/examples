@@ -1,13 +1,51 @@
 {
   "title": "Is this a bird?",
-  "status": "UNPUBLISHED",
+  "status": "PUBLISHED",
   "createdAt": "2024-11-06T12:53:48.098Z",
   "id": "a598vpqpmlti9d40cszesvap",
-  "updatedAt": "2024-11-06T12:55:06.407Z",
+  "updatedAt": "2024-11-11T11:08:44.947Z",
   "description": "A workflow to check if an image is a bird or not.",
   "trigger": {
-    "id": "",
-    "type": ""
+    "id": "asar4qxq09uzhu53n0uajq4l",
+    "type": "QUERY_IMAGE",
+    "payload": {}
   },
-  "actions": []
+  "actions": [
+    {
+      "id": "ujcib5bjdic2ehdpeer4q8qo",
+      "type": "get_random_image",
+      "payload": {
+        "mastraConnectionId": "",
+        "query": "{{query}}"
+      },
+      "variables": {
+        "query": {
+          "query": {
+            "refBlockId": "asar4qxq09uzhu53n0uajq4l",
+            "path": "query"
+          }
+        }
+      },
+      "subActions": [
+        {
+          "id": "j6utaiqadvm35tui0r4hyrl0",
+          "type": "get_image_metadata_from_claude",
+          "parentActionId": "ujcib5bjdic2ehdpeer4q8qo",
+          "subActions": [],
+          "payload": {
+            "imageUrl": "{{imageUrl_1731322149173}}",
+            "mastraConnectionId": ""
+          },
+          "variables": {
+            "imageUrl": {
+              "imageUrl_1731322149173": {
+                "refBlockId": "ujcib5bjdic2ehdpeer4q8qo",
+                "path": "data.urls.regular"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
