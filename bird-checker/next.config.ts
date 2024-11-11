@@ -14,9 +14,7 @@ const nextConfig: NextConfig = {
   },
   outputFileTracingIncludes: {
     "/mastra/agents": ["./mastra/agents/*"],
-    "/mastra/blueprints": ["./mastra/blueprints/*"],
-    "/mastra/logs/agent": ["./mastra/log/agent/*"],
-    "/mastra/logs/workflow": ["./mastra/log/workflow/*"]
+    "/mastra/blueprints": ["./mastra/blueprints/*"]
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
