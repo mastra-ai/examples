@@ -37,11 +37,11 @@ export async function generateOpenApiSpec({
 
   const ctx = eventResponse.output?.data?.[0]?.fullCtx;
 
-  const run: any = Object.values(ctx ?? {})?.find(
-    (run: any) => run?.workflowStepOrder! === 1
+  const run = Object.values(ctx ?? {})?.find(
+    (run: any) => (run?.workflowStepOrder || 0) === 1
   );
 
-  const openApiSpec = run?.mergedSpec;
+  const openApiSpec = (run as any)?.mergedSpec;
 
   if (!openApiSpec) {
     return { message: "failed", data: "No Open API Spec generated" };
