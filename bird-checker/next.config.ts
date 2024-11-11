@@ -8,12 +8,15 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-        port: "",
-      },
-    ],
+        port: ""
+      }
+    ]
   },
   outputFileTracingIncludes: {
-    "**/*": ["./mastra/**/*"],
+    "/mastra/agents/*": ["./mastra/agents/*"],
+    "/mastra/blueprints/*": ["./mastra/blueprints/*"],
+    "/mastra/logs/agent/*": ["./mastra/log/agent/*"],
+    "/mastra/logs/workflow/*": ["./mastra/log/workflow/*"]
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
@@ -21,7 +24,7 @@ const nextConfig: NextConfig = {
     }
 
     return config;
-  },
+  }
 };
 
 export default nextConfig;
