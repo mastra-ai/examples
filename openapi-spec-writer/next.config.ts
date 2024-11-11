@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
 
     return config;
   },
+  outputFileTracingIncludes: {
+    "**/*": ["./mastra/**/*"],
+  },
 };
 
 export default nextConfig;
