@@ -28,11 +28,11 @@ Eval("Is a bird", {
     return [
       {
         input: IMAGES.isBird.image,
-        expected: IMAGES.notBird
+        expected: IMAGES.isBird
       },
       {
         input: IMAGES.notBird.image,
-        expected: IMAGES.isBird
+        expected: IMAGES.notBird
       }
     ];
   },
