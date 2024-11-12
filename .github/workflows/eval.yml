@@ -2,9 +2,7 @@ name: Run evals
 
 on:
   push:
-    # Uncomment to run only when files in the 'evals' directory change
-    # - paths:
-    #     - "/bird-checker-with-eval/src/lib/evals/**"
+    paths: "/bird-checker-with-eval"
 
 permissions:
   pull-requests: write
