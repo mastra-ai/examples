@@ -39,4 +39,4 @@ jobs:
         with:
           api_key: sk-MtNrO5A56h5e0GApIo5UbGhHxamYYbeBVkE6f9riCnrPINTi
           runtime: node
-          root: /bird-checker-with-eval/src/lib/evals
+          root: bird-checker-with-eval/src/lib/evals
