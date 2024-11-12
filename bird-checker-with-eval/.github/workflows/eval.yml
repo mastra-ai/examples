@@ -1,4 +1,4 @@
-name: Run pnpm evals
+name: Run evals
 
 on:
   push:
