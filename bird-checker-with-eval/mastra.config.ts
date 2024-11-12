@@ -3,7 +3,7 @@ import { Config, LogLevel } from "@mastra/core";
 import { z } from "zod";
 
 export const config: Config = {
-  name: "bird-checker",
+  name: "bird-checker-with-eval",
   integrations: [],
   db: {
     provider: "postgres",
