@@ -37,6 +37,6 @@ jobs:
       - name: Run Evals
         uses: braintrustdata/eval-action@v1
         with:
-          api_key: sk-MtNrO5A56h5e0GApIo5UbGhHxamYYbeBVkE6f9riCnrPINTi
+          api_key: ${{ secrets.BRAINTRUST_API_KEY }}
           runtime: node
           root: bird-checker-with-eval/src/lib/evals
