@@ -4,7 +4,7 @@ on:
   push:
     # Uncomment to run only when files in the 'evals' directory change
     # - paths:
-    #     - "src/lib/evals/**"
+    #     - "/bird-checker-with-eval/src/lib/evals/**"
 
 permissions:
   pull-requests: write
@@ -41,4 +41,4 @@ jobs:
         with:
           api_key: sk-MtNrO5A56h5e0GApIo5UbGhHxamYYbeBVkE6f9riCnrPINTi
           runtime: node
-          root: src/lib/evals
+          root: /bird-checker-with-eval/src/lib/evals
