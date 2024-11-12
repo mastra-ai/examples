@@ -1,7 +1,35 @@
 import { Eval } from "braintrust";
 import { IMAGES } from "./data";
-import { BirdObj, getObjectFromString } from "../utils";
+import { BirdObj } from "../utils";
 import { promptClaude } from "../mastra/actions";
+
+
+export function getObjectFromString(text: string): BirdObj {
+  // First approach: using match()
+  const regex =
+    /(?<=bird:).*?(?=,|\n)|(?<=location:).*?(?=,|\n)|(?<=species:).*(?=\n|})/g;
+  const matches = text.match(regex);
+
+  if (!matches) {
+    return {
+      bird: "no",
+      location: text,
+      species: ""
+    };
+  }
+
+  const [bird, location, species] = matches;
+  console.log("Bird:", bird);
+  console.log("Location:", location);
+  console.log("Species:", species);
+
+  return {
+    bird: bird?.trim(),
+    location: location?.trim(),
+    species: species?.split("}")?.join("")?.trim()
+  };
+}
+
 
 const containsScorer = ({
   output,
