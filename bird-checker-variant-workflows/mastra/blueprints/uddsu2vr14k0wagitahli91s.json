@@ -1,0 +1,50 @@
+{
+  "title": "Is this a bird?",
+  "status": "PUBLISHED",
+  "createdAt": "2024-11-12T13:25:14.054Z",
+  "id": "uddsu2vr14k0wagitahli91s",
+  "updatedAt": "2024-11-12T13:26:52.658Z",
+  "description": "A workflow to check if an image is a bird or not.",
+  "trigger": {
+    "id": "t98r9w05l15njk5uiwjg65dt",
+    "type": "QUERY_IMAGE",
+    "payload": {}
+  },
+  "actions": [
+    {
+      "id": "h3m7cwfads3alcsimlibitrm",
+      "type": "get_random_image",
+      "payload": {
+        "mastraConnectionId": "",
+        "query": "{{query}}"
+      },
+      "variables": {
+        "query": {
+          "query": {
+            "refBlockId": "t98r9w05l15njk5uiwjg65dt",
+            "path": "query"
+          }
+        }
+      },
+      "subActions": [
+        {
+          "id": "ngraypmlfihy0uwd5ocbkh0n",
+          "type": "get_image_metadata_from_claude",
+          "parentActionId": "h3m7cwfads3alcsimlibitrm",
+          "subActions": [],
+          "payload": {
+            "imageUrl": "{{imageUrl_1731417985273}}"
+          },
+          "variables": {
+            "imageUrl": {
+              "imageUrl_1731417985273": {
+                "refBlockId": "h3m7cwfads3alcsimlibitrm",
+                "path": "data.urls.regular"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
