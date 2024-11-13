@@ -4,6 +4,7 @@ import { BirdObj } from "../utils";
 import { getImageMetadataFromClaude } from "../mastra/system-apis";
 
 export function getObjectFromString(text: string): BirdObj {
+  // First approach: using match()
   const regex =
     /(?<=bird:).*?(?=,|\n)|(?<=location:).*?(?=,|\n)|(?<=species:).*(?=\n|})/g;
   const matches = text.match(regex);

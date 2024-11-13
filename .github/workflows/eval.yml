@@ -2,7 +2,12 @@ name: Run evals
 
 on:
   push:
-    paths: "/bird-checker-with-eval"
+    paths:
+      - "bird-checker-with-eval/**"
+
+  # pull_request:
+  #   paths:
+  #     - "bird-checker-with-eval/**"
 
 permissions:
   pull-requests: write
