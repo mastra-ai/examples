@@ -2,7 +2,7 @@ name: Run evals
 
 on:
   push:
-    # paths: "/bird-checker-with-eval"
+    paths: "/bird-checker-with-eval"
 
 permissions:
   pull-requests: write
@@ -44,5 +44,5 @@ jobs:
           runtime: node
           root: bird-checker-with-eval/src/lib/evals
         env:
-            DB_URL: ${{ secrets.DB_URL }}
-            ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DB_URL: ${{ secrets.DB_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
