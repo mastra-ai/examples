@@ -43,6 +43,7 @@ jobs:
           api_key: ${{ secrets.BRAINTRUST_API_KEY }}
           runtime: node
           root: src/lib/evals
+          working-directory: ./bird-checker-with-eval
         env:
             DB_URL: ${{ secrets.DB_URL }}
             ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
