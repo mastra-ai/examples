@@ -157,7 +157,7 @@ async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
     const mergedSpec = await agent?.({
       prompt: `I have generated the following Open API specs: ${openapiResponses
         .map((r: any) => r?.args?.yaml)
-        .join("\n\n")} - merge them into a single spec.`,
+        .join("\n\n")} - merge them into a single spec. What I am giving you are all the fragments I need.`,
     });
 
     if (Array.isArray(mergedSpec.toolCalls)) {
