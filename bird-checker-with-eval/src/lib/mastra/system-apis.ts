@@ -119,8 +119,6 @@ export const getImageMetadataFromClaude = async ({
   }
   const data = resBase64.data;
 
-  console.log("got base64image string");
-
   const message = {
     messages: [
       {
@@ -157,8 +155,6 @@ export const getImageMetadataFromClaude = async ({
         ...message
       })
     });
-
-    console.log("res in get_image_metadata_from_claude api executor===", res);
 
     if (!res.ok) {
       return {
