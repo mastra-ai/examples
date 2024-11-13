@@ -12,6 +12,9 @@ jobs:
   eval:
     name: Run evals
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bird-checker-with-eval
 
     steps:
       - name: Checkout
