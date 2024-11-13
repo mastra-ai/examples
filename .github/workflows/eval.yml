@@ -2,7 +2,8 @@ name: Run evals
 
 on:
   push:
-    # paths: "/bird-checker-with-eval"
+    paths:
+      - "bird-checker-with-eval/**"
 
 permissions:
   pull-requests: write
@@ -12,6 +13,9 @@ jobs:
   eval:
     name: Run evals
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bird-checker-with-eval
 
     steps:
       - name: Checkout
@@ -28,7 +32,7 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9.7.0
 
       - name: Install Dependencies
         id: install
@@ -40,3 +44,6 @@ jobs:
           api_key: ${{ secrets.BRAINTRUST_API_KEY }}
           runtime: node
           root: bird-checker-with-eval/src/lib/evals
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

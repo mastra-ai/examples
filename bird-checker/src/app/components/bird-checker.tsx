@@ -14,7 +14,7 @@ const tags = [
   { id: "wildlife", label: "Wildlife", icon: <Camera className="w-4 h-4" /> },
   { id: "feathers", label: "Feathers", icon: <Feather className="w-4 h-4" /> },
   { id: "flying", label: "Flying", icon: <Plane className="w-4 h-4" /> },
-  { id: "birds", label: "Birds", icon: <Bird className="w-4 h-4" /> },
+  { id: "birds", label: "Birds", icon: <Bird className="w-4 h-4" /> }
 ];
 
 type Image = {
@@ -36,7 +36,7 @@ export const BirdChecker = () => {
   const [image, setImage] = useState<Image | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [query, setQuery] = useQueryState("query", {
-    defaultValue: "wildlife",
+    defaultValue: "wildlife"
   });
 
   useEffect(() => {
@@ -74,10 +74,10 @@ export const BirdChecker = () => {
             <p className="md:hidden text-sm text-center font-base font-normal italic font-serif">
               Inspired by{" "}
               <a
+                rel="noopener"
                 href="https://xkcd.com/1425/"
                 target="_blank"
-                className="text-[#0057ff] font-medium"
-              >
+                className="text-[#0057ff] font-medium">
                 Randall Munroe
               </a>
             </p>
@@ -90,8 +90,7 @@ export const BirdChecker = () => {
                 className={cn(
                   "relative grow-0 bg-gray-100/50 rounded p-2 border  w-full aspect-square  flex items-center justify-center",
                   status === "loading" ? "animate-pulse" : ""
-                )}
-              >
+                )}>
                 {status === "loading" ? <span>Fetching image...</span> : null}
                 {status === "idle" ? null : status === "success" && image ? (
                   <Image
@@ -108,16 +107,14 @@ export const BirdChecker = () => {
                 <a
                   href="unsplash.com"
                   target="_blank"
-                  className="text-blue-600 underline"
-                >
+                  className="text-blue-600 underline">
                   Unsplah
                 </a>
                 , Photographer{" "}
                 <a
                   href={image?.user.links.html}
                   className="text-blue-600 underline font-medium"
-                  target="_blank"
-                >
+                  target="_blank">
                   {image?.user.first_name}
                 </a>
               </span>
@@ -145,8 +142,7 @@ export const BirdChecker = () => {
                   disabled:opacity-50 disabled:cursor-not-allowed
                   group flex items-center justify-center gap-2
                   min-h-[34px]
-                `}
-                  >
+                `}>
                     <span>{tag.icon}</span>
                     <span>{tag.label}</span>
                   </button>
@@ -163,19 +159,19 @@ export const BirdChecker = () => {
           <span className="sm:hidden bottom-2 right-2 w-fit mx-auto py-1 bg-gray-100 duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
             <div className="flex gap-2">
               <a
+                rel="noopener"
                 href="https://github.com/mastra-ai/examples/tree/main/bird-checker"
                 target="_blank"
-                className="uppercase inline-flex items-center h-4 rounded-full text-black px-1.5 leading-tight tracking-widest text-[9px] bg-gray-50 font-semibold"
-              >
+                className="uppercase inline-flex items-center h-4 rounded-full text-black px-1.5 leading-tight tracking-widest text-[9px] bg-gray-50 font-semibold">
                 see the code
               </a>
               <span className="text-xs text-black font-semibold">
                 Built with{" "}
                 <a
                   href="https://mastra.ai/"
+                  rel="noopener"
                   className="underline"
-                  target="_blank"
-                >
+                  target="_blank">
                   Mastra.ai
                 </a>
               </span>
@@ -184,10 +180,10 @@ export const BirdChecker = () => {
           <p className="absolute hidden md:block right-2 bottom-2 italic font-serif">
             Inspired by{" "}
             <a
+              rel="noopener"
               href="https://xkcd.com/1425/"
               target="_blank"
-              className="text-[#0057ff] font-medium"
-            >
+              className="text-[#0057ff] font-medium">
               Randall Munroe
             </a>
           </p>
@@ -196,15 +192,19 @@ export const BirdChecker = () => {
       <span className="hidden md:block md:fixed bottom-2 right-2 w-fit mx-auto py-1 bg-gray-100 duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
         <div className="flex gap-2">
           <a
+            rel="noopener"
             href="https://github.com/mastra-ai/examples/tree/main/bird-checker"
             target="_blank"
-            className="uppercase inline-flex items-center h-4 rounded-full text-black px-1.5 leading-tight tracking-widest text-[9px] bg-gray-50 font-semibold"
-          >
+            className="uppercase inline-flex items-center h-4 rounded-full text-black px-1.5 leading-tight tracking-widest text-[9px] bg-gray-50 font-semibold">
             see the code
           </a>
           <span className="text-xs text-black font-semibold">
             Built with{" "}
-            <a href="https://mastra.ai/" className="underline" target="_blank">
+            <a
+              rel="noopener"
+              href="https://mastra.ai/"
+              className="underline"
+              target="_blank">
               Mastra.ai
             </a>
           </span>

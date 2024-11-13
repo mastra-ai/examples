@@ -1,7 +1,30 @@
 import { Eval } from "braintrust";
 import { IMAGES } from "./data";
-import { BirdObj, getObjectFromString } from "../utils";
-import { promptClaude } from "../mastra/actions";
+import { BirdObj } from "../utils";
+import { getImageMetadataFromClaude } from "../mastra/system-apis";
+
+export function getObjectFromString(text: string): BirdObj {
+  // First approach: using match()
+  const regex =
+    /(?<=bird:).*?(?=,|\n)|(?<=location:).*?(?=,|\n)|(?<=species:).*(?=\n|})/g;
+  const matches = text.match(regex);
+
+  if (!matches) {
+    return {
+      bird: "no",
+      location: text,
+      species: ""
+    };
+  }
+
+  const [bird, location, species] = matches;
+
+  return {
+    bird: bird?.trim(),
+    location: location?.trim(),
+    species: species?.split("}")?.join("")?.trim()
+  };
+}
 
 const containsScorer = ({
   output,
@@ -28,16 +51,16 @@ Eval("Is a bird", {
     return [
       {
         input: IMAGES.isBird.image,
-        expected: IMAGES.notBird
+        expected: IMAGES.isBird
       },
       {
         input: IMAGES.notBird.image,
-        expected: IMAGES.isBird
+        expected: IMAGES.notBird
       }
     ];
   },
   task: async (input) => {
-    const claudeResponse = await promptClaude({ imageUrl: input });
+    const claudeResponse = await getImageMetadataFromClaude({ imageUrl: input });
     if (!claudeResponse.ok) {
       return { bird: "", location: "", species: "" };
     }
