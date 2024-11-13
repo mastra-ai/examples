@@ -18,9 +18,6 @@ export function getObjectFromString(text: string): BirdObj {
   }
 
   const [bird, location, species] = matches;
-  console.log("Bird:", bird);
-  console.log("Location:", location);
-  console.log("Species:", species);
 
   return {
     bird: bird?.trim(),
