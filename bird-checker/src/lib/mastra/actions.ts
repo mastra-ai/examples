@@ -4,11 +4,9 @@ import { mastra } from "@/mastra";
 import { getRandomImageTool } from "@/mastra/tools";
 import { ImageResponse } from "./system-tools";
 
-export const getImage = async ({
-  query
-}: {
-  query: "wildlife" | "feathers" | "flying" | "birds";
-}) => {
+export type ImageQuery = "wildlife" | "feathers" | "flying" | "birds";
+
+export const getImage = async ({ query }: { query: ImageQuery }) => {
   console.log("get image ============", "got here");
 
   const response = await getRandomImageTool.executor({

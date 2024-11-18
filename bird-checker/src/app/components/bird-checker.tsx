@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getImage } from "@/lib/mastra/actions";
+import { getImage, ImageQuery } from "@/lib/mastra/actions";
 import { cn } from "@/lib/utils";
 import { Bird, Camera, Feather, Plane } from "lucide-react";
 import Image from "next/image";
@@ -43,7 +43,7 @@ export const BirdChecker = () => {
     const getRandomImage = async () => {
       setStatus("loading");
       console.log("got here");
-      const res = await getImage({ query });
+      const res = await getImage({ query: query as ImageQuery });
       if (!res.ok) {
         setStatus("error");
         toast.error("Failed to fetch image");
