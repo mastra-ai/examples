@@ -66,12 +66,9 @@ export async function POST(request: Request) {
     (message) => message.content
   ) as unknown as string[];
 
-  const text = await cryptoAgent.text({ messages: userMessages });
-  console.log({ text });
-  return text;
-  // console.log({ streamResult });
+  const streamResult = await cryptoAgent.stream({ messages: userMessages, });
 
-  // return streamResult.toDataStreamResponse();
+  return streamResult.toDataStreamResponse();
 }
 
 export async function DELETE(request: Request) {
