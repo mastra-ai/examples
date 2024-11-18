@@ -17,7 +17,7 @@ function getObjectFromString(text: string) {
     return {
       bird: "no",
       location: text,
-      species: "",
+      species: ""
     };
   }
 
@@ -29,14 +29,14 @@ function getObjectFromString(text: string) {
   return {
     bird: bird?.trim(),
     location: location?.trim(),
-    species: species?.split("}")?.join("")?.trim(),
+    species: species?.split("}")?.join("")?.trim()
   };
 }
 
 export const BirdCheckerResponse = ({
   imageUrl,
   status,
-  query,
+  query
 }: {
   imageUrl?: string;
   status: Status;
@@ -68,7 +68,7 @@ export const BirdCheckerResponse = ({
       }
       console.log("res===", res.data);
       setMetadataStatus("success");
-      const object = getObjectFromString(res.data.content[0].text);
+      const object = getObjectFromString(res.data.text);
 
       setMedata(object);
     };
@@ -82,15 +82,9 @@ export const BirdCheckerResponse = ({
         <p className=" animate-pu">
           thinking{" "}
           <span className="animate-ellipsis">
-            <span className="inline-block animate-bounce [animation-delay:-0.3s]">
-              .
-            </span>
-            <span className="inline-block animate-bounce [animation-delay:-0.2s]">
-              .
-            </span>
-            <span className="inline-block animate-bounce [animation-delay:-0.1s]">
-              .
-            </span>
+            <span className="inline-block animate-bounce [animation-delay:-0.3s]">.</span>
+            <span className="inline-block animate-bounce [animation-delay:-0.2s]">.</span>
+            <span className="inline-block animate-bounce [animation-delay:-0.1s]">.</span>
           </span>
         </p>
       ) : (
