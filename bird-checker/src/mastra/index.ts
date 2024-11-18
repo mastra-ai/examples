@@ -1,14 +1,14 @@
 import { Integration, Mastra, createLogger } from "@mastra/core";
 
-import { getImageMetadataFromClaudeTool, getRandomImageTool } from "./tools";
+import { getRandomImageTool } from "./tools";
+import { agentOne } from "./agents";
 
 export const mastra = new Mastra<Integration[]>({
   tools: {
-    getImageMetadataFromClaudeTool,
     getRandomImageTool
   },
   syncs: {},
-  agents: [],
+  agents: [agentOne],
   integrations: [],
   logger: createLogger({
     type: "CONSOLE",
