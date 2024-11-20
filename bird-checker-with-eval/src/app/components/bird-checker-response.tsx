@@ -6,7 +6,32 @@ import { toast } from "sonner";
 import { Status } from "./bird-checker";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bird, Check, MapPin } from "lucide-react";
-import { getObjectFromString } from "@/lib/utils";
+
+function getObjectFromString(text: string) {
+  // First approach: using match()
+  const regex =
+    /(?<=bird:).*?(?=,|\n)|(?<=location:).*?(?=,|\n)|(?<=species:).*(?=\n|})/g;
+  const matches = text.match(regex);
+
+  if (!matches) {
+    return {
+      bird: "no",
+      location: text,
+      species: ""
+    };
+  }
+
+  const [bird, location, species] = matches;
+  console.log("Bird:", bird);
+  console.log("Location:", location);
+  console.log("Species:", species);
+
+  return {
+    bird: bird?.trim(),
+    location: location?.trim(),
+    species: species?.split("}")?.join("")?.trim()
+  };
+}
 
 export const BirdCheckerResponse = ({
   imageUrl,
@@ -33,8 +58,6 @@ export const BirdCheckerResponse = ({
     const getRandomImage = async () => {
       if (!imageUrl) return;
 
-      console.log("imageUrl==", imageUrl);
-
       setMetadataStatus("loading");
       const res = await promptClaude({ imageUrl });
 
@@ -45,7 +68,7 @@ export const BirdCheckerResponse = ({
       }
       console.log("res===", res.data);
       setMetadataStatus("success");
-      const object = getObjectFromString(res.data.content[0].text);
+      const object = getObjectFromString(res.data.text);
 
       setMedata(object);
     };

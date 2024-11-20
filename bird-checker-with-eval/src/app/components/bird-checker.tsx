@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getImage } from "@/lib/mastra/actions";
+import { getImage, ImageQuery } from "@/lib/mastra/actions";
 import { cn } from "@/lib/utils";
 import { Bird, Camera, Feather, Plane } from "lucide-react";
 import Image from "next/image";
@@ -43,7 +43,7 @@ export const BirdChecker = () => {
     const getRandomImage = async () => {
       setStatus("loading");
       console.log("got here");
-      const res = await getImage({ query });
+      const res = await getImage({ query: query as ImageQuery });
       if (!res.ok) {
         setStatus("error");
         toast.error("Failed to fetch image");
@@ -74,8 +74,8 @@ export const BirdChecker = () => {
             <p className="md:hidden text-sm text-center font-base font-normal italic font-serif">
               Inspired by{" "}
               <a
-                href="https://xkcd.com/1425/"
                 rel="noopener"
+                href="https://xkcd.com/1425/"
                 target="_blank"
                 className="text-[#0057ff] font-medium">
                 Randall Munroe
@@ -159,9 +159,9 @@ export const BirdChecker = () => {
           <span className="sm:hidden bottom-2 right-2 w-fit mx-auto py-1 bg-gray-100 duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
             <div className="flex gap-2">
               <a
+                rel="noopener"
                 href="https://github.com/mastra-ai/examples/tree/main/bird-checker"
                 target="_blank"
-                rel="noopener"
                 className="uppercase inline-flex items-center h-4 rounded-full text-black px-1.5 leading-tight tracking-widest text-[9px] bg-gray-50 font-semibold">
                 see the code
               </a>
@@ -180,8 +180,8 @@ export const BirdChecker = () => {
           <p className="absolute hidden md:block right-2 bottom-2 italic font-serif">
             Inspired by{" "}
             <a
-              href="https://xkcd.com/1425/"
               rel="noopener"
+              href="https://xkcd.com/1425/"
               target="_blank"
               className="text-[#0057ff] font-medium">
               Randall Munroe
@@ -192,17 +192,17 @@ export const BirdChecker = () => {
       <span className="hidden md:block md:fixed bottom-2 right-2 w-fit mx-auto py-1 bg-gray-100 duration-300 ease-out transition-all rounded-full px-2 border-[hsla(256,2%,99%,.08)] justify-center items-center font-medium border text-sm">
         <div className="flex gap-2">
           <a
+            rel="noopener"
             href="https://github.com/mastra-ai/examples/tree/main/bird-checker"
             target="_blank"
-            rel="noopener"
             className="uppercase inline-flex items-center h-4 rounded-full text-black px-1.5 leading-tight tracking-widest text-[9px] bg-gray-50 font-semibold">
             see the code
           </a>
           <span className="text-xs text-black font-semibold">
             Built with{" "}
             <a
-              href="https://mastra.ai/"
               rel="noopener"
+              href="https://mastra.ai/"
               className="underline"
               target="_blank">
               Mastra.ai
