@@ -12,8 +12,8 @@ importers:
         specifier: ^0.0.60
         version: 0.0.60(zod@3.23.8)
       '@mastra/core':
-        specifier: 0.1.27-alpha.0
-        version: 0.1.27-alpha.0(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)(sswr@2.1.0(svelte@5.1.3))(svelte@5.1.3)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
+        specifier: 0.1.27-alpha.3
+        version: 0.1.27-alpha.3(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)(sswr@2.1.0(svelte@5.1.3))(svelte@5.1.3)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
@@ -975,8 +975,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@mastra/core@0.1.27-alpha.0':
-    resolution: {integrity: sha512-HUYLU9S7LcEp6o7qn0DwXGureG2lAgudUBBbedza6KtqZpKIJJZDsKGUJ61V3/9enm1U/v+bsOQYayfoZ5zSfw==}
+  '@mastra/core@0.1.27-alpha.3':
+    resolution: {integrity: sha512-OICdRXJlRJdrQHKsOGyt7UmprjPDwwFQz7QFZy50/LhqMFV3zJ7QsEmmeKzKKlryQPCDQQ1mMzHgTf7KLAIVEg==}
     engines: {node: '>=20 <22'}
     peerDependencies:
       zod: ^3.23.8
@@ -3673,6 +3673,9 @@ packages:
     resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
     engines: {node: '>= 0.4'}
 
+  sift@17.1.3:
+    resolution: {integrity: sha512-Rtlj66/b0ICeFzYTuNvX/EF1igRbbnGSvEyT79McoZa/DeGhMyC5pWKOEsZKnpkqtSeovd5FL/bjHWC3CIIvCQ==}
+
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
@@ -4608,7 +4611,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@mastra/core@0.1.27-alpha.0(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)(sswr@2.1.0(svelte@5.1.3))(svelte@5.1.3)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)':
+  '@mastra/core@0.1.27-alpha.3(@opentelemetry/api@1.9.0)(encoding@0.1.13)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)(sswr@2.1.0(svelte@5.1.3))(svelte@5.1.3)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(zod@3.23.8)':
     dependencies:
       '@ai-sdk/anthropic': 0.0.51(zod@3.23.8)
       '@ai-sdk/openai': 0.0.66(zod@3.23.8)
@@ -4625,6 +4628,7 @@ snapshots:
       openai: 4.72.0(encoding@0.1.13)(zod@3.23.8)
       prisma: 5.22.0
       qs: 6.13.1
+      sift: 17.1.3
       zod: 3.23.8
     transitivePeerDependencies:
       - '@babel/core'
@@ -7724,6 +7728,8 @@ snapshots:
       es-errors: 1.3.0
       get-intrinsic: 1.2.4
       object-inspect: 1.13.2
+
+  sift@17.1.3: {}
 
   signal-exit@4.1.0: {}
 
