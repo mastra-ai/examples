@@ -8,10 +8,14 @@ import {
   saveChat,
   saveMessages,
 } from '@/db/queries';
-import { generateUUID, getMostRecentUserMessage } from '@/lib/utils';
+import {
+  generateUUID,
+  getMostRecentUserMessage,
+  sanitizeResponseMessages,
+} from '@/lib/utils';
 
 import { generateTitleFromUserMessage } from '../../actions';
-import { mastra } from '@/mastra';
+import { createMastra, } from '@/mastra';
 
 export const maxDuration = 60;
 
@@ -36,7 +40,7 @@ export async function POST(request: Request) {
 
   const coreMessages = convertToCoreMessages(messages);
   const userMessage = getMostRecentUserMessage(coreMessages);
-  console.log({ coreMessages, userMessage });
+
   if (!userMessage) {
     return new Response('No user message found', { status: 400 });
   }
@@ -54,7 +58,10 @@ export async function POST(request: Request) {
     ],
   });
 
-  // const streamingData = new StreamData();
+  const mastra = createMastra({
+    modelProvider: model.provider,
+    modelName: model.apiIdentifier,
+  });
 
   const cryptoAgent = mastra.getAgent('cryptoAgent');
 
@@ -66,9 +73,59 @@ export async function POST(request: Request) {
     (message) => message.content
   ) as unknown as string[];
 
-  const streamResult = await cryptoAgent.stream({ messages: userMessages, });
+  console.log({ userMessage });
 
-  return streamResult.toDataStreamResponse();
+  const streamingData = new StreamData();
+
+  try {
+    const streamResult = await cryptoAgent.stream({
+      messages: userMessages,
+      onFinish: async (result) => {
+        const { responseMessages } = JSON.parse(result) || {};
+        if (session.user && session.user.id) {
+          try {
+            const responseMessagesWithoutIncompleteToolCalls =
+              sanitizeResponseMessages(responseMessages);
+
+            await saveMessages({
+              messages: responseMessagesWithoutIncompleteToolCalls.map(
+                (message) => {
+                  const messageId = generateUUID();
+                  if (message.role === 'assistant') {
+                    streamingData.appendMessageAnnotation({
+                      messageIdFromServer: messageId,
+                    });
+                  }
+
+                  return {
+                    id: messageId,
+                    chatId: id,
+                    role: message.role,
+                    content: message.content,
+                    createdAt: new Date(),
+                  };
+                }
+              ),
+            });
+          } catch (error) {
+            console.error('Failed to save chat');
+          }
+        }
+
+        streamingData.close();
+      },
+    });
+
+    return streamResult.toDataStreamResponse({
+      data: streamingData,
+    });
+  } catch (err) {
+    console.error(err);
+    streamingData.close();
+    return new Response('An error occurred while processing your request', {
+      status: 500,
+    });
+  }
 }
 
 export async function DELETE(request: Request) {

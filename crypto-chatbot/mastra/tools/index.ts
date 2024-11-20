@@ -5,9 +5,10 @@ export const searchCryptoCoins = createTool({
   label: 'Search crypto coins',
   schema: z.object({ keyword: z.string() }),
   description: 'Search all available crypto coins by a keyword',
-  executor: async (d) => {
-    const keyword = (d as unknown as any)?.keyword; // TODO: core needs to be updated before we can destruct from data
-
+  executor: async (params) => {
+    const {
+      data: { keyword },
+    } = params;
     const coinListUrl = `https://api.coingecko.com/api/v3/coins/list`;
 
     const options = {
@@ -49,8 +50,7 @@ export const getCryptoPrice = createTool({
   label: 'Get crypto price by id',
   schema: z.object({ id: z.string() }),
   description: 'Get crypto price by id',
-  executor: async (d) => {
-    const id = (d as unknown as any)?.id; // TODO: core needs to be updated before we can destruct from data
+  executor: async ({ data: { id } }) => {
     const coinListUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${id}`;
 
     const options = {
@@ -63,7 +63,6 @@ export const getCryptoPrice = createTool({
 
     const response = await fetch(coinListUrl, options);
     const data = await response.json();
-    console.log('getCryptoPrice', data);
 
     if (data.length === 0) {
       return null;
@@ -77,9 +76,7 @@ export const getHistoricalCryptoPrices = createTool({
   label: 'Get historical crypto prices for use in a chart',
   schema: z.object({ id: z.string(), days: z.number() }),
   description: 'Get historical crypto prices for use in a chart',
-  executor: async (d) => {
-    const id = (d as unknown as any)?.id; // TODO: core needs to be updated before we can destruct from data
-    const days = (d as unknown as any)?.days; // TODO: core needs to be updated before we can destruct from data
+  executor: async ({ data: { id, days } }) => {
     const url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}`;
 
     const options = {

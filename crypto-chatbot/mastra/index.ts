@@ -1,14 +1,20 @@
 import { Mastra, createLogger } from '@mastra/core';
-import { cryptoAgent } from './agents';
+import { createCryptoAgent } from './agents';
 import * as tools from './tools';
 
-export const mastra = new Mastra<any>({
-  tools,
-  syncs: {},
-  agents: [cryptoAgent],
-  integrations: [],
-  logger: createLogger({
-    type: 'CONSOLE',
-    level: 'INFO',
-  }),
-});
+export const createMastra = ({
+  modelProvider,
+  modelName,
+}: {
+  modelProvider: string;
+  modelName: string;
+}) =>
+  new Mastra<any>({
+    tools,
+    agents: [createCryptoAgent(modelProvider, modelName)],
+    integrations: [],
+    logger: createLogger({
+      type: 'CONSOLE',
+      level: 'INFO',
+    }),
+  });

@@ -1,18 +1,19 @@
 import { Agent } from '@mastra/core';
-
 import { systemPrompt } from '@/ai/prompts';
 
-export const cryptoAgent = new Agent({
-  name: 'cryptoAgent',
-  instructions: systemPrompt,
-  model: {
-    provider: 'ANTHROPIC_VERCEL',
-    name: 'claude-3-opus-20240229',
-    toolChoice: 'auto',
-  },
-  enabledTools: {
-    searchCryptoCoins: true,
-    getCryptoPrice: true,
-    getHistoricalCryptoPrices: true,
-  },
-});
+export const createCryptoAgent = (modelProvider: any, modelName: any) => {
+  return new Agent({
+    name: 'cryptoAgent',
+    instructions: systemPrompt,
+    model: {
+      provider: modelProvider,
+      name: modelName,
+      toolChoice: 'auto',
+    },
+    enabledTools: {
+      searchCryptoCoins: true,
+      getCryptoPrice: true,
+      getHistoricalCryptoPrices: true,
+    },
+  });
+};
