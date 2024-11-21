@@ -27,8 +27,6 @@ export const promptClaude = async ({
   try {
     const agentOne = mastra.getAgent("Bird checker");
 
-    console.log("calling bird checker agent");
-
     const response = await agentOne.text({
       messages: [
         [
@@ -45,8 +43,6 @@ export const promptClaude = async ({
     });
 
     const { text } = response;
-
-    console.log("prompt claude response====", JSON.stringify(response, null, 2));
 
     return { ok: true, data: { text } };
   } catch (err) {
