@@ -1,7 +1,7 @@
 import { Eval } from "braintrust";
 import { IMAGES } from "./data";
 import { BirdObj } from "../utils";
-import { getImageMetadataFromClaude } from "../mastra/system-apis";
+import { promptClaude } from "../mastra/actions";
 
 export function getObjectFromString(text: string): BirdObj {
   // First approach: using match()
@@ -60,11 +60,11 @@ Eval("Is a bird", {
     ];
   },
   task: async (input) => {
-    const claudeResponse = await getImageMetadataFromClaude({ imageUrl: input });
+    const claudeResponse = await promptClaude({ imageUrl: input });
     if (!claudeResponse.ok) {
       return { bird: "", location: "", species: "" };
     }
-    const object = getObjectFromString(claudeResponse.data.content[0].text);
+    const object = getObjectFromString(claudeResponse.data.text);
 
     return object;
   },
