@@ -1,5 +1,4 @@
 import { GithubIntegration } from "@mastra/github";
-import { SlackIntegration } from "@mastra/slack";
 import { FirecrawlIntegration } from "@mastra/firecrawl";
 import { Config } from "@mastra/core";
 import { z } from "zod";
@@ -16,15 +15,6 @@ export const config: Config = {
   name: "openapi-spec-writer",
   integrations: [
     new GithubIntegration(),
-
-    new SlackIntegration({
-      config: {
-        CLIENT_ID: process.env.SLACK_CLIENT_ID!,
-        CLIENT_SECRET: process.env.SLACK_CLIENT_SECRET!,
-        SCOPES: ["chat:write", "channels:read"],
-        REDIRECT_URI: SLACK_REDIRECT_URI,
-      },
-    }),
 
     new FirecrawlIntegration({
       config: {
