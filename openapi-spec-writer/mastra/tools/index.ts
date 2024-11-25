@@ -1,228 +1,297 @@
-// import yaml from 'js-yaml';
-// import { fs, vol } from 'memfs';
-import {
-  delay,
-  IntegrationApiExcutorParams,
-  PropertyType,
-  splitMarkdownIntoChunks,
-} from "@mastra/core";
-import { GithubIntegration } from "@mastra/github";
+import { Agent, createTool, PropertyType } from "@mastra/core";
+import { record, z } from "zod";
+import { integrations } from "../integrations";
 import { randomUUID } from "crypto";
-import { z } from "zod";
 
-async function siteCrawl({ data, ctx }: IntegrationApiExcutorParams) {
-  console.log("INCOMING", data);
-  const { mastra } = await import("../");
-  const firecrawlIntegration = mastra.getIntegration("FIRECRAWL");
-  const connectionId = ctx.connectionId;
+function splitMarkdownIntoChunks(
+  markdown: string,
+  maxTokens: number = 8190
+): string[] {
+  const tokens = markdown.split(/\s+/); // Split by whitespace to tokenize
+  const chunks: string[] = [];
+  let currentChunk: string[] = [];
 
-  const client = await firecrawlIntegration.getApiClient({ connectionId });
-
-  console.log("Starting crawl", data.url);
-
-  const res = await client.crawlUrls({
-    body: {
-      url: data.url,
-      limit: data?.limit || 3,
-      includePaths: [data.pathRegex],
-      scrapeOptions: {
-        formats: ["markdown"],
-        includeTags: ["main"],
-        excludeTags: [
-          "img",
-          "footer",
-          "nav",
-          "header",
-          "#navbar",
-          ".table-of-contents-content",
-        ],
-        onlyMainContent: true,
-      },
-    },
-  });
-
-  if (res.error) {
-    console.error(JSON.stringify(res.error, null, 2));
-    return { success: false };
+  for (const token of tokens) {
+    if (currentChunk.join(" ").length + token.length + 1 > maxTokens) {
+      // If adding the next token exceeds the limit, push the current chunk and reset
+      chunks.push(currentChunk.join(" "));
+      currentChunk = [token]; // Start a new chunk with the current token
+    } else {
+      // Otherwise, add the token to the current chunk
+      currentChunk.push(token);
+    }
   }
 
-  const crawlId = res.data?.id;
+  // Add any remaining tokens as the last chunk
+  if (currentChunk.length > 0) {
+    chunks.push(currentChunk.join(" "));
+  }
 
-  let crawl = await client.getCrawlStatus({
-    path: {
-      id: crawlId!,
-    },
-  });
+  return chunks;
+}
 
-  while (crawl.data?.status === "scraping") {
-    await delay(5000);
+export const siteCrawl = createTool({
+  label: "Site Crawl",
+  schema: z.object({
+    url: z.string(),
+    pathRegex: z.string(),
+    limit: z.number(),
+  }),
+  description: "Crawl a website and extract the markdown content",
+  executor: async ({ data, integrationsRegistry, agents, engine, llm }) => {
+    // Make system connection creation a core functionality
+    const connection = await engine?.getConnection({
+      name: "FIRECRAWL",
+      connectionId: "SYSTEM",
+    });
 
-    crawl = await client.getCrawlStatus({
+    if (!connection) {
+      await engine?.createConnection({
+        connection: {
+          connectionId: "SYSTEM",
+          name: "FIRECRAWL",
+          issues: [],
+          syncConfig: {},
+        },
+        credential: {
+          scope: [],
+          type: "API_KEY",
+          value: {},
+        },
+      });
+    }
+
+    const fireCrawlIntegration =
+      integrationsRegistry<typeof integrations>().get("FIRECRAWL");
+
+    const client = await fireCrawlIntegration.getApiClient();
+
+    console.log("Starting crawl", data.url);
+
+    const res = await client.crawlUrls({
+      body: {
+        url: data.url,
+        limit: data?.limit || 3,
+        includePaths: [data.pathRegex],
+        scrapeOptions: {
+          formats: ["markdown"],
+          includeTags: ["main"],
+          excludeTags: [
+            "img",
+            "footer",
+            "nav",
+            "header",
+            "#navbar",
+            ".table-of-contents-content",
+          ],
+          onlyMainContent: true,
+        },
+      },
+    });
+
+    console.log("Crawl response", res);
+
+    if (res.error) {
+      console.error(JSON.stringify(res.error, null, 2));
+      return { success: false };
+    }
+
+    const crawlId = res.data?.id;
+
+    let crawl = await client.getCrawlStatus({
       path: {
         id: crawlId!,
       },
     });
 
-    console.log(crawl.data?.status);
-  }
+    while (crawl.data?.status === "scraping") {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  const entityType = `CRAWL_${data.url}`;
-
-  const recordsToPersist = crawl?.data?.data?.flatMap(
-    ({ markdown, metadata }: any) => {
-      const chunks = splitMarkdownIntoChunks(markdown!);
-      return chunks.map((c, i) => {
-        return {
-          externalId: `${metadata?.sourceURL}_chunk_${i}`,
-          data: { markdown: c },
-          entityType: entityType,
-        };
+      crawl = await client.getCrawlStatus({
+        path: {
+          id: crawlId!,
+        },
       });
+
+      console.log(crawl.data);
     }
-  );
 
-  await mastra.dataLayer?.syncData({
-    name: "FIRECRAWL",
-    connectionId,
-    data: recordsToPersist,
-    properties: [
-      {
-        name: "markdown",
-        displayName: "Markdown",
-        type: PropertyType.LONG_TEXT,
-        visible: true,
-        order: 1,
-        modifiable: true,
-      },
-    ],
-    type: entityType,
-  });
+    const entityType = `CRAWL_${data.url}`;
 
-  return { success: true, crawlData: crawl.data?.data, entityType: entityType };
-}
-
-async function generateSpec({ data, ctx }: IntegrationApiExcutorParams) {
-  const { mastra } = await import("../");
-  let agent;
-  const integration = await mastra.dataLayer.getConnection({
-    name: "FIRECRAWL",
-    connectionId: ctx.connectionId,
-  });
-
-  if (!integration) {
-    throw new Error("Integration not found");
-  }
-
-  const crawledData = await mastra.dataLayer.getRecords({
-    entityType: data.mastra_entity_type,
-    k_id: integration?.id,
-  });
-
-  console.log({
-    crawledData,
-    entityType: data.mastra_entity_type,
-    integrationId: integration?.id,
-  });
-
-  try {
-    agent = await mastra.getAgent({
-      connectionId: "SYSTEM",
-      agentId: "073a0c0d-e924-42ca-a437-78d350876e08",
-    });
-  } catch (e) {
-    console.error(e);
-    return { success: false };
-  }
-
-  const openapiResponses = [];
-  let mergedSpecAnswer = "";
-
-  for (const d of crawledData) {
-    if (typeof agent === "function") {
-      const data = await agent({
-        prompt: `I wrote another page of docs, turn this into an Open API spec: ${d.data.markdown}`,
-      });
-      if (Array.isArray(data.toolCalls)) {
-        const answer = data.toolCalls?.find(
-          ({ toolName }) => toolName === "answer"
-        );
-        openapiResponses.push(answer);
+    const recordsToPersist = crawl?.data?.data?.flatMap(
+      ({ markdown, metadata }: any) => {
+        const chunks = splitMarkdownIntoChunks(markdown!);
+        return chunks.map((c, i) => {
+          console.log({
+            c,
+            i,
+          });
+          return {
+            externalId: `${metadata?.sourceURL}_chunk_${i}`,
+            data: { markdown: c },
+            entityType: entityType,
+          };
+        });
       }
-    }
-  }
+    );
 
-  console.log({ openapiResponses, agent, typeof: typeof agent });
-
-  if (typeof agent === "function") {
-    const mergedSpec = await agent?.({
-      prompt: `I have generated the following Open API specs: ${openapiResponses
-        .map((r: any) => r?.args?.yaml)
-        .join("\n\n")} - merge them into a single spec. What I am giving you are all the fragments I need.`,
-    });
-
-    if (Array.isArray(mergedSpec.toolCalls)) {
-      const answer = mergedSpec.toolCalls?.find(
-        ({ toolName }) => toolName === "answer"
-      );
-      mergedSpecAnswer = (answer as any)?.args?.yaml;
-    }
-  }
-  console.log(
-    "MERGED SPEC ==================",
-    JSON.stringify(mergedSpecAnswer, null, 2)
-  );
-
-  return { success: true, mergedSpec: mergedSpecAnswer };
-}
-
-async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
-  const { mastra } = await import("../");
-
-  const integrationName = data.integration_name.toLowerCase();
-
-  const githubIntegration = mastra.getIntegration(
-    "GITHUB"
-  ) as GithubIntegration;
-
-  const apiClient = await githubIntegration.getApiClient({
-    connectionId: ctx.connectionId,
-  });
-
-  const content = data.yaml;
-
-  console.log("Writing to Github for", data.integration_name);
-  let agent;
-
-  try {
-    agent = await mastra.getAgent({
+    await engine?.syncData({
       connectionId: "SYSTEM",
-      agentId: "073a0c0d-e924-42ca-a437-78d350876e08",
+      data: recordsToPersist,
+      name: "FIRECRAWL",
+      type: entityType,
+      properties: [
+        {
+          name: "markdown",
+          type: PropertyType.LONG_TEXT,
+          config: {},
+          description: "The markdown content",
+          displayName: "Markdown",
+          modifiable: true,
+          order: 1,
+          visible: true,
+        },
+      ],
     });
-  } catch (e) {
-    console.error(e);
-    return { success: false };
-  }
 
-  if (typeof agent === "function") {
-    const d = await agent({
-      prompt: `Can you take this text blob and format it into proper YAML? ${content}`,
+    return {
+      success: true,
+      crawlData: crawl.data?.data,
+      entityType: entityType,
+    };
+  },
+});
+
+export const generateSpec = createTool({
+  label: "Generate Spec",
+  schema: z.object({
+    mastra_entity_type: z.string(),
+  }),
+  description: "Generate a spec from a website",
+  executor: async ({ data, agents, engine }) => {
+    const connection = await engine?.getConnection({
+      connectionId: "SYSTEM",
+      name: "FIRECRAWL",
     });
+
+    const kId = connection?.id;
+
+    if (!kId) {
+      throw new Error("Connection not found");
+    }
+
+    console.log({
+      mastra_entity_type: data.mastra_entity_type,
+    });
+
+    const crawledData = await engine?.getRecords({
+      entityType: data.mastra_entity_type,
+      kId: kId,
+    });
+
+    if (!crawledData) {
+      throw new Error("No crawled data found");
+    }
+
+    const agent = agents?.get("openapi-spec-gen-agent");
+
+    if (!agent) {
+      throw new Error("Agent not found");
+    }
+
+    const openapiResponses = [];
+    let mergedSpecAnswer = "";
+
+    console.log("Crawled data", crawledData);
+
+    for (const d of crawledData) {
+      const data = await agent.text({
+        messages: [
+          `I wrote another page of docs, turn this into an Open API spec: ${d.data.markdown}`,
+        ],
+      });
+
+      console.log("spec", { data });
+
+      openapiResponses.push(data.text);
+    }
+
+    console.log(
+      "inspect this, openapiResponses used to come back in structured output yaml"
+    );
+    console.log({ openapiResponses, agent, typeof: typeof agent });
+
+    const mergedSpec = await agent?.text({
+      messages: [
+        `I have generated the following Open API specs: ${openapiResponses
+          .map((r: any) => r)
+          .join("\n\n")} - merge them into a single spec,
+          `,
+      ],
+    });
+
+    mergedSpecAnswer = mergedSpec.text
+      .replace(/```yaml/g, "")
+      .replace(/```/g, "");
+
+    console.log(JSON.stringify(mergedSpec, null, 2));
+
+    console.log(
+      "MERGED SPEC ==================",
+      JSON.stringify(mergedSpecAnswer, null, 2)
+    );
+
+    return { success: true, mergedSpec: mergedSpecAnswer };
+  },
+});
+
+export const addToGitHub = createTool({
+  label: "Add to Git",
+  schema: z.object({
+    yaml: z.string(),
+    integration_name: z.string(),
+    owner: z.string(),
+    repo: z.string(),
+    site_url: z.string(),
+  }),
+  description: "Commit the spec to GitHub",
+  executor: async ({ data, integrationsRegistry, agents, engine }) => {
+    const githubIntegration =
+      integrationsRegistry<typeof integrations>().get("GITHUB");
+
+    const client = await githubIntegration.getApiClient();
+
+    const content = data.yaml;
+    const integrationName = data.integration_name.toLowerCase();
+
+    console.log("Writing to Github for", data.integration_name);
+    const agent = agents?.get("openapi-spec-gen-agent");
+
+    const d = await agent?.text({
+      messages: [
+        `Can you take this text blob and format it into proper YAML? ${content}`,
+      ],
+    });
+
+    if (!d) {
+      console.error("Agent failed to process the text blob");
+      return { success: false };
+    }
 
     if (Array.isArray(d.toolCalls)) {
-      const answer = d.toolCalls?.find(({ toolName }) => toolName === "answer");
+      const answer = d.text;
+      const strippedYaml = answer.replace(/```yaml/g, "").replace(/```/g, "");
 
-      const base64Content = Buffer.from((answer as any)?.args?.yaml).toString(
-        "base64"
-      );
+      const base64Content = Buffer.from(strippedYaml).toString("base64");
 
       const reposPathMap = {
-        [`packages/${integrationName}/openapi.yaml`]: base64Content,
-        [`packages/${integrationName}/README.md`]: Buffer.from(
+        [`integrations-next/${integrationName}/openapi.yaml`]: base64Content,
+        [`integrations-next/${integrationName}/README.md`]: Buffer.from(
           `# ${integrationName}\n\nThis repo contains the Open API spec for the ${integrationName} integration`
         ).toString("base64"),
       };
 
-      const mainRef = await apiClient.gitGetRef({
+      const mainRef = await client.gitGetRef({
         path: {
           ref: "heads/main",
           owner: data.owner,
@@ -241,7 +310,7 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
       console.log("Branch name", branchName);
 
       if (mainSha) {
-        await apiClient.gitCreateRef({
+        await client.gitCreateRef({
           body: {
             ref: `refs/heads/${branchName}`,
             sha: mainSha,
@@ -254,7 +323,7 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
 
         for (const [path, content] of Object.entries(reposPathMap)) {
           console.log({ path, content });
-          await apiClient.reposCreateOrUpdateFileContents({
+          await client.reposCreateOrUpdateFileContents({
             body: {
               message: `Add open api spec from ${data.site_url}`,
               content,
@@ -268,7 +337,7 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
           });
         }
 
-        const pullData = await apiClient.pullsCreate({
+        const pullData = await client.pullsCreate({
           body: {
             title: `Add open api spec from ${data.site_url} for ${integrationName}`,
             head: branchName,
@@ -283,58 +352,7 @@ async function addToGitHub({ data, ctx }: IntegrationApiExcutorParams) {
         return { success: true, pr_url: pullData.data?.html_url };
       }
     }
-  }
 
-  return { success: false };
-}
-
-export const addToGit = {
-  label: "Add to Git",
-  description: "Commit the spec to GitHub",
-  type: "ADD_TO_GIT",
-  executor: addToGitHub,
-  schema: z.object({
-    yaml: z.string().describe("The Open API spec in YAML format"),
-    integration_name: z.string().describe("The name of the integration to use"),
-    site_url: z.string().describe("The URL of the website to crawl"),
-    owner: z.string().describe("Owner of the repo"),
-    repo: z.string().describe("Name of the repo"),
-  }),
-  outputSchema: z.object({
-    success: z.boolean(),
-    pr_url: z.string().optional().describe("The URL of the PR"),
-  }),
-};
-
-export const generateMergedSpec = {
-  label: "Generate Merged Spec",
-  description: "Generate a merged spec from a website",
-  type: "GENERATE_MERGED_SPEC",
-  executor: generateSpec,
-  schema: z.object({
-    mastra_entity_type: z
-      .string()
-      .describe("The entity type to generate a spec for"),
-  }),
-  outputSchema: z.object({
-    success: z.boolean(),
-    mergedSpec: z.array(z.any()).describe("The merged spec"),
-  }),
-};
-
-export const mintlifySiteCrawler = {
-  label: "Mintlify Docs Crawler",
-  description: "Crawl a website and extract the markdown content",
-  type: "MINTLIFY_SITE_CRAWL",
-  executor: siteCrawl,
-  schema: z.object({
-    url: z.string().describe("The URL of the website to crawl"),
-    pathRegex: z.string().optional().describe("The regex to match the paths"),
-    limit: z.number().optional().describe("The number of pages to crawl"),
-  }),
-  outputSchema: z.object({
-    success: z.boolean(),
-    crawlData: z.array(z.any()).describe("The data from the crawl"),
-    entityType: z.string().describe("The entity type that was crawled"),
-  }),
-};
+    return { success: true };
+  },
+});
