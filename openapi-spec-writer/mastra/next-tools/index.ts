@@ -225,13 +225,16 @@ export const generateSpec = createTool({
       messages: [
         `I have generated the following Open API specs: ${openapiResponses
           .map((r: any) => r)
-          .join("\n\n")} - merge them into a single spec.`,
+          .join("\n\n")} - merge them into a single spec,
+          `,
       ],
     });
 
-    console.log(JSON.stringify(mergedSpec, null, 2));
+    mergedSpecAnswer = mergedSpec.text
+      .replace(/```yaml/g, "")
+      .replace(/```/g, "");
 
-    mergedSpecAnswer = mergedSpec.text;
+    console.log(JSON.stringify(mergedSpec, null, 2));
 
     console.log(
       "MERGED SPEC ==================",
@@ -277,8 +280,9 @@ export const addToGitHub = createTool({
 
     if (Array.isArray(d.toolCalls)) {
       const answer = d.text;
+      const strippedYaml = answer.replace(/```yaml/g, "").replace(/```/g, "");
 
-      const base64Content = Buffer.from(answer).toString("base64");
+      const base64Content = Buffer.from(strippedYaml).toString("base64");
 
       const reposPathMap = {
         [`integrations-next/${integrationName}/openapi.yaml`]: base64Content,
