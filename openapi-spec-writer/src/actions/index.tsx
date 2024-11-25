@@ -23,7 +23,7 @@ export async function generateOpenApiSpec({
       data: unknown;
     }
 > {
-  const res = await openApiSpecGenWorkflow.executeWorkflow({
+  const res = await openApiSpecGenWorkflow.execute({
     url,
     pathRegex: crawlOptions.pathRegex,
   });
@@ -46,7 +46,7 @@ export async function makeMastraPR({
   crawledUrl: string;
   integrationName: string;
 }) {
-  const res = await makePRToMastraWorkflow.executeWorkflow({
+  const res = await makePRToMastraWorkflow.execute({
     integration_name: integrationName,
     site_url: crawledUrl,
     yaml,

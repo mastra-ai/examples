@@ -79,7 +79,7 @@ makePRToMastraWorkflow.addStep("ADD_TO_GIT", {
   action: async (data) => {
     const tool = mastra.getTool("addToGitHub");
     return tool.execute({
-      integration_name: "GITHUB",
+      integration_name: data.integration_name,
       owner: data.owner,
       repo: data.repo,
       site_url: data.site_url,

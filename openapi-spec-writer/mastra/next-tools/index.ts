@@ -281,8 +281,8 @@ export const addToGitHub = createTool({
       const base64Content = Buffer.from(answer).toString("base64");
 
       const reposPathMap = {
-        [`packages/${integrationName}/openapi.yaml`]: base64Content,
-        [`packages/${integrationName}/README.md`]: Buffer.from(
+        [`integrations-next/${integrationName}/openapi.yaml`]: base64Content,
+        [`integrations-next/${integrationName}/README.md`]: Buffer.from(
           `# ${integrationName}\n\nThis repo contains the Open API spec for the ${integrationName} integration`
         ).toString("base64"),
       };
