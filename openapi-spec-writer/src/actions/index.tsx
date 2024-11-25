@@ -3,7 +3,7 @@
 import {
   makePRToMastraWorkflow,
   openApiSpecGenWorkflow,
-} from "mastra/next-workflows";
+} from "mastra/workflows";
 
 export async function generateOpenApiSpec({
   url,

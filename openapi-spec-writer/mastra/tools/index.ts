@@ -1,6 +1,6 @@
 import { Agent, createTool, PropertyType } from "@mastra/core";
 import { record, z } from "zod";
-import { integrations } from "../next-integrations";
+import { integrations } from "../integrations";
 import { randomUUID } from "crypto";
 
 function splitMarkdownIntoChunks(

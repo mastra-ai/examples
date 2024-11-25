@@ -1,7 +1,7 @@
 import { Agent } from "@mastra/core";
 
-import { integrations } from "../next-integrations";
-import * as tools from "../next-tools";
+import { integrations } from "../integrations";
+import * as tools from "../tools";
 
 export const agentOne = new Agent<typeof tools, typeof integrations>({
   name: "openapi-spec-gen-agent",
