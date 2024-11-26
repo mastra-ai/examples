@@ -49,9 +49,9 @@ export async function makeMastraPR({
   const res = await makePRToMastraWorkflow.execute({
     integration_name: integrationName,
     site_url: crawledUrl,
-    yaml,
     owner: "mastra",
     repo: "mastra",
+    yaml,
   });
 
   const prUrl = (res.results["ADD_TO_GIT"] as any)?.pr_url;

@@ -99,6 +99,7 @@ export const makePRToMastraWorkflow = new Workflow({
     site_url: z.string().describe("The URL of the website to crawl"),
     owner: z.string().describe("Owner of the repo"),
     repo: z.string().describe("Name of the repo"),
+    yaml: z.string().describe("The Open API spec in YAML format"),
   }),
 }).step("ADD_TO_GIT", {
   variables: {

@@ -1,5 +1,7 @@
 import OpenApiGenerator from "@/components/open-api-spec-generator";
 
+export const maxDuration = 300;
+
 export default function Home() {
   return (
     <main>
