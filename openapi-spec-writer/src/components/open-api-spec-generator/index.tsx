@@ -359,7 +359,9 @@ const OpenApiGenerator: React.FC = () => {
               type="button"
             >
               <GitPullRequest />
-              {prLoading && !isProduction ? (
+              {!isProduction ? (
+                <></>
+              ) : prLoading ? (
                 <span>
                   Creating{" "}
                   <span className="animate-ellipsis">
