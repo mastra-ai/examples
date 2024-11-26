@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@mastra/core": "0.1.27-alpha.12",
+    "@mastra/core": "0.1.27-unstable.2",
     "@mastra/firecrawl": "1.0.4-alpha.2",
     "@mastra/github": "1.0.3-alpha.1",
     "@prisma/client": "5.22.0",
