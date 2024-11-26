@@ -2,33 +2,8 @@ import { Agent, createTool, PropertyType } from "@mastra/core";
 import { record, z } from "zod";
 import { integrations } from "../integrations";
 import { randomUUID } from "crypto";
-
-function splitMarkdownIntoChunks(
-  markdown: string,
-  maxTokens: number = 8190
-): string[] {
-  const tokens = markdown.split(/\s+/); // Split by whitespace to tokenize
-  const chunks: string[] = [];
-  let currentChunk: string[] = [];
-
-  for (const token of tokens) {
-    if (currentChunk.join(" ").length + token.length + 1 > maxTokens) {
-      // If adding the next token exceeds the limit, push the current chunk and reset
-      chunks.push(currentChunk.join(" "));
-      currentChunk = [token]; // Start a new chunk with the current token
-    } else {
-      // Otherwise, add the token to the current chunk
-      currentChunk.push(token);
-    }
-  }
-
-  // Add any remaining tokens as the last chunk
-  if (currentChunk.length > 0) {
-    chunks.push(currentChunk.join(" "));
-  }
-
-  return chunks;
-}
+import { GithubIntegration } from "@mastra/github";
+import { FirecrawlIntegration } from "@mastra/firecrawl";
 
 export const siteCrawl = createTool({
   label: "Site Crawl",
@@ -38,31 +13,25 @@ export const siteCrawl = createTool({
     limit: z.number(),
   }),
   description: "Crawl a website and extract the markdown content",
+  outputSchema: z.object({
+    success: z.boolean(),
+    crawlData: z.array(
+      z.object({
+        markdown: z.string(),
+        metadata: z.object({
+          sourceURL: z.string(),
+        }),
+      })
+    ),
+    entityType: z.string(),
+  }),
   executor: async ({ data, integrationsRegistry, agents, engine, llm }) => {
-    // Make system connection creation a core functionality
-    const connection = await engine?.getConnection({
-      name: "FIRECRAWL",
-      connectionId: "SYSTEM",
-    });
+    // const fireCrawlIntegration =
+    //   integrationsRegistry<typeof integrations>().get("FIRECRAWL");
 
-    if (!connection) {
-      await engine?.createConnection({
-        connection: {
-          connectionId: "SYSTEM",
-          name: "FIRECRAWL",
-          issues: [],
-          syncConfig: {},
-        },
-        credential: {
-          scope: [],
-          type: "API_KEY",
-          value: {},
-        },
-      });
-    }
-
-    const fireCrawlIntegration =
-      integrationsRegistry<typeof integrations>().get("FIRECRAWL");
+    const fireCrawlIntegration = integrationsRegistry().get(
+      "FIRECRAWL"
+    ) as FirecrawlIntegration;
 
     const client = await fireCrawlIntegration.getApiClient();
 
@@ -93,7 +62,7 @@ export const siteCrawl = createTool({
 
     if (res.error) {
       console.error(JSON.stringify(res.error, null, 2));
-      return { success: false };
+      return { success: false, crawlData: [], entityType: "" };
     }
 
     const crawlId = res.data?.id;
@@ -118,45 +87,15 @@ export const siteCrawl = createTool({
 
     const entityType = `CRAWL_${data.url}`;
 
-    const recordsToPersist = crawl?.data?.data?.flatMap(
-      ({ markdown, metadata }: any) => {
-        const chunks = splitMarkdownIntoChunks(markdown!);
-        return chunks.map((c, i) => {
-          console.log({
-            c,
-            i,
-          });
-          return {
-            externalId: `${metadata?.sourceURL}_chunk_${i}`,
-            data: { markdown: c },
-            entityType: entityType,
-          };
-        });
-      }
-    );
-
-    await engine?.syncData({
-      connectionId: "SYSTEM",
-      data: recordsToPersist,
-      name: "FIRECRAWL",
-      type: entityType,
-      properties: [
-        {
-          name: "markdown",
-          type: PropertyType.LONG_TEXT,
-          config: {},
-          description: "The markdown content",
-          displayName: "Markdown",
-          modifiable: true,
-          order: 1,
-          visible: true,
-        },
-      ],
-    });
-
     return {
       success: true,
-      crawlData: crawl.data?.data,
+      crawlData: (crawl?.data?.data || []).map((item) => ({
+        markdown: item.markdown || "",
+        metadata: {
+          sourceURL: item?.metadata?.sourceURL || "",
+          ...item.metadata,
+        },
+      })),
       entityType: entityType,
     };
   },
@@ -256,8 +195,12 @@ export const addToGitHub = createTool({
   }),
   description: "Commit the spec to GitHub",
   executor: async ({ data, integrationsRegistry, agents, engine }) => {
-    const githubIntegration =
-      integrationsRegistry<typeof integrations>().get("GITHUB");
+    // const githubIntegration =
+    //   integrationsRegistry<typeof integrations>().get("GITHUB")
+
+    const githubIntegration = integrationsRegistry().get(
+      "GITHUB"
+    ) as unknown as GithubIntegration;
 
     const client = await githubIntegration.getApiClient();
 

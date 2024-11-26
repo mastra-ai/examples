@@ -248,6 +248,8 @@ const OpenApiGenerator: React.FC = () => {
     }
   };
 
+  const isProduction = process.env.NODE_ENV !== "development";
+
   return (
     <section className="w-full max-w-4xl mx-auto p-4 flex flex-col gap-8">
       <div className="flex flex-col">
@@ -357,7 +359,7 @@ const OpenApiGenerator: React.FC = () => {
               type="button"
             >
               <GitPullRequest />
-              {prLoading ? (
+              {prLoading && !isProduction ? (
                 <span>
                   Creating{" "}
                   <span className="animate-ellipsis">

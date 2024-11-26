@@ -3,10 +3,17 @@ import { agentOne } from "./agents";
 import { integrations } from "./integrations";
 // import * as syncs from './next-syncs';
 import * as tools from "./tools";
+import * as syncs from "./syncs";
 import { PostgresEngine } from "@mastra/engine";
 
-export const mastra = new Mastra<typeof integrations, typeof tools>({
+export const mastra = new Mastra<
+  // typeof integrations,
+  any,
+  typeof tools,
+  typeof syncs
+>({
   integrations,
+  syncs,
   agents: [agentOne],
   tools,
   engine: new PostgresEngine({
