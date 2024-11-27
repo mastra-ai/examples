@@ -15,7 +15,7 @@ import {
 } from '@/lib/utils';
 
 import { generateTitleFromUserMessage } from '../../actions';
-import { createMastra, } from '@/mastra';
+import { createMastra } from '@/mastra';
 
 export const maxDuration = 60;
 
@@ -117,7 +117,7 @@ export async function POST(request: Request) {
     });
 
     return streamResult.toDataStreamResponse({
-      data: streamingData,
+      data: streamingData as any,
     });
   } catch (err) {
     console.error(err);
