@@ -1,17 +1,9 @@
-import { Integration, Mastra, createLogger } from "@mastra/core";
+import { Mastra } from "@mastra/core";
 
-import { getRandomImageTool } from "./tools";
-import { agentOne } from "./agents";
+import * as tools from "./tools";
+import { birdAgent } from "./agents";
 
-export const mastra = new Mastra<Integration[]>({
-  tools: {
-    getRandomImageTool
-  },
-  syncs: {},
-  agents: [agentOne],
-  integrations: [],
-  logger: createLogger({
-    type: "CONSOLE",
-    level: "INFO"
-  })
+export const mastra = new Mastra<any, typeof tools, any>({
+  tools,
+  agents: [birdAgent]
 });

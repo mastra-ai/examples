@@ -22,11 +22,12 @@ export type ImageResponse<T, K> =
       error: K;
     };
 
-// Executor functions
+export type ImageQuery = "wildlife" | "feathers" | "flying" | "birds";
+
 export const getRandomImage = async ({
   query
 }: {
-  query: string;
+  query: ImageQuery;
 }): Promise<ImageResponse<Image, string>> => {
   const page = Math.floor(Math.random() * 20);
   const order_by = Math.random() < 0.5 ? "relevant" : "latest";
@@ -56,6 +57,7 @@ export const getRandomImage = async ({
       results: Array<Image>;
     };
     const randomNo = Math.floor(Math.random() * data.results.length);
+    console.log("data ====", JSON.stringify(data.results[randomNo], null, 2));
 
     return {
       ok: true,
