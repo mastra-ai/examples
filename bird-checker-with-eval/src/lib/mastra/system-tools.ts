@@ -22,11 +22,13 @@ export type ImageResponse<T, K> =
       error: K;
     };
 
+export type ImageQuery = "wildlife" | "feathers" | "flying" | "birds";
+
 // Executor functions
 export const getRandomImage = async ({
   query
 }: {
-  query: string;
+  query: ImageQuery;
 }): Promise<ImageResponse<Image, string>> => {
   const page = Math.floor(Math.random() * 20);
   const order_by = Math.random() < 0.5 ? "relevant" : "latest";

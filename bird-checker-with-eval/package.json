@@ -13,7 +13,7 @@
     "braintrust:eval": "npx braintrust eval src/lib/evals"
   },
   "dependencies": {
-    "@mastra/core": "0.1.27-alpha.0",
+    "@mastra/core": "0.1.27-alpha.15",
     "@prisma/client": "5.22.0",
     "braintrust": "^0.0.168",
     "class-variance-authority": "^0.7.0",

@@ -12,9 +12,4 @@ export const createMastra = ({
   new Mastra<any>({
     tools,
     agents: [createCryptoAgent(modelProvider, modelName)],
-    integrations: [],
-    logger: createLogger({
-      type: 'CONSOLE',
-      level: 'INFO',
-    }),
   });
