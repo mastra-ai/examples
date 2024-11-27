@@ -24,7 +24,7 @@ const mintlifyCrawlWorkflow = new Step({
 const generateMergedSpecStep = new Step({
   id: "GENERATE_MERGED_SPEC",
   action: async (data) => {
-    const tool = mastra.getTool("generateSpec");
+    const tool = mastra.getTool('generateSpec')
     return tool.execute({
       mastra_entity_type: data.entityType,
     });

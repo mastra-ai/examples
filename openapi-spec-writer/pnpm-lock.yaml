@@ -9,17 +9,17 @@ importers:
   .:
     dependencies:
       '@mastra/core':
-        specifier: 0.1.27-alpha.13
-        version: 0.1.27-alpha.13(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)
+        specifier: 0.1.27-alpha.15
+        version: 0.1.27-alpha.15(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)
       '@mastra/engine':
         specifier: 0.0.5-alpha.11
         version: 0.0.5-alpha.11(@opentelemetry/api@1.9.0)(@types/react@18.3.12)(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)
       '@mastra/firecrawl':
-        specifier: 1.0.4-alpha.2
-        version: 1.0.4-alpha.2(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)
+        specifier: 1.0.4-alpha.3
+        version: 1.0.4-alpha.3(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)
       '@mastra/github':
-        specifier: 1.0.3-alpha.1
-        version: 1.0.3-alpha.1(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)
+        specifier: 1.0.3-alpha.2
+        version: 1.0.3-alpha.2(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)
       '@radix-ui/react-dialog':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)
@@ -527,14 +527,14 @@ packages:
     peerDependencies:
       tslib: '2'
 
-  '@mastra/core@0.1.27-alpha.13':
-    resolution: {integrity: sha512-RkRFGKzqZr5nASkNheAYuU5teDM2dJTiCjezaLcdmUBshJEtVdR4bj+o7ElqsI2PCzqh/AU36vL/EAHJGKs8wQ==}
+  '@mastra/core@0.1.27-alpha.14':
+    resolution: {integrity: sha512-Q0WBJdufbAjhesFLpcdPkw9RThFXJQnP6A/pfdVcQIbY441WcPXxwpB2E43AOLr6u7lQka6ayJNxinYAyZpmwQ==}
     engines: {node: '>=20'}
     peerDependencies:
       zod: 3.23.7
 
-  '@mastra/core@0.1.27-alpha.14':
-    resolution: {integrity: sha512-Q0WBJdufbAjhesFLpcdPkw9RThFXJQnP6A/pfdVcQIbY441WcPXxwpB2E43AOLr6u7lQka6ayJNxinYAyZpmwQ==}
+  '@mastra/core@0.1.27-alpha.15':
+    resolution: {integrity: sha512-GijsAYFlk8zODCZRjoxPIbnKo8/SlbIXPyMRD1/gHk8PHvLuO7gauyP2+OoXk0jiwKqNCxumt1pRlMX1Ut4QCA==}
     engines: {node: '>=20'}
     peerDependencies:
       zod: 3.23.7
@@ -542,12 +542,12 @@ packages:
   '@mastra/engine@0.0.5-alpha.11':
     resolution: {integrity: sha512-KR/5+Snu2r8YLIPScKm9ZLOXXHTtT4Cm59166sXw8RutLOv56i6nvW2c6OfapK1XOiMOnjjHUT5t75W5FlFv2A==}
 
-  '@mastra/firecrawl@1.0.4-alpha.2':
-    resolution: {integrity: sha512-NxPbXSkZUa6Sb5cBQTsJGhHCfnea9YpuzquRV6FqeZfr8rjENqIeyE7YNlLWqObqiLwWwtyZOIswytM/D60ldg==}
+  '@mastra/firecrawl@1.0.4-alpha.3':
+    resolution: {integrity: sha512-mCpc1e/LY2cG1oMTXUwCBX1C4xhSVm5KQg9TFFQIoGolO5LMLP5yygZ/N+zhijpRkqO7rBcwC9tSU9kX+biOwg==}
     engines: {node: '>=20 <22'}
 
-  '@mastra/github@1.0.3-alpha.1':
-    resolution: {integrity: sha512-98ePVDUKo3RDp2KrOZv1v3u6cQ6Z8RHfzOIxBTJJqLOLTasEb4mwXkyvANhs1fMH2AJEkia+QgwQEP4WHgYiEw==}
+  '@mastra/github@1.0.3-alpha.2':
+    resolution: {integrity: sha512-ye82H7ce/6uhsVXkYYSILC3i2Er/hn//YxfpjNxjrznojAcJLfl0/YE7XauK8iCabP35eEhZ2oxi09aeRrr45g==}
     engines: {node: '>=20 <22'}
 
   '@next/env@15.0.2':
@@ -2965,6 +2965,10 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
+  radash@12.1.0:
+    resolution: {integrity: sha512-b0Zcf09AhqKS83btmUeYBS8tFK7XL2e3RvLmZcm0sTdF1/UUlHSsjXdCcWNxe7yfmAlPve5ym0DmKGtTzP6kVQ==}
+    engines: {node: '>=14.18.0'}
+
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
@@ -4231,7 +4235,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@mastra/core@0.1.27-alpha.13(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)':
+  '@mastra/core@0.1.27-alpha.14(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)':
     dependencies:
       '@ai-sdk/amazon-bedrock': 1.0.3(zod@3.23.8)
       '@ai-sdk/anthropic': 0.0.51(zod@3.23.8)
@@ -4270,7 +4274,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@mastra/core@0.1.27-alpha.14(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)':
+  '@mastra/core@0.1.27-alpha.15(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)':
     dependencies:
       '@ai-sdk/amazon-bedrock': 1.0.3(zod@3.23.8)
       '@ai-sdk/anthropic': 0.0.51(zod@3.23.8)
@@ -4290,7 +4294,7 @@ snapshots:
       date-fns: 3.6.0
       express: 4.21.1
       inngest: 3.22.3(encoding@0.1.13)(express@4.21.1)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(typescript@5.7.2)
-      lodash-es: 4.17.21
+      radash: 12.1.0
       sift: 17.1.3
       xstate: 5.19.0
       zod: 3.23.8
@@ -4362,10 +4366,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@mastra/firecrawl@1.0.4-alpha.2(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)':
+  '@mastra/firecrawl@1.0.4-alpha.3(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)':
     dependencies:
       '@hey-api/client-fetch': 0.3.4
-      '@mastra/core': 0.1.27-alpha.13(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)
+      '@mastra/core': 0.1.27-alpha.15(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)
       ts-to-zod: 3.14.1
       zod: 3.23.8
     transitivePeerDependencies:
@@ -4383,10 +4387,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@mastra/github@1.0.3-alpha.1(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)':
+  '@mastra/github@1.0.3-alpha.2(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)':
     dependencies:
       '@hey-api/client-fetch': 0.3.4
-      '@mastra/core': 0.1.27-alpha.13(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)
+      '@mastra/core': 0.1.27-alpha.15(encoding@0.1.13)(next@15.0.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)(typescript@5.7.2)(zod@3.23.8)
       ts-to-zod: 3.14.1
       zod: 3.23.8
     transitivePeerDependencies:
@@ -7003,6 +7007,8 @@ snapshots:
       side-channel: 1.0.6
 
   queue-microtask@1.2.3: {}
+
+  radash@12.1.0: {}
 
   range-parser@1.2.1: {}
 
