@@ -46,7 +46,7 @@ export const promptClaude = async ({
           },
           {
             type: "text",
-            text: "view this image and let me know if it's a bird or not, also return the the location of the image and the scientific name of the bird without any explanation."
+            text: "view this image and let me know if it's a bird or not, and the scientific name of the bird without any explanation. Also summarize the location for this picture in one or two short sentences understandable by a high school student"
           }
         ]
       ],

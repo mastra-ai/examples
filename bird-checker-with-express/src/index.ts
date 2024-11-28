@@ -63,7 +63,7 @@ app.post("/api/image-metadata", async (req: Request, res: Response) => {
           },
           {
             type: "text",
-            text: "view this image and let me know if it's a bird or not, also return its scientific name and the location the picture was taken."
+            text: "view this image and let me know if it's a bird or not, and the scientific name of the bird without any explanation. Also summarize the location for this picture in one or two short sentences understandable by a high school student"
           }
         ]
       ],
