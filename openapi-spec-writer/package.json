@@ -11,8 +11,8 @@
   "dependencies": {
     "@mastra/core": "0.1.27-alpha.17",
     "@mastra/engine": "0.0.5-alpha.11",
-    "@mastra/firecrawl": "1.0.4-alpha.3",
-    "@mastra/github": "1.0.3-alpha.2",
+    "@mastra/firecrawl": "1.0.4-alpha.4",
+    "@mastra/github": "1.0.3-alpha.3",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
