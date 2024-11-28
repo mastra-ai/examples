@@ -6,6 +6,7 @@ import * as syncs from "./syncs";
 import { PostgresEngine } from "@mastra/engine";
 
 export const mastra = new Mastra<
+  // @ts-ignore - TODO: fix this
   typeof integrations,
   typeof tools,
   typeof syncs
@@ -17,5 +18,4 @@ export const mastra = new Mastra<
   engine: new PostgresEngine({
     url: process.env.DB_URL!,
   }),
-  workflows: [],
 });

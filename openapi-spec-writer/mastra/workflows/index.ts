@@ -16,6 +16,9 @@ const mintlifyCrawlWorkflow = new Step({
     pathRegex: z.string().optional().describe("The regex to match the paths"),
     limit: z.number().optional().describe("The number of pages to crawl"),
   }),
+  outputSchema: z.object({
+    entityType: z.string().describe("The entity type to generate a spec for"),
+  }),
   payload: {
     limit: 3,
   },
@@ -24,7 +27,7 @@ const mintlifyCrawlWorkflow = new Step({
 const generateMergedSpecStep = new Step({
   id: "GENERATE_MERGED_SPEC",
   action: async (data) => {
-    const tool = mastra.getTool('generateSpec')
+    const tool = mastra.getTool("generateSpec");
     return tool.execute({
       mastra_entity_type: data.entityType,
     });
@@ -58,8 +61,8 @@ export const openApiSpecGenWorkflow = new Workflow({
   .step("GENERATE_MERGED_SPEC", {
     variables: {
       entityType: {
-        path: "entityType",
         stepId: "MINTLIFY_SITE_CRAWL",
+        path: "entityType",
       },
     },
   });
